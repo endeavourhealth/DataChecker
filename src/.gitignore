@@ -1,0 +1,16 @@
+# Created by .ignore support plugin (hsz.mobi)
+out/
+.idea/libraries
+target/
+*.map
+*.js
+!webpack.*.js
+!angular-ui-tree-withFix.js
+!**/flowchart/*.js
+node/
+node_modules
+**/typings/globals
+bower_components/
+uiDesigner.xml
+workspace.xml
+vcs.xml
