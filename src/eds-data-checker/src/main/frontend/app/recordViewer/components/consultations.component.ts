@@ -1,10 +1,10 @@
 import {Component, Input, ViewChild, OnChanges} from "@angular/core";
 import {UIEncounter} from "../models/resources/clinical/UIEncounter";
-import {TreeNode} from "../../common/models/TreeNode";
 import moment = require("moment");
 import Moment = moment.Moment;
 import {TreeComponent} from "angular2-tree-component";
-import {linq} from "../../common/linq";
+import {linq} from "eds-common-js";
+import {TreeNode} from "../models/TreeNode";
 
 @Component({
 	selector : 'consultations',

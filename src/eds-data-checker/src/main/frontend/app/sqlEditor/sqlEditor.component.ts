@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ElementRef} from "@angular/core";
-import {LoggerService} from "../common/logger.service";
+import {LoggerService} from "eds-common-js";
 import {SqlEditorService} from "./sqlEditor.service";
 import {TableMeta} from "./models/TableMeta";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";

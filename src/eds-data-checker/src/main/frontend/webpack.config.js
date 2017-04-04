@@ -3,23 +3,11 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 	entry: {
-		'common' : './app/common/common.module.ts',
-		'config' : './app/config/config.module.ts',
-		'security' : './app/security/security.module.ts',
-		'dialogs' : './app/dialogs/dialogs.module.ts',
-
-		'folder' : './app/folder/folder.module.ts',
-		'coding' : './app/coding/coding.module.ts',
 		'practitioner' : './app/practitioner/practitioner.module.ts',
-		'library' : './app/library/library.module.ts',
 
-		'patientIdentity' : './app/patientIdentity/patientIdentity.module.ts',
 		'countReport' : './app/countReport/countReport.module.ts',
 		'recordViewer' : './app/recordViewer/recordViewer.module.ts',
-		'resources' : './app/resources/resources.module.ts',
 		'sqlEditor' : './app/sqlEditor/sqlEditor.module.ts',
-
-		'layout' : './app/layout/layout.module.ts',
 
 		'app' : './app/patientExplorer.app.ts',
 		'vendor' : './app/vendor.ts',

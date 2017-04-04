@@ -4,10 +4,6 @@ import '../content/less/index.less';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import {enableProdMode, ErrorHandler} from '@angular/core';
 
-import {WellKnownConfig} from "./security/models/WellKnownConfig";
-import {AuthConfig} from "./security/models/AuthConfig";
-import {Auth} from "./security/security.auth";
-
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {HttpModule, RequestOptions, XHRBackend, Http} from '@angular/http';
@@ -16,16 +12,16 @@ import {ToastModule, ToastOptions} from "ng2-toastr";
 import {UIRouterModule, RootModule, UIView} from 'ui-router-ng2';
 import {TreeModule} from "angular2-tree-component";
 
-import {AuthHttpService} from "./security/authHttp.service";
+import {EdsErrorHandler, LayoutModule, MenuService, ShellComponent} from "eds-common-js";
 
 // Modules
-import {CommonModule} from "./common/common.module";
-import {DialogsModule} from "./dialogs/dialogs.module";
-import {LayoutModule} from "./layout/layout.module";
 
 // Top level component
-import {ShellComponent} from "./layout/shell.component";
-import {EdsErrorHandler} from "./common/errorHandler.service";
+import {AuthHttpService} from "eds-common-js";
+import {WellKnownConfig} from "eds-common-js/dist/security/models/WellKnownConfig";
+import {AuthConfig} from "eds-common-js/dist/security/models/AuthConfig";
+import {Auth} from "eds-common-js";
+import {PatientExplorerMenuService} from "./patientExplorer.menu";
 
 
 // *** USE JQUERY TO BOOTSTRAP APPLICATION ONCE KEYCLOAK IS AUTHORIZED ***
@@ -42,12 +38,10 @@ export class Application {
 				ToastModule.forRoot(<ToastOptions>{animate: 'flyRight', positionClass: 'toast-bottom-right'}),
 				UIRouterModule.forRoot(<RootModule>{ states: states.concat({name: 'app', url: '/app', component: ShellComponent}), useHash: true, otherwise: defaultState }),
 
-				CommonModule,
-				DialogsModule,
-
 				LayoutModule,
 			].concat(modules),
 			providers: [
+				{ provide: MenuService, useClass : PatientExplorerMenuService },
 				{
 					provide: Http,
 					useFactory: (backend: XHRBackend, defaultOptions: RequestOptions) => new AuthHttpService(backend, defaultOptions),

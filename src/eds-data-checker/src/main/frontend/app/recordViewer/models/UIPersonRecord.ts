@@ -2,7 +2,7 @@ import {UIPatient} from "./resources/admin/UIPatient";
 import {UIProblem} from "./resources/clinical/UIProblem";
 import {UIEncounter} from "./resources/clinical/UIEncounter";
 import {UICondition} from "./resources/clinical/UICondition";
-import {linq} from "../../common/linq";
+import {linq} from "eds-common-js";
 import {UIDiary} from "./resources/clinical/UIDiary";
 import {UIObservation} from "./resources/clinical/UIObservation";
 import {UIAllergy} from "./resources/clinical/UIAllergy";

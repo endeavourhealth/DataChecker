@@ -1,6 +1,6 @@
 import {UIPatient} from "./models/resources/admin/UIPatient";
 import {UIEncounter} from "./models/resources/clinical/UIEncounter";
-import {BaseHttp2Service} from "../core/baseHttp2.service";
+import {BaseHttp2Service} from "eds-common-js";
 import {UIProblem} from "./models/resources/clinical/UIProblem";
 import {UIInternalIdentifier} from "./models/UIInternalIdentifier";
 import {UIDiary} from "./models/resources/clinical/UIDiary";

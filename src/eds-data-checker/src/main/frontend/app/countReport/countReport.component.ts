@@ -1,15 +1,14 @@
 import {Component} from "@angular/core";
-import {FolderNode} from "../folder/models/FolderNode";
-import {ItemSummaryList} from "../library/models/ItemSummaryList";
-import {FolderItem} from "../folder/models/FolderContent";
-import {LibraryService} from "../library/library.service";
-import {LibraryItem} from "../library/models/LibraryItem";
-import {LoggerService} from "../common/logger.service";
+import {LibraryService, LoggerService} from "eds-common-js";
 import {CountReportService} from "./countReport.service";
 import {ReportParamsDialog} from "./reportParams.dialog";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ItemType} from "../folder/models/ItemType";
-import {SecurityService} from "../security/security.service";
+import {FolderNode} from "eds-common-js/dist/folder/models/FolderNode";
+import {FolderItem} from "eds-common-js/dist/folder/models/FolderContent";
+import {ItemType} from "eds-common-js/dist/folder/models/ItemType";
+import {SecurityService} from "eds-common-js";
+import {ItemSummaryList} from "eds-common-js/dist/library/models/ItemSummaryList";
+import {CountReportLibraryItem} from "./models/CountReportLibraryItem";
 
 @Component({
 	template : require('./countReports.html')
@@ -18,7 +17,7 @@ export class CountReportComponent {
 	selectedFolder : FolderNode;
 	itemSummaryList : ItemSummaryList;
 	selectedItem : FolderItem;
-	libraryItem : LibraryItem;
+	libraryItem : CountReportLibraryItem;
 
 	constructor(
 		protected $modal : NgbModal,
@@ -57,7 +56,7 @@ export class CountReportComponent {
 
 		this.selectedItem = item;
 		var vm = this;
-		vm.libraryService.getLibraryItem(item.uuid)
+		vm.libraryService.getLibraryItem<CountReportLibraryItem>(item.uuid)
 			.subscribe(
 				(libraryItem) => vm.libraryItem = libraryItem,
 				(error) => vm.logger.error('Error loading', error, 'Error')

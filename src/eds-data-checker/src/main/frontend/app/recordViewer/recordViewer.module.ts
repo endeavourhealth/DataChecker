@@ -28,7 +28,7 @@ import {CodeTooltipComponent} from "./components/codeTooltip.component";
 import {GPViewComponent} from "./gpView.component";
 import {EpisodeViewComponent} from "./episodeView.component";
 import {LocationClass, LocationIcon} from "./pipes/location";
-import {CommonModule} from "../common/common.module";
+import {CommonModule} from 'eds-common-js';
 
 @NgModule({
 	imports : [
@@ -37,7 +37,6 @@ import {CommonModule} from "../common/common.module";
 		NgbModule,
 
 		TreeModule,
-
 		CommonModule,
 	],
 	declarations : [

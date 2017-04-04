@@ -1,7 +1,7 @@
 import {Component, Input} from "@angular/core";
 import {UIPatient} from "../models/resources/admin/UIPatient";
 import {UIEpisodeOfCare} from "../models/resources/clinical/UIEpisodeOfCare";
-import {linq} from "../../common/linq";
+import {linq} from "eds-common-js";
 
 @Component({
 	selector : 'precis',

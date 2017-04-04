@@ -1,10 +1,9 @@
 import {UIPatient} from "./models/resources/admin/UIPatient";
 import {RecordViewerService} from "./recordViewer.service";
 import {UIService} from "./models/UIService";
-import {linq} from "../common/linq";
+import {linq, SecurityService} from "eds-common-js";
 import {Component} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {SecurityService} from "../security/security.service";
 
 // enum KeyCodes {
 // 		ReturnKey = 13,

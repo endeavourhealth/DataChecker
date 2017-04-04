@@ -2,7 +2,7 @@ import {Input, Component} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {Practitioner} from "./models/Practitioner";
 import {PractitionerService} from "./practitioner.service";
-import {SecurityService} from "../security/security.service";
+import {SecurityService} from "eds-common-js";
 
 @Component({
 	selector: 'ngbd-modal-content',

@@ -1,16 +1,15 @@
 import moment = require("moment");
 import {Component, Input, OnInit} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {CodePickerDialog} from "../coding/codePicker.dialog";
-import {CodeSetValue} from "../coding/models/CodeSetValue";
-import {CodingService} from "../coding/coding.service";
-import {Concept} from "../coding/models/Concept";
 import {CountReportService} from "./countReport.service";
 import {Practitioner} from "../practitioner/models/Practitioner";
 import {PractitionerPickerDialog} from "../practitioner/practitionerPicker.dialog";
 import {CountReport} from "./models/CountReport";
-import {OrgRole} from "../layout/models/OrgRole";
-import {SecurityService} from "../security/security.service";
+import {Concept} from "eds-common-js/dist/coding/models/Concept";
+import {CodeSetValue} from "eds-common-js/dist/coding/models/CodeSetValue";
+import {CodingService, SecurityService} from "eds-common-js";
+import {CodePickerDialog} from "eds-common-js";
+import {OrgRole} from "eds-common-js/dist/layout/models/OrgRole";
 
 @Component({
     selector: 'ngbd-modal-content',

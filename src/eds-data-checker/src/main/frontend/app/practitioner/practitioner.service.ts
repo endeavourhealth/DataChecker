@@ -1,6 +1,6 @@
 import {Observable} from "rxjs";
 import {Http, URLSearchParams} from "@angular/http";
-import {BaseHttp2Service} from "../core/baseHttp2.service";
+import {BaseHttp2Service} from "eds-common-js";
 import {Injectable} from "@angular/core";
 import {Practitioner} from "./models/Practitioner";
 

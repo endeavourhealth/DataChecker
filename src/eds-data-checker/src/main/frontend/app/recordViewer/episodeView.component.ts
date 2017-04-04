@@ -1,8 +1,8 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
-import {LoggerService} from "../common/logger.service";
+import {LoggerService} from "eds-common-js";
 import {RecordViewerService} from "./recordViewer.service";
 import {UIPerson} from "./models/resources/admin/UIPerson";
-import {linq} from "../common/linq";
+import {linq} from "eds-common-js";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 
 const Highcharts = require('highcharts/highcharts.src');

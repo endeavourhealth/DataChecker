@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Http, URLSearchParams} from "@angular/http";
 import {Observable} from "rxjs";
-import {BaseHttp2Service} from "../core/baseHttp2.service";
-import {LibraryItem} from "../library/models/LibraryItem";
-import {Concept} from "../coding/models/Concept";
+import {BaseHttp2Service} from "eds-common-js";
+import {Concept} from "eds-common-js/dist/coding/models/Concept";
+import {CountReportLibraryItem} from "./models/CountReportLibraryItem";
 
 @Injectable()
 export class CountReportService extends BaseHttp2Service {
@@ -11,7 +11,7 @@ export class CountReportService extends BaseHttp2Service {
 		super(http);
 	}
 
-	runReport(reportUuid: string, reportParams: Map<string, string>): Observable<LibraryItem> {
+	runReport(reportUuid: string, reportParams: Map<string, string>): Observable<CountReportLibraryItem> {
 		let params = new URLSearchParams();
 		params.set('reportUuid', reportUuid);
 

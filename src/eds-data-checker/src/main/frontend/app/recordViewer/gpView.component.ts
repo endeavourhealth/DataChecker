@@ -1,7 +1,7 @@
 import {UIEncounter} from "./models/resources/clinical/UIEncounter";
 import {RecordViewerService} from "./recordViewer.service";
 import {UIProblem} from "./models/resources/clinical/UIProblem";
-import {linq} from "../common/linq";
+import {linq} from "eds-common-js";
 import {UIPersonRecord} from "./models/UIPersonRecord";
 import {UIDiary} from "./models/resources/clinical/UIDiary";
 import {UIObservation} from "./models/resources/clinical/UIObservation";
@@ -10,7 +10,7 @@ import {UIAllergy} from "./models/resources/clinical/UIAllergy";
 import {UIImmunisation} from "./models/resources/clinical/UIImmunisation";
 import {UIFamilyHistory} from "./models/resources/clinical/UIFamilyHistory";
 import {UIMedicationStatement} from "./models/resources/clinical/UIMedicationStatement";
-import {LoggerService} from "../common/logger.service";
+import {LoggerService} from "eds-common-js";
 import {Observable} from "rxjs";
 
 @Component({

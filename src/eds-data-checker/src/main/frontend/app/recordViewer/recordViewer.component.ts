@@ -4,12 +4,11 @@ import {RecordViewerService} from "./recordViewer.service";
 import {UIPersonRecord} from "./models/UIPersonRecord";
 import {Component} from "@angular/core";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {LoggerService} from "../common/logger.service";
-import {SecurityService} from "../security/security.service";
+import {LoggerService, SecurityService} from "eds-common-js";
 import {UIPerson} from "./models/resources/admin/UIPerson";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 import {Observable} from "rxjs";
-import {linq} from "../common/linq";
+import {linq} from "eds-common-js";
 
 @Component({
 		template : require('./recordViewer.html')
