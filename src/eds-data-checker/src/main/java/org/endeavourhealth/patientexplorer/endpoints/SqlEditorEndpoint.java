@@ -5,6 +5,7 @@ import org.endeavourhealth.core.data.audit.models.AuditAction;
 import org.endeavourhealth.core.data.audit.models.AuditModule;
 import org.endeavourhealth.common.security.SecurityUtils;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
+import org.endeavourhealth.patientexplorer.database.SqlEditorJdbcProvider;
 import org.endeavourhealth.patientexplorer.database.SqlEditorProvider;
 import org.endeavourhealth.patientexplorer.database.models.TableMetaEntity;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public final class SqlEditorEndpoint extends AbstractEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlEditorEndpoint.class);
     private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.SqlEditor);
-    private static final SqlEditorProvider sqlEditorProvider = new SqlEditorProvider();
+    private static final SqlEditorProvider SQL_EDITOR_JDBC_PROVIDER = new SqlEditorJdbcProvider();
 
     /**
      * Get a list of tables and their field names (excluding enterprise report tables)
@@ -43,7 +44,7 @@ public final class SqlEditorEndpoint extends AbstractEndpoint {
             userAudit.save(userUuid, getOrganisationUuidFromToken(sc), AuditAction.Load, "Table Data");
             LOG.debug("getTableData");
 
-            List<TableMetaEntity> ret = sqlEditorProvider.getTableData();
+            List<TableMetaEntity> ret = SQL_EDITOR_JDBC_PROVIDER.getTableData();
 
             return Response
                 .ok(ret, MediaType.APPLICATION_JSON_TYPE)
@@ -70,7 +71,7 @@ public final class SqlEditorEndpoint extends AbstractEndpoint {
                 "SQL", sql);
             LOG.debug("runQuery");
 
-            List<List<String>> ret = sqlEditorProvider.runQuery(sql);
+            List<List<String>> ret = SQL_EDITOR_JDBC_PROVIDER.runQuery(sql);
 
             return Response
                 .ok(ret, MediaType.APPLICATION_JSON_TYPE)

@@ -8,6 +8,7 @@ import org.endeavourhealth.core.data.audit.models.AuditModule;
 import org.endeavourhealth.common.security.SecurityUtils;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
+import org.endeavourhealth.patientexplorer.database.CountReportJdbcProvider;
 import org.endeavourhealth.patientexplorer.database.CountReportProvider;
 import org.endeavourhealth.patientexplorer.database.SqlUtils;
 import org.endeavourhealth.patientexplorer.database.models.ConceptEntity;
@@ -31,13 +32,12 @@ public final class CountReportEndpoint extends AbstractEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(CountReportEndpoint.class);
     private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.CountReport);
-    private static final CountReportProvider countReportProvider = new CountReportProvider();
+    private static final CountReportProvider countReportProvider = new CountReportJdbcProvider();
 
     /**
      * Run a predefined count report
      * @param sc                Security context (provided)
      * @param reportUuid          UUID of the report to run
-     * @param organisationUuid  UUID of the service/organisation to restrict the report to
      * @param reportParamsJson  Appropriate report filtering parameters
      * @return  LibraryItem definition of the report that ran
      * @throws Exception
