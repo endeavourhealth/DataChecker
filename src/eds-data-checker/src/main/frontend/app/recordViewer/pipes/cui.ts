@@ -161,7 +161,9 @@ function titleCase(text: string) {
 }
 
 function formatPostalCode(postalCode: string): string {
-    if (postalCode == null)
+    //handle undefined postcodes too
+    //if (postalCode == null)
+    if (!postalCode)
         return null;
 
     // Handle partials such as "LS11"
