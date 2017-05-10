@@ -28,7 +28,7 @@ import {CodeTooltipComponent} from "./components/codeTooltip.component";
 import {GPViewComponent} from "./gpView.component";
 import {EpisodeViewComponent} from "./episodeView.component";
 import {LocationClass, LocationIcon} from "./pipes/location";
-import {CommonModule} from 'eds-common-js';
+import {CommonModule, ControlsModule} from 'eds-common-js';
 
 @NgModule({
 	imports : [
@@ -38,6 +38,7 @@ import {CommonModule} from 'eds-common-js';
 
 		TreeModule,
 		CommonModule,
+		ControlsModule
 	],
 	declarations : [
 		EpisodeViewComponent,
@@ -92,9 +93,7 @@ import {CommonModule} from 'eds-common-js';
 		CuiGender,
 
 		LocationClass,
-		LocationIcon,
-
-		Parentheses
+		LocationIcon
 	]
 })
 export class RecordViewerModule {}

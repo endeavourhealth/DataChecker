@@ -6,7 +6,7 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {SqlEditorService} from "./sqlEditor.service";
 import {SqlEditorComponent} from "./sqlEditor.component";
 import {UploadCsvDialog} from "./uploadCsv.dialog";
-import {CommonModule} from 'eds-common-js';
+import {CommonModule, ControlsModule} from 'eds-common-js';
 
 @NgModule({
 	imports:[
@@ -15,6 +15,7 @@ import {CommonModule} from 'eds-common-js';
 		NgbModule,
 		NKDatetimeModule,
 		CommonModule,
+		ControlsModule
 	],
 	declarations:[
 		SqlEditorComponent,
