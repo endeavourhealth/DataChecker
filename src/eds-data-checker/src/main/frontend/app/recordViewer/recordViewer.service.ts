@@ -14,82 +14,87 @@ import {UIFamilyHistory} from "./models/resources/clinical/UIFamilyHistory";
 import {UIMedicationStatement} from "./models/resources/clinical/UIMedicationStatement";
 import {UIPerson} from "./models/resources/admin/UIPerson";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
+import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
 
 @Injectable()
 export class RecordViewerService extends BaseHttp2Service {
-    constructor(http: Http) {
-        super(http);
-    }
+	constructor(http: Http) {
+		super(http);
+	}
 
-    getServices(): Observable<UIService[]> {
-        return this.httpGet('api/recordViewer/getServices');
-    }
+	getServices(): Observable<UIService[]> {
+		return this.httpGet('api/recordViewer/getServices');
+	}
 
-    getEpisodes(person : UIPerson) : Observable<UIEpisodeOfCare[]> {
-        var params = new URLSearchParams();
-        params.append('nhsNumber', person.nhsNumber);
+	getEpisodes(person: UIPerson): Observable<UIEpisodeOfCare[]> {
+		var params = new URLSearchParams();
+		params.append('nhsNumber', person.nhsNumber);
 
-        return this.httpGet('api/recordViewer/getEpisodes', { search : params });
-    }
+		return this.httpGet('api/recordViewer/getEpisodes', {search: params});
+	}
 
-    findPatient(service: UIService, searchTerms: string): Observable<UIPatient[]> {
-        var params = new URLSearchParams();
-        params.append('serviceId', service.serviceId);
-        params.append('systemId', service.systemId);
-        params.append('searchTerms', searchTerms);
+	findPatient(service: UIService, searchTerms: string): Observable<UIPatient[]> {
+		var params = new URLSearchParams();
+		params.append('serviceId', service.serviceId);
+		params.append('systemId', service.systemId);
+		params.append('searchTerms', searchTerms);
 
-        return this.httpGet('api/recordViewer/findPatient', {search: params});
-    }
+		return this.httpGet('api/recordViewer/findPatient', {search: params});
+	}
 
-    findPerson(searchTerms: string): Observable<UIPatient[]> {
-        var params = new URLSearchParams();
-        params.append('searchTerms', searchTerms);
+	findPerson(searchTerms: string): Observable<UIPatient[]> {
+		var params = new URLSearchParams();
+		params.append('searchTerms', searchTerms);
 
-        return this.httpGet('api/recordViewer/findPerson', {search: params});
-    }
+		return this.httpGet('api/recordViewer/findPerson', {search: params});
+	}
 
-    getPatient(patientId: UIInternalIdentifier): Observable<UIPatient> {
-        return this.httpGet('api/recordViewer/getPatient', this.getParams(patientId));
-    }
+	getPatient(patientId: UIInternalIdentifier): Observable<UIPatient> {
+		return this.httpGet('api/recordViewer/getPatient', this.getParams(patientId));
+	}
 
-    getEncounters(patientId: UIInternalIdentifier): Observable<UIEncounter[]> {
-        return this.httpGet('api/recordViewer/getEncounters', this.getParams(patientId));
-    }
+	getEncounters(patientId: UIInternalIdentifier): Observable<UIEncounter[]> {
+		return this.httpGet('api/recordViewer/getEncounters', this.getParams(patientId));
+	}
 
-    getProblems(patientId: UIInternalIdentifier): Observable<UIProblem[]> {
-        return this.httpGet('api/recordViewer/getProblems', this.getParams(patientId));
-    }
+	getProblems(patientId: UIInternalIdentifier): Observable<UIProblem[]> {
+		return this.httpGet('api/recordViewer/getProblems', this.getParams(patientId));
+	}
 
-    getDiary(patientId: UIInternalIdentifier): Observable<UIDiary[]> {
-        return this.httpGet('api/recordViewer/getDiary', this.getParams(patientId));
-    }
+	getDiary(patientId: UIInternalIdentifier): Observable<UIDiary[]> {
+		return this.httpGet('api/recordViewer/getDiary', this.getParams(patientId));
+	}
 
-    getObservations(patientId: UIInternalIdentifier): Observable<UIDiary[]> {
-        return this.httpGet('api/recordViewer/getObservations', this.getParams(patientId));
-    }
+	getObservations(patientId: UIInternalIdentifier): Observable<UIDiary[]> {
+		return this.httpGet('api/recordViewer/getObservations', this.getParams(patientId));
+	}
 
-    getMedication(patientId : UIInternalIdentifier): Observable<UIMedicationStatement[]> {
-        return this.httpGet('api/recordViewer/getMedicationStatements', this.getParams(patientId));
-    }
+	getMedication(patientId: UIInternalIdentifier): Observable<UIMedicationStatement[]> {
+		return this.httpGet('api/recordViewer/getMedicationStatements', this.getParams(patientId));
+	}
 
-    getAllergies(patientId: UIInternalIdentifier) : Observable<UIAllergy[]> {
-        return this.httpGet('api/recordViewer/getAllergies', this.getParams(patientId));
-    }
+	getMedicationOrders(patientId: UIInternalIdentifier): Observable<UIMedicationOrder[]> {
+		return this.httpGet('api/recordViewer/getMedicationOrders', this.getParams(patientId));
+	}
 
-    getImmunisations(patientId: UIInternalIdentifier) : Observable<UIImmunisation[]> {
-        return this.httpGet('api/recordViewer/getImmunisations', this.getParams(patientId));
-    }
+	getAllergies(patientId: UIInternalIdentifier): Observable<UIAllergy[]> {
+		return this.httpGet('api/recordViewer/getAllergies', this.getParams(patientId));
+	}
 
-    getFamilyHistory(patientId: UIInternalIdentifier) : Observable<UIFamilyHistory[]> {
-        return this.httpGet('api/recordViewer/getFamilyHistory', this.getParams(patientId));
-    }
+	getImmunisations(patientId: UIInternalIdentifier): Observable<UIImmunisation[]> {
+		return this.httpGet('api/recordViewer/getImmunisations', this.getParams(patientId));
+	}
 
-    private getParams(patientId: UIInternalIdentifier): any {
-        var params = new URLSearchParams();
-        params.append('serviceId', patientId.serviceId);
-        params.append('systemId', patientId.systemId);
-        params.append('patientId', patientId.resourceId);
+	getFamilyHistory(patientId: UIInternalIdentifier): Observable<UIFamilyHistory[]> {
+		return this.httpGet('api/recordViewer/getFamilyHistory', this.getParams(patientId));
+	}
 
-        return {search: params};
-    }
+	private getParams(patientId: UIInternalIdentifier): any {
+		var params = new URLSearchParams();
+		params.append('serviceId', patientId.serviceId);
+		params.append('systemId', patientId.systemId);
+		params.append('patientId', patientId.resourceId);
+
+		return {search: params};
+	}
 }

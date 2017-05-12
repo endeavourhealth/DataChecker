@@ -28,7 +28,8 @@ import {CodeTooltipComponent} from "./components/codeTooltip.component";
 import {GPViewComponent} from "./gpView.component";
 import {EpisodeViewComponent} from "./episodeView.component";
 import {LocationClass, LocationIcon} from "./pipes/location";
-import {CommonModule, ControlsModule} from 'eds-common-js';
+import {CommonModule, ControlsModule, DialogsModule, LoggerModule} from 'eds-common-js';
+import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 
 @NgModule({
 	imports : [
@@ -36,6 +37,8 @@ import {CommonModule, ControlsModule} from 'eds-common-js';
 		FormsModule,
 		NgbModule,
 
+		DialogsModule,
+		LoggerModule,
 		TreeModule,
 		CommonModule,
 		ControlsModule
@@ -45,6 +48,7 @@ import {CommonModule, ControlsModule} from 'eds-common-js';
 		GPViewComponent,
 		RecordViewerComponent,
 		PatientFindDialog,
+		MedicationIssuesDialog,
 
 		PrecisComponent,
 		CodeTooltipComponent,
@@ -76,7 +80,8 @@ import {CommonModule, ControlsModule} from 'eds-common-js';
 		Parentheses
 	],
 	entryComponents : [
-		PatientFindDialog
+		PatientFindDialog,
+		MedicationIssuesDialog
 	],
 	providers :
 	[

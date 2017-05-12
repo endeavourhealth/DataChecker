@@ -9,6 +9,7 @@ import {UIAllergy} from "./resources/clinical/UIAllergy";
 import {UIImmunisation} from "./resources/clinical/UIImmunisation";
 import {UIFamilyHistory} from "./resources/clinical/UIFamilyHistory";
 import {UIMedicationStatement} from "./resources/clinical/UIMedicationStatement";
+import {UIMedicationOrder} from "./resources/clinical/UIMedicationOrder";
 
 export class UIPersonRecord {
     patients: UIPatient[];
@@ -18,6 +19,7 @@ export class UIPersonRecord {
     observations: UIObservation[];
     diary: UIDiary[];
     medication : UIMedicationStatement[];
+    medicationOrder : UIMedicationOrder[];
     allergies : UIAllergy[];
     immunisations : UIImmunisation[];
     familyHistory : UIFamilyHistory[];

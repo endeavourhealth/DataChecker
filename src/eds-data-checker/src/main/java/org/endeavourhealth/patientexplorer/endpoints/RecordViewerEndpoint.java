@@ -41,448 +41,466 @@ import java.util.stream.Collectors;
 @Path("/recordViewer")
 public final class RecordViewerEndpoint extends AbstractEndpoint {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RecordViewerEndpoint.class);
-    private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.RecordViewer);
-    private static final ServiceRepository serviceRepository = new ServiceRepository();
-    //private static final PatientIdentifierRepository identifierRepository = new PatientIdentifierRepository();
+	private static final Logger LOG = LoggerFactory.getLogger(RecordViewerEndpoint.class);
+	private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.RecordViewer);
+	private static final ServiceRepository serviceRepository = new ServiceRepository();
+	//private static final PatientIdentifierRepository identifierRepository = new PatientIdentifierRepository();
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getServices")
-    public Response getServices(@Context SecurityContext sc) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Service List");
-        LOG.debug("getServices");
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getServices")
+	public Response getServices(@Context SecurityContext sc) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Service List");
+		LOG.debug("getServices");
 
-        List<UIService> uiServices = UITransform.transformServices(Lists.newArrayList(serviceRepository.getAll()));
+		List<UIService> uiServices = UITransform.transformServices(Lists.newArrayList(serviceRepository.getAll()));
 
-        return buildResponse(uiServices);
-    }
+		return buildResponse(uiServices);
+	}
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/getServiceName")
-    public Response getServiceName(@Context SecurityContext sc, @QueryParam("serviceId") UUID serviceId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Service Name",
-            "ServiceId", serviceId);
-        LOG.debug("getServiceName");
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	@Path("/getServiceName")
+	public Response getServiceName(@Context SecurityContext sc, @QueryParam("serviceId") UUID serviceId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Service Name",
+				"ServiceId", serviceId);
+		LOG.debug("getServiceName");
 
-        List<Service> services = Lists.newArrayList(serviceRepository.getAll());
-        Optional<Service> service = services.stream()
-            .filter(s -> s.getId().equals(serviceId))
-            .findFirst();
+		List<Service> services = Lists.newArrayList(serviceRepository.getAll());
+		Optional<Service> service = services.stream()
+				.filter(s -> s.getId().equals(serviceId))
+				.findFirst();
 
-        if (service.isPresent())
-            return buildResponse(service.get().getName());
+		if (service.isPresent())
+			return buildResponse(service.get().getName());
 
-        return buildResponse(null);
-    }
-
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/findPerson")
-    public Response findPerson(@Context SecurityContext sc, @QueryParam("searchTerms") String searchTerms) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Find person",
-            "SearchTerm", searchTerms);
-        LOG.debug("findPerson");
-
-        Set<String> userServiceAccessList = SecurityUtils.getOrganisationRoles(sc).keySet();
-        Map<String, UIPatient> result = new HashMap<>();
+		return buildResponse(null);
+	}
 
 
-        if (!StringUtils.isEmpty(searchTerms)) {
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/findPerson")
+	public Response findPerson(@Context SecurityContext sc, @QueryParam("searchTerms") String searchTerms) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Find person",
+				"SearchTerm", searchTerms);
+		LOG.debug("findPerson");
 
-            SearchTermsParser parser = new SearchTermsParser(searchTerms);
-
-            List<PatientSearch> patientsFound = new ArrayList<>();
-
-            if (parser.hasNhsNumber())
-                patientsFound.addAll(PatientSearchHelper.searchByNhsNumber(userServiceAccessList, parser.getNhsNumber()));
-
-            if (parser.hasEmisNumber())
-                patientsFound.addAll(PatientSearchHelper.searchByLocalId(userServiceAccessList, parser.getEmisNumber()));
-
-            if (parser.hasDateOfBirth())
-                patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
+		Set<String> userServiceAccessList = SecurityUtils.getOrganisationRoles(sc).keySet();
+		Map<String, UIPatient> result = new HashMap<>();
 
 
-            patientsFound.addAll(PatientSearchHelper.searchByNames(userServiceAccessList, parser.getNames()));
+		if (!StringUtils.isEmpty(searchTerms)) {
 
-            for (PatientSearch searchPatient : patientsFound) {
-                if (!result.containsKey(searchPatient.getNhsNumber())) {
-                	try {
-										UIPatient patient = getPatient(
-												UUID.fromString(searchPatient.getServiceId()),
-												UUID.fromString(searchPatient.getSystemId()),
-												UUID.fromString(searchPatient.getPatientId())
-										);
-										result.put(searchPatient.getNhsNumber(), patient);
-									} catch (Exception e) {
-                		LOG.error(e.getMessage(), searchPatient.getServiceId(), searchPatient.getSystemId(), searchPatient.getPatientId());
-									}
-                }
-            }
-        }
+			SearchTermsParser parser = new SearchTermsParser(searchTerms);
 
-        return buildResponse(result.values());
-    }
+			List<PatientSearch> patientsFound = new ArrayList<>();
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/findPatient")
-    public Response findPatient(@Context SecurityContext sc,
-                                @QueryParam("serviceId") UUID serviceId,
-                                @QueryParam("systemId") UUID systemId,
-                                @QueryParam("searchTerms") String searchTerms) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-                "Find patient",
-                "SearchTerm", searchTerms,
-                "ServiceId", serviceId,
-                "SystemId", systemId);
-        LOG.debug("findPatient");
+			if (parser.hasNhsNumber())
+				patientsFound.addAll(PatientSearchHelper.searchByNhsNumber(userServiceAccessList, parser.getNhsNumber()));
+
+			if (parser.hasEmisNumber())
+				patientsFound.addAll(PatientSearchHelper.searchByLocalId(userServiceAccessList, parser.getEmisNumber()));
+
+			if (parser.hasDateOfBirth())
+				patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
 
 
-        List<UIPatient> result = new ArrayList<>();
+			patientsFound.addAll(PatientSearchHelper.searchByNames(userServiceAccessList, parser.getNames()));
 
-        if (!StringUtils.isEmpty(searchTerms)) {
-
-            SearchTermsParser parser = new SearchTermsParser(searchTerms);
-
-            List<PatientSearch> patientsFound = new ArrayList<>();
-
-            if (parser.hasNhsNumber())
-                patientsFound.addAll(PatientSearchHelper.searchByNhsNumber(serviceId, systemId, parser.getNhsNumber()));
-
-            if (parser.hasEmisNumber())
-                patientsFound.addAll(PatientSearchHelper.searchByLocalId(serviceId, systemId, parser.getEmisNumber()));
-
-            if (parser.hasDateOfBirth())
-                patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(serviceId, systemId, parser.getDateOfBirth()));
-
-
-            patientsFound.addAll(PatientSearchHelper.searchByNames(serviceId, systemId, parser.getNames()));
-
-            List<UIInternalIdentifier> uiInternalIdentifiers = patientsFound
-                    .stream()
-                    .map(t -> new UIInternalIdentifier()
-                            .setServiceId(UUID.fromString(t.getServiceId()))
-                            .setSystemId(UUID.fromString(t.getSystemId()))
-                            .setResourceId(UUID.fromString(t.getPatientId())))
-                    .distinct()
-                    .collect(Collectors.toList());
-
-            for (UIInternalIdentifier identifier : uiInternalIdentifiers)
-                result.add(getPatient(identifier.getServiceId(), identifier.getSystemId(), identifier.getResourceId()));
-        }
-
-        return buildResponse(result);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getEpisodes")
-    public Response getEpisodes(@Context SecurityContext sc,
-                                @QueryParam("nhsNumber") String nhsNumber) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Episodes");
-        LOG.debug("getEpisodes");
-
-        // Get list of patients by NHS number
-        List<PatientSearch> patientSearches = PatientSearchHelper.searchByNhsNumber(nhsNumber);
-        List<UIEpisodeOfCare> episodes = new ArrayList<>();
-
-        // Get episodes of care for each
-        for(PatientSearch patientSearch : patientSearches) {
-        	try {
+			for (PatientSearch searchPatient : patientsFound) {
+				if (!result.containsKey(searchPatient.getNhsNumber())) {
+					try {
 						UIPatient patient = getPatient(
-								UUID.fromString(patientSearch.getServiceId()),
-								UUID.fromString(patientSearch.getSystemId()),
-								UUID.fromString(patientSearch.getPatientId())
+								UUID.fromString(searchPatient.getServiceId()),
+								UUID.fromString(searchPatient.getSystemId()),
+								UUID.fromString(searchPatient.getPatientId())
 						);
-
-						List<UIEpisodeOfCare> episodesOfCare = getClinicalResources(
-								UUID.fromString(patientSearch.getServiceId()),
-								UUID.fromString(patientSearch.getSystemId()),
-								UUID.fromString(patientSearch.getPatientId()),
-								EpisodeOfCare.class,
-								UIEpisodeOfCare.class
-						);
-
-						episodesOfCare.forEach(episode -> episode.setPatient(patient));
-
-						episodes.addAll(episodesOfCare);
+						result.put(searchPatient.getNhsNumber(), patient);
 					} catch (Exception e) {
-        		LOG.error(e.getMessage(), patientSearch.getServiceId(), patientSearch.getSystemId(), patientSearch.getPatientId());
+						LOG.error(e.getMessage(), searchPatient.getServiceId(), searchPatient.getSystemId(), searchPatient.getPatientId());
 					}
-        }
+				}
+			}
+		}
 
-        return buildResponse(
-            episodes.stream()
-                .sorted(Comparator.comparing(f -> f.getPeriod().getStart().getDate()))
-                .toArray()
-        );
+		return buildResponse(result.values());
+	}
 
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getPatient")
-    public Response getPatient(@Context SecurityContext sc,
-                                    @QueryParam("serviceId") UUID serviceId,
-                                    @QueryParam("systemId") UUID systemId,
-                                    @QueryParam("patientId") UUID patientId) throws Exception {
-
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Patient",
-            "PatientId", patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getPatient");
-
-        validateIdentifiers(serviceId, systemId, patientId);
-
-        UIPatient patient = getPatient(serviceId, systemId, patientId);
-        return buildResponse(patient);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getMedicationStatements")
-    public Response getMedicationStatements(@Context SecurityContext sc,
-                                        @QueryParam("serviceId") UUID serviceId,
-                                        @QueryParam("systemId") UUID systemId,
-                                        @QueryParam("patientId") UUID patientId) throws Exception {
-
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Medication Statements",
-            "PatientId", patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getMedicationStatement");
-
-        return getClinicalResourceResponse(serviceId, systemId, patientId, MedicationStatement.class, UIMedicationStatement.class);
-    }
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/findPatient")
+	public Response findPatient(@Context SecurityContext sc,
+															@QueryParam("serviceId") UUID serviceId,
+															@QueryParam("systemId") UUID systemId,
+															@QueryParam("searchTerms") String searchTerms) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Find patient",
+				"SearchTerm", searchTerms,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("findPatient");
 
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getConditions")
-    public Response getConditions(@Context SecurityContext sc,
-                                  @QueryParam("serviceId") UUID serviceId,
-                                  @QueryParam("systemId") UUID systemId,
-                                  @QueryParam("patientId") UUID patientId) throws Exception {
+		List<UIPatient> result = new ArrayList<>();
 
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Conditions",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getConditions");
+		if (!StringUtils.isEmpty(searchTerms)) {
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, Condition.class, UICondition.class);
-    }
+			SearchTermsParser parser = new SearchTermsParser(searchTerms);
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getProblems")
-    public Response getProblems(@Context SecurityContext sc,
-                                  @QueryParam("serviceId") UUID serviceId,
-                                  @QueryParam("systemId") UUID systemId,
-                                  @QueryParam("patientId") UUID patientId) throws Exception {
+			List<PatientSearch> patientsFound = new ArrayList<>();
 
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Problems",
-            "PatientId", patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getProblems");
+			if (parser.hasNhsNumber())
+				patientsFound.addAll(PatientSearchHelper.searchByNhsNumber(serviceId, systemId, parser.getNhsNumber()));
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, Condition.class, UIProblem.class);
-    }
+			if (parser.hasEmisNumber())
+				patientsFound.addAll(PatientSearchHelper.searchByLocalId(serviceId, systemId, parser.getEmisNumber()));
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getEncounters")
-    public Response getEncounters(@Context SecurityContext sc,
-                                    @QueryParam("serviceId") UUID serviceId,
-                                    @QueryParam("systemId") UUID systemId,
-                                    @QueryParam("patientId") UUID patientId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Encounters",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getEncounters");
+			if (parser.hasDateOfBirth())
+				patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(serviceId, systemId, parser.getDateOfBirth()));
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, Encounter.class, UIEncounter.class);
-    }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getDiary")
-    public Response getDiary(@Context SecurityContext sc,
-                                  @QueryParam("serviceId") UUID serviceId,
-                                  @QueryParam("systemId") UUID systemId,
-                                  @QueryParam("patientId") UUID patientId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Diaries",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getDiaries");
+			patientsFound.addAll(PatientSearchHelper.searchByNames(serviceId, systemId, parser.getNames()));
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, ProcedureRequest.class, UIDiary.class);
-    }
+			List<UIInternalIdentifier> uiInternalIdentifiers = patientsFound
+					.stream()
+					.map(t -> new UIInternalIdentifier()
+							.setServiceId(UUID.fromString(t.getServiceId()))
+							.setSystemId(UUID.fromString(t.getSystemId()))
+							.setResourceId(UUID.fromString(t.getPatientId())))
+					.distinct()
+					.collect(Collectors.toList());
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getObservations")
-    public Response getObservations(@Context SecurityContext sc,
-                                    @QueryParam("serviceId") UUID serviceId,
-                                    @QueryParam("systemId") UUID systemId,
-                                    @QueryParam("patientId") UUID patientId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Observations",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getObservations");
+			for (UIInternalIdentifier identifier : uiInternalIdentifiers)
+				result.add(getPatient(identifier.getServiceId(), identifier.getSystemId(), identifier.getResourceId()));
+		}
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, Observation.class, UIObservation.class);
-    }
+		return buildResponse(result);
+	}
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getAllergies")
-    public Response getAllergies(@Context SecurityContext sc,
-                                    @QueryParam("serviceId") UUID serviceId,
-                                    @QueryParam("systemId") UUID systemId,
-                                    @QueryParam("patientId") UUID patientId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Allergies",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getAllergies");
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getEpisodes")
+	public Response getEpisodes(@Context SecurityContext sc,
+															@QueryParam("nhsNumber") String nhsNumber) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Episodes");
+		LOG.debug("getEpisodes");
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, AllergyIntolerance.class, UIAllergyIntolerance.class);
-    }
+		// Get list of patients by NHS number
+		List<PatientSearch> patientSearches = PatientSearchHelper.searchByNhsNumber(nhsNumber);
+		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getImmunisations")
-    public Response getImmunisations(@Context SecurityContext sc,
-                                 @QueryParam("serviceId") UUID serviceId,
-                                 @QueryParam("systemId") UUID systemId,
-                                 @QueryParam("patientId") UUID patientId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Immunisations",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getImmunisations");
+		// Get episodes of care for each
+		for (PatientSearch patientSearch : patientSearches) {
+			try {
+				UIPatient patient = getPatient(
+						UUID.fromString(patientSearch.getServiceId()),
+						UUID.fromString(patientSearch.getSystemId()),
+						UUID.fromString(patientSearch.getPatientId())
+				);
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, Immunization.class, UIImmunisation.class);
-    }
+				List<UIEpisodeOfCare> episodesOfCare = getClinicalResources(
+						UUID.fromString(patientSearch.getServiceId()),
+						UUID.fromString(patientSearch.getSystemId()),
+						UUID.fromString(patientSearch.getPatientId()),
+						EpisodeOfCare.class,
+						UIEpisodeOfCare.class
+				);
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getFamilyHistory")
-    public Response getFamilyHistory(@Context SecurityContext sc,
-                                     @QueryParam("serviceId") UUID serviceId,
-                                     @QueryParam("systemId") UUID systemId,
-                                     @QueryParam("patientId") UUID patientId) throws Exception {
-        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-            "Family History",
-            "PatientId",  patientId,
-            "ServiceId", serviceId,
-            "SystemId", systemId);
-        LOG.debug("getFamilyHistory");
+				episodesOfCare.forEach(episode -> episode.setPatient(patient));
 
-        return getClinicalResourceResponse(serviceId, systemId, patientId, FamilyMemberHistory.class, UIFamilyMemberHistory.class);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				episodes.addAll(episodesOfCare);
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), patientSearch.getServiceId(), patientSearch.getSystemId(), patientSearch.getPatientId());
+			}
+		}
 
-    private static void validateIdentifiers(UUID serviceId, UUID systemId, UUID patientId) {
-        Validate.notNull(serviceId, "serviceId");
-        Validate.notNull(systemId, "systemId");
-        Validate.notNull(patientId, "patientId");
-    }
+		return buildResponse(
+				episodes.stream()
+						.sorted(Comparator.comparing(f -> f.getPeriod().getStart().getDate()))
+						.toArray()
+		);
 
-    private static UIPatient getPatient(UUID serviceId, UUID systemId, UUID patientId) throws Exception {
+	}
 
-        Patient patient = ResourceFetcher.getSingleResourceByPatient(serviceId, systemId, patientId, Patient.class);
-        UIPatient uiPatient = UITransform.transformPatient(patient);
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getPatient")
+	public Response getPatient(@Context SecurityContext sc,
+														 @QueryParam("serviceId") UUID serviceId,
+														 @QueryParam("systemId") UUID systemId,
+														 @QueryParam("patientId") UUID patientId) throws Exception {
 
-        return uiPatient
-                .setPatientId(new UIInternalIdentifier()
-                    .setServiceId(serviceId)
-                    .setSystemId(systemId)
-                    .setResourceId(patientId));
-    }
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Patient",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getPatient");
 
-    private <T extends Resource,
-            U extends UIResource> Response getClinicalResourceResponse(UUID serviceId,
-                                                                       UUID systemId,
-                                                                       UUID patientId,
-                                                                       Class<T> fhirResourceType,
-                                                                       Class<U> uiResourceType) throws Exception {
-        validateIdentifiers(serviceId, systemId, patientId);
+		validateIdentifiers(serviceId, systemId, patientId);
 
-        List<U> encounters = getClinicalResources(serviceId, systemId, patientId, fhirResourceType, uiResourceType);
+		UIPatient patient = getPatient(serviceId, systemId, patientId);
+		return buildResponse(patient);
+	}
 
-        return buildResponse(encounters);
-    }
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getMedicationStatements")
+	public Response getMedicationStatements(@Context SecurityContext sc,
+																					@QueryParam("serviceId") UUID serviceId,
+																					@QueryParam("systemId") UUID systemId,
+																					@QueryParam("patientId") UUID patientId) throws Exception {
 
-    private <T extends Resource,
-            U extends UIResource> List<U> getClinicalResources(UUID serviceId,
-                                                               UUID systemId,
-                                                               UUID patientId,
-                                                               Class<T> fhirResourceType,
-                                                               Class<U> uiResourceType) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Medication Statements",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getMedicationStatement");
 
-        List<T> resources = ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, fhirResourceType);
+		return getClinicalResourceResponse(serviceId, systemId, patientId, MedicationStatement.class, UIMedicationStatement.class);
+	}
 
-        UIClinicalTransform transform = UITransform.getClinicalTransformer(uiResourceType);
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getMedicationOrders")
+	public Response getMedicationOrders(@Context SecurityContext sc,
+																			@QueryParam("serviceId") UUID serviceId,
+																			@QueryParam("systemId") UUID systemId,
+																			@QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Medication Orders",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getMedicationOrders");
 
-        List<Reference> references = transform.getReferences(resources);
-        ReferencedResources referencedResources = getReferencedResources(serviceId, systemId, patientId, references);
+		return getClinicalResourceResponse(serviceId, systemId, patientId, MedicationOrder.class, UIMedicationOrder.class);
+	}
 
-        return transform.transform(resources, referencedResources);
-    }
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getConditions")
+	public Response getConditions(@Context SecurityContext sc,
+																@QueryParam("serviceId") UUID serviceId,
+																@QueryParam("systemId") UUID systemId,
+																@QueryParam("patientId") UUID patientId) throws Exception {
 
-    private ReferencedResources getReferencedResources(UUID serviceId, UUID systemId, UUID patientId, List<Reference> references) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Conditions",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getConditions");
 
-        ReferencedResources referencedResources = new ReferencedResources();
+		return getClinicalResourceResponse(serviceId, systemId, patientId, Condition.class, UICondition.class);
+	}
 
-        List<UUID> practitionerIds = getIdsOfType(references, ResourceType.Practitioner);
-        referencedResources.setPractitioners(ResourceFetcher.getResourcesByService(serviceId, systemId, practitionerIds, Practitioner.class));
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getProblems")
+	public Response getProblems(@Context SecurityContext sc,
+															@QueryParam("serviceId") UUID serviceId,
+															@QueryParam("systemId") UUID systemId,
+															@QueryParam("patientId") UUID patientId) throws Exception {
 
-        List<UUID> organisationIds = getIdsOfType(references, ResourceType.Organization);
-        referencedResources.setOrganisations(ResourceFetcher.getResourcesByService(serviceId, systemId, organisationIds, Organization.class));
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Problems",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getProblems");
 
-        referencedResources.setMedications(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Medication.class));
+		return getClinicalResourceResponse(serviceId, systemId, patientId, Condition.class, UIProblem.class);
+	}
 
-        referencedResources.setObservations(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Observation.class), referencedResources);
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getEncounters")
+	public Response getEncounters(@Context SecurityContext sc,
+																@QueryParam("serviceId") UUID serviceId,
+																@QueryParam("systemId") UUID systemId,
+																@QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Encounters",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getEncounters");
 
-        return referencedResources;
-    }
+		return getClinicalResourceResponse(serviceId, systemId, patientId, Encounter.class, UIEncounter.class);
+	}
 
-    private static List<UUID> getIdsOfType(List<Reference> references, ResourceType resourceType) {
-        return references
-                .stream()
-                .map(t -> ReferenceHelper.getReferenceId(t, resourceType))
-                .filter(t -> StringUtils.isNotEmpty(t))
-                .distinct()
-                .map(t -> UUID.fromString(t.replace("{", "").replace("}", "")))
-                .collect(Collectors.toList());
-    }
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getDiary")
+	public Response getDiary(@Context SecurityContext sc,
+													 @QueryParam("serviceId") UUID serviceId,
+													 @QueryParam("systemId") UUID systemId,
+													 @QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Diaries",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getDiaries");
 
-    private Response buildResponse(Object entity) {
-        return Response
-                .ok()
-                .entity(entity)
-                .build();
-    }
+		return getClinicalResourceResponse(serviceId, systemId, patientId, ProcedureRequest.class, UIDiary.class);
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getObservations")
+	public Response getObservations(@Context SecurityContext sc,
+																	@QueryParam("serviceId") UUID serviceId,
+																	@QueryParam("systemId") UUID systemId,
+																	@QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Observations",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getObservations");
+
+		return getClinicalResourceResponse(serviceId, systemId, patientId, Observation.class, UIObservation.class);
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getAllergies")
+	public Response getAllergies(@Context SecurityContext sc,
+															 @QueryParam("serviceId") UUID serviceId,
+															 @QueryParam("systemId") UUID systemId,
+															 @QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Allergies",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getAllergies");
+
+		return getClinicalResourceResponse(serviceId, systemId, patientId, AllergyIntolerance.class, UIAllergyIntolerance.class);
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getImmunisations")
+	public Response getImmunisations(@Context SecurityContext sc,
+																	 @QueryParam("serviceId") UUID serviceId,
+																	 @QueryParam("systemId") UUID systemId,
+																	 @QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Immunisations",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getImmunisations");
+
+		return getClinicalResourceResponse(serviceId, systemId, patientId, Immunization.class, UIImmunisation.class);
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getFamilyHistory")
+	public Response getFamilyHistory(@Context SecurityContext sc,
+																	 @QueryParam("serviceId") UUID serviceId,
+																	 @QueryParam("systemId") UUID systemId,
+																	 @QueryParam("patientId") UUID patientId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Family History",
+				"PatientId", patientId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getFamilyHistory");
+
+		return getClinicalResourceResponse(serviceId, systemId, patientId, FamilyMemberHistory.class, UIFamilyMemberHistory.class);
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private static void validateIdentifiers(UUID serviceId, UUID systemId, UUID patientId) {
+		Validate.notNull(serviceId, "serviceId");
+		Validate.notNull(systemId, "systemId");
+		Validate.notNull(patientId, "patientId");
+	}
+
+	private static UIPatient getPatient(UUID serviceId, UUID systemId, UUID patientId) throws Exception {
+
+		Patient patient = ResourceFetcher.getSingleResourceByPatient(serviceId, systemId, patientId, Patient.class);
+		UIPatient uiPatient = UITransform.transformPatient(patient);
+
+		return uiPatient
+				.setPatientId(new UIInternalIdentifier()
+						.setServiceId(serviceId)
+						.setSystemId(systemId)
+						.setResourceId(patientId));
+	}
+
+	private <T extends Resource,
+			U extends UIResource> Response getClinicalResourceResponse(UUID serviceId,
+																																 UUID systemId,
+																																 UUID patientId,
+																																 Class<T> fhirResourceType,
+																																 Class<U> uiResourceType) throws Exception {
+		validateIdentifiers(serviceId, systemId, patientId);
+
+		List<U> encounters = getClinicalResources(serviceId, systemId, patientId, fhirResourceType, uiResourceType);
+
+		return buildResponse(encounters);
+	}
+
+	private <T extends Resource,
+			U extends UIResource> List<U> getClinicalResources(UUID serviceId,
+																												 UUID systemId,
+																												 UUID patientId,
+																												 Class<T> fhirResourceType,
+																												 Class<U> uiResourceType) throws Exception {
+
+		List<T> resources = ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, fhirResourceType);
+
+		UIClinicalTransform transform = UITransform.getClinicalTransformer(uiResourceType);
+
+		List<Reference> references = transform.getReferences(resources);
+		ReferencedResources referencedResources = getReferencedResources(serviceId, systemId, patientId, references);
+
+		return transform.transform(resources, referencedResources);
+	}
+
+	private ReferencedResources getReferencedResources(UUID serviceId, UUID systemId, UUID patientId, List<Reference> references) throws Exception {
+
+		ReferencedResources referencedResources = new ReferencedResources();
+
+		List<UUID> practitionerIds = getIdsOfType(references, ResourceType.Practitioner);
+		referencedResources.setPractitioners(ResourceFetcher.getResourcesByService(serviceId, systemId, practitionerIds, Practitioner.class));
+
+		List<UUID> organisationIds = getIdsOfType(references, ResourceType.Organization);
+		referencedResources.setOrganisations(ResourceFetcher.getResourcesByService(serviceId, systemId, organisationIds, Organization.class));
+
+		referencedResources.setMedications(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Medication.class));
+
+		referencedResources.setMedicationStatements(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, MedicationStatement.class), referencedResources);
+
+		referencedResources.setObservations(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Observation.class), referencedResources);
+
+		return referencedResources;
+	}
+
+	private static List<UUID> getIdsOfType(List<Reference> references, ResourceType resourceType) {
+		return references
+				.stream()
+				.map(t -> ReferenceHelper.getReferenceId(t, resourceType))
+				.filter(t -> StringUtils.isNotEmpty(t))
+				.distinct()
+				.map(t -> UUID.fromString(t.replace("{", "").replace("}", "")))
+				.collect(Collectors.toList());
+	}
+
+	private Response buildResponse(Object entity) {
+		return Response
+				.ok()
+				.entity(entity)
+				.build();
+	}
 }

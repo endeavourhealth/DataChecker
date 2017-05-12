@@ -12,6 +12,7 @@ import {UIFamilyHistory} from "./models/resources/clinical/UIFamilyHistory";
 import {UIMedicationStatement} from "./models/resources/clinical/UIMedicationStatement";
 import {LoggerService} from "eds-common-js";
 import {Observable} from "rxjs";
+import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
 
 @Component({
 	selector : 'gpView',
@@ -43,6 +44,7 @@ export class GPViewComponent {
 				break;
 			case 'medication' :
 				this.loadMedication();
+				this.loadMedicationOrders();
 				break;
 			case 'problems' :
 				this.loadProblems();
@@ -101,6 +103,23 @@ export class GPViewComponent {
 			.subscribe(
 				(result) => ctrl._person.medication = linq(result.reduce((a,b) => a.concat(b)))
 					.OrderByDescending(t => t.dateAuthorised.date)
+					.ToArray()
+			);
+	}
+
+	public loadMedicationOrders(): void {
+		if (this._person.medicationOrder != null)
+			return;
+
+		let ctrl = this;
+		let observers : Observable<UIMedicationOrder[]>[] = linq(ctrl._person.patients)
+			.Select(p => ctrl.recordViewerService.getMedicationOrders(p.patientId))
+			.ToArray();
+
+		Observable.forkJoin(observers)
+			.subscribe(
+				(result) => ctrl._person.medicationOrder = linq(result.reduce((a,b) => a.concat(b)))
+//					.OrderByDescending(t => t.dateAuthorised.date)
 					.ToArray()
 			);
 	}
