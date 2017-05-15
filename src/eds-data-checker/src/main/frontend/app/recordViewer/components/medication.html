@@ -7,6 +7,7 @@
 				<th>Authorised</th>
 				<th *ngIf="showDateEnded">Ended</th>
 				<th>Medication</th>
+				<th>Type</th>
 				<th>Prescriber</th>
 			</thead>
 			<tbody>
@@ -25,6 +26,7 @@
 							</table>
 						</div>
 					</td>
+					<td>{{med.authorisationType?.display}}</td>
 					<td>{{med.prescriber?.name | cuiName}}</td>
 					<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
 				</tr>

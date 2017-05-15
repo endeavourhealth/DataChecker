@@ -70,13 +70,13 @@ export class UIPersonRecord {
 
     public getAcuteMedication(): UIMedicationStatement[] {
         return linq(this.medication)
-          .Where(t=> t.status != 'Completed' && t.authorisationType.code != 'repeat')
+          .Where(t=> t.status != 'Completed' && t.authorisationType.code == 'acute')
           .ToArray();
     }
 
     public getRepeatMedication(): UIMedicationStatement[] {
         return linq(this.medication)
-					.Where(t=> t.status != 'Completed' && t.authorisationType.code == 'repeat')
+					.Where(t=> t.status != 'Completed' && t.authorisationType.code != 'acute')
 					.ToArray();
     }
 
