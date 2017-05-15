@@ -5,29 +5,28 @@
 <div class="modal-body"> <!-- (keydown)="keydown($event)"> -->
 
     <div class="container-fluid">
-
 			<loadingIndicator [done]="issues">
-        <div class="table-selectable" *ngIf="issues">
-            <div class="scroll-box-350">
-                <table class="table table-hover">
-                    <thead>
-                        <th>Date</th>
+				<div class="table-selectable" *ngIf="issues">
+						<div class="scroll-box-350">
+								<table class="table table-hover table-condensed table-striped ">
+										<thead>
+												<th>Date</th>
 											<th>Prescribed By</th>
 											<th>Quantity</th>
 											<th>Expected Duration</th>
-                    </thead>
-                    <tbody>
-                    <tr *ngIf="!issues.length > 0"><td colspan="3"><i>(no issues found)</i></td></tr>
-                    <tr *ngFor="let issue of issues">
-                            <td>{{issue.date | cuiDate}}</td>
+										</thead>
+										<tbody>
+										<tr *ngIf="!issues.length > 0"><td colspan="4"><i>(no issues found)</i></td></tr>
+										<tr *ngFor="let issue of issues">
+														<td>{{issue.date | cuiDate}}</td>
 											<td>{{issue.prescriber?.name | cuiName }}</td>
 											<td>{{issue.quantity | cuiQuantity}}</td>
 											<td>{{issue.expectedDuration}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+												</tr>
+										</tbody>
+								</table>
+						</div>
+				</div>
 			</loadingIndicator>
     </div>
 </div>

@@ -27,7 +27,7 @@
 						</div>
 					</td>
 					<td>{{med.authorisationType?.display}}</td>
-					<td>{{med.prescriber?.name | cuiName}}</td>
+					<td>{{getPrescriber(med) | cuiName}}</td>
 					<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
 				</tr>
 			</tbody>
