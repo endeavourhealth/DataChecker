@@ -30,7 +30,7 @@
 						</div>
 					</td>
 					<td><span class="problem-term-significance-text"> {{consultation.serviceProvider?.name}}</span></td>
-					<td>{{consultation.location?.name}}<span class="fa fa-copyright" *ngIf="consultation.location?.description" ngbTooltip="{{consultation.location?.description}}"></span></td>
+					<td>{{consultation.location?.name}}<span class="fa fa-info-circle" *ngIf="consultation.location?.description" ngbTooltip="{{consultation.location?.description}}"></span></td>
 					<td>
 						<span class="problem-term-text">{{ consultation.performedBy?.name | cuiName }}</span>
 					</td>
