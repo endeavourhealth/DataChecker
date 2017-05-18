@@ -17,7 +17,7 @@
 				<th>Provider</th>
 				<th>Location (active)</th>
 				<th>Performed by</th>
-				<th>Class</th>
+				<th>Type</th>
 				<th>Status</th>
 			</thead>
 			<tbody>
@@ -34,7 +34,15 @@
 					<td>
 						<span class="problem-term-text">{{ consultation.performedBy?.name | cuiName }}</span>
 					</td>
-					<td>{{ consultation.class_ }}</td>
+					<td>
+						<!--class and source both represent similar things, so show in the same column-->
+						<div *ngIf="consultation.class_">
+							{{ consultation.class_ }}
+						</div>
+						<div *ngIf="consultation.encounterSource">
+							{{ consultation.encounterSource.text }}
+						</div>
+					</td>
 					<td>{{ consultation.status }}</td>
 				</tr>
 			</tbody>
