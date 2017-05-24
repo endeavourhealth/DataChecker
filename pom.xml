@@ -12,8 +12,8 @@
         <node.version>v6.10.1</node.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
         <frontend-maven-plugin.version>1.4</frontend-maven-plugin.version>
-        <eds-common.version>2.78</eds-common.version>
-        <eds-config.version>1.03</eds-config.version>
+        <eds-common.version>2.83-SNAPSHOT</eds-common.version>
+        <eds-config.version>1.06-SNAPSHOT</eds-config.version>
 
         <amqp-client.version>3.6.2</amqp-client.version>
         <cassandra-driver.version>3.1.1</cassandra-driver.version>
@@ -48,13 +48,6 @@
         <slack-integration.version>1.2.1</slack-integration.version>
 
     </properties>
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
 
     <modules>
         <module>src/eds-data-checker</module>
