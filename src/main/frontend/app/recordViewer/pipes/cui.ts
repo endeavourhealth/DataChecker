@@ -161,24 +161,25 @@ function titleCase(text: string) {
 }
 
 function formatPostalCode(postalCode: string): string {
-    //handle undefined postcodes too
-    //if (postalCode == null)
-    if (!postalCode)
-        return null;
+	//handle undefined postcodes too
+	if (!postalCode)
+		return null;
 
-    // Handle partials such as "LS11"
-    if (postalCode.length<5)
-        return postalCode;
+	postalCode = postalCode.trim();
 
-    postalCode = postalCode.replace(" ", "").toUpperCase().trim();
+	// Handle partials such as "LS11"
+	if (postalCode.length < 5)
+		return postalCode;
 
-    let regExp: RegExp = new RegExp("^([A-Z]{1,2}[0-9]{1,2}[A-Z]?)([0-9][A-Z]{2})$");
-    let result: RegExpExecArray = regExp.exec(postalCode);
+	let formattedPostalCode = postalCode.replace(" ", "").toUpperCase();
 
-    if ((result == null) || (result.length != 3))
-        return result.length.toString();
+	let regExp: RegExp = new RegExp("^([A-Z]{1,2}[0-9]{1,2}[A-Z]?)([0-9][A-Z]{2})$");
+	let result: RegExpExecArray = regExp.exec(formattedPostalCode);
 
-    return result[1] + " " + result[2];
+	if ((result != null) && (result.length == 3))
+		return result[1] + " " + result[2];
+
+	return postalCode;
 }
 
 function isEmpty(str: string): boolean {
