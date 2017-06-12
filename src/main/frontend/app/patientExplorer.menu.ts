@@ -11,7 +11,7 @@ export class PatientExplorerMenuService implements  MenuService {
 		return [
 			{caption: 'Patient explorer', state: 'app.recordViewer', icon: 'fa fa-heart'},
 			{caption: 'Standard reports', state: 'app.countReports', icon: 'fa fa-balance-scale'},
-			{caption: 'SQL editor', state: 'app.sqlEditor', icon: 'fa fa-database'}
+			// {caption: 'SQL editor', state: 'app.sqlEditor', icon: 'fa fa-database'}
 		];
 	}
 }

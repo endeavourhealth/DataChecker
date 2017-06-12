@@ -27,7 +27,7 @@ import {Application} from "eds-common-js";
 		states: [
 			{name: 'app.recordViewer', url: '/recordViewer', component : RecordViewerComponent },
 			{name: 'app.countReports', url: '/countReports', component : CountReportComponent },
-			{name: 'app.sqlEditor', url: '/sqlEditor', component : SqlEditorComponent }
+			// {name: 'app.sqlEditor', url: '/sqlEditor', component : SqlEditorComponent }
 		],
 		defaultState : { state: 'app.recordViewer', params: {} },
 		menuManager : PatientExplorerMenuService
