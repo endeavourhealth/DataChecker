@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <button type="button" class="close" (click)="cancel()" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Patient Demographics</h4>
+</div>
+<div class="modal-body"> <!-- (keydown)="keydown($event)"> -->
+
+    <div class="container-fluid">
+
+        <form id="patient-find-search-criteria">
+            <div class="form-group col-md-6">
+							<div class="row">
+							<label class="control-label col-md-3">Name: </label>
+							<div class="col-md-9">{{person.name | cuiName}}</div>
+							</div>
+							<div class="row">
+							<label class="control-label col-md-3">NHS No: </label>
+							<div class="col-md-9">{{person.nhsNumber | cuiNhsNumber}}</div>
+							</div>
+							<div class="row">
+							<label class="control-label col-md-3">Address: </label>
+							<div class="col-md-9">
+								{{person.homeAddress.line1}}<br>
+								{{person.homeAddress.line2}}<br>
+								{{person.homeAddress.city}}<br>
+								{{person.homeAddress.district}}<br>
+								{{person.homeAddress.postalCode}}
+							</div>
+							</div>
+            </div>
+					<div class="form-group col-md-6">
+						<div class="row">
+						<label class="control-label col-md-3">Born: </label>
+						<div class="col-md-9">{{person.dateOfBirth | cuiDateOfBirth}}</div>
+						</div>
+						<div class="row">
+						<label class="control-label col-md-3">Gender: </label>
+						<div class="col-md-9">{{person.gender | cuiGender}}</div>
+						</div>
+					</div>
+				</form>
+
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn bnt-default" (click)="ok()">Close</button>
+</div>

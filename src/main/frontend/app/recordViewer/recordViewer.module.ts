@@ -30,6 +30,7 @@ import {EpisodeViewComponent} from "./episodeView.component";
 import {LocationClass, LocationIcon} from "./pipes/location";
 import {CommonModule, ControlsModule, DialogsModule, LoggerModule} from 'eds-common-js';
 import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
+import {DemographicsDialog} from "./components/demographics.dialog";
 
 @NgModule({
 	imports : [
@@ -49,6 +50,7 @@ import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 		RecordViewerComponent,
 		PatientFindDialog,
 		MedicationIssuesDialog,
+		DemographicsDialog,
 
 		PrecisComponent,
 		CodeTooltipComponent,
@@ -81,7 +83,8 @@ import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 	],
 	entryComponents : [
 		PatientFindDialog,
-		MedicationIssuesDialog
+		MedicationIssuesDialog,
+		DemographicsDialog
 	],
 	providers :
 	[

@@ -1,7 +1,7 @@
 <div class="panel panel-default precis">
 	<div class="panel-body">
 		<div class="row">
-			<div class="col-sm-5"><span class="precis-patientname">{{person.name | cuiName}}</span></div>
+			<div class="col-sm-5"><span class="precis-patientname">{{person.name | cuiName}}</span> <span class="fa fa-info-circle" (click)="showDemographics()"></span> </div>
 			<div class="col-sm-3"><span class="precis-label">Born</span> <span class="precis-value">{{person.dateOfBirth | cuiDateOfBirth}}</span></div>
 			<div class="col-sm-2"><span class="precis-label">Gender</span> <span class="precis-value">{{person.gender | cuiGender}}</span></div>
 			<div class="col-sm-2"><span class="precis-label">NHS No.</span> <span class="precis-value">{{person.nhsNumber | cuiNhsNumber}}</span></div>
