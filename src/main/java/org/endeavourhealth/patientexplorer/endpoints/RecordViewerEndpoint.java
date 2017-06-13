@@ -24,6 +24,7 @@ import org.endeavourhealth.transform.ui.models.types.UIService;
 import org.endeavourhealth.transform.ui.transforms.UITransform;
 import org.endeavourhealth.transform.ui.transforms.clinical.UIClinicalTransform;
 import org.hl7.fhir.instance.model.*;
+import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +111,11 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 			patientsFound.addAll(PatientSearchHelper.searchByNames(userServiceAccessList, parser.getNames()));
 
-			for (PatientSearch searchPatient : patientsFound) {
+			List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+
+				for (PatientSearch searchPatient : patientsFound) {
+					if (!allowedOrgs.stream().anyMatch(o -> o.equals(searchPatient.getServiceId())))
+						continue;
 				if (!result.containsKey(searchPatient.getNhsNumber())) {
 					try {
 						UIPatient patient = getPatient(
@@ -173,8 +178,14 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 					.distinct()
 					.collect(Collectors.toList());
 
-			for (UIInternalIdentifier identifier : uiInternalIdentifiers)
+			List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+
+			for (UIInternalIdentifier identifier : uiInternalIdentifiers) {
+				if (!allowedOrgs.stream().anyMatch(o -> o.equals(identifier.getServiceId())))
+					continue;
+
 				result.add(getPatient(identifier.getServiceId(), identifier.getSystemId(), identifier.getResourceId()));
+			}
 		}
 
 		return buildResponse(result);
@@ -192,8 +203,13 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		List<PatientSearch> patientSearches = PatientSearchHelper.searchByNhsNumber(nhsNumber);
 		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
+		List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+
 		// Get episodes of care for each
 		for (PatientSearch patientSearch : patientSearches) {
+			if (!allowedOrgs.stream().anyMatch(o -> o.equals(patientSearch.getServiceId())))
+				continue;
+
 			try {
 				UIPatient patient = getPatient(
 						UUID.fromString(patientSearch.getServiceId()),
@@ -502,5 +518,22 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				.ok()
 				.entity(entity)
 				.build();
+	}
+
+	private List<String> getUserAllowedOrganisations(SecurityContext sc) {
+		List<String> orgs = new ArrayList<>();
+
+		AccessToken accessToken = SecurityUtils.getToken(sc);
+		List<Map<String, Object>> orgGroups = (List)accessToken.getOtherClaims().getOrDefault("orgGroups", (Object)null);
+		Iterator iterator = orgGroups.iterator();
+
+		while(iterator.hasNext()) {
+			Map<String, Object> orgGroup = (Map)iterator.next();
+			String orgGroupOrganisationId = (String)orgGroup.getOrDefault("organisationId", (Object)null);
+			if (orgGroupOrganisationId != null)
+				orgs.add(orgGroupOrganisationId);
+		}
+
+		return orgs;
 	}
 }
