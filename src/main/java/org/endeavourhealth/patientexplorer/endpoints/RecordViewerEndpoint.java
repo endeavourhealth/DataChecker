@@ -445,7 +445,13 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 	private static UIPatient getPatient(UUID serviceId, UUID systemId, UUID patientId) throws Exception {
 
 		Patient patient = ResourceFetcher.getSingleResourceByPatient(serviceId, systemId, patientId, Patient.class);
-		UIPatient uiPatient = UITransform.transformPatient(patient);
+
+		List<Reference> references = new ArrayList<Reference>();
+		references.add(patient.getManagingOrganization());
+		references.addAll(patient.getCareProvider());
+		ReferencedResources referencedResources = getReferencedResources(serviceId, systemId, patientId, references);
+
+		UIPatient uiPatient = UITransform.transformPatient(patient, referencedResources);
 
 		return uiPatient
 				.setPatientId(new UIInternalIdentifier()
@@ -484,7 +490,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		return transform.transform(resources, referencedResources);
 	}
 
-	private ReferencedResources getReferencedResources(UUID serviceId, UUID systemId, UUID patientId, List<Reference> references) throws Exception {
+	private static ReferencedResources getReferencedResources(UUID serviceId, UUID systemId, UUID patientId, List<Reference> references) throws Exception {
 
 		ReferencedResources referencedResources = new ReferencedResources();
 

@@ -1,6 +1,8 @@
 import {Component, Input} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {UIPatient} from "../models/resources/admin/UIPatient";
+import {UICodeableConcept} from "../models/types/UICodeableConcept";
+import {UIAddress} from "../models/types/UIAddress";
 
 // enum KeyCodes {
 // 		ReturnKey = 13,
@@ -27,6 +29,26 @@ export class DemographicsDialog {
     constructor(protected activeModal: NgbActiveModal) {
 
     }
+
+    formatRelationships(relationships : UICodeableConcept[]) {
+    	let result : string = '';
+    	for (let relationship of relationships) {
+    		if (result != '')
+    			result += ', ';
+    		result += relationship.text;
+			}
+			return result;
+		}
+
+		hasCarers() {
+    	if (this.person.carerOrganisations && this.person.carerOrganisations.length > 0)
+    		return true;
+
+    	if (this.person.carerPractitioners && this.person.carerPractitioners.length > 0)
+    		return true;
+
+    	return false;
+		}
 
     ok() {
         this.activeModal.close(null);

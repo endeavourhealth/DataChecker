@@ -9,34 +9,103 @@
         <form id="patient-find-search-criteria">
             <div class="form-group col-md-6">
 							<div class="row">
-							<label class="control-label col-md-3">Name: </label>
-							<div class="col-md-9">{{person.name | cuiName}}</div>
+							<label class="control-label col-md-4">Name: </label>
+							<div class="col-md-8">{{person.name | cuiName}}</div>
 							</div>
 							<div class="row">
-							<label class="control-label col-md-3">NHS No: </label>
-							<div class="col-md-9">{{person.nhsNumber | cuiNhsNumber}}</div>
+							<label class="control-label col-md-4">NHS No: </label>
+							<div class="col-md-8">{{person.nhsNumber | cuiNhsNumber}}</div>
 							</div>
 							<div class="row">
-							<label class="control-label col-md-3">Address: </label>
-							<div class="col-md-9">
-								{{person.homeAddress.line1}}<br>
-								{{person.homeAddress.line2}}<br>
-								{{person.homeAddress.city}}<br>
-								{{person.homeAddress.district}}<br>
-								{{person.homeAddress.postalCode}}
+								<label class="control-label col-md-4">Managing Org: </label>
+								<div class="col-md-8">{{person.managingOrganisation?.name}}</div>
+							</div>
+							<div class="row">
+								<label class="control-label col-md-4">Local ID: </label>
+								<div class="col-md-8">{{person.localPatientIdentifier}}</div>
+							</div>
+							<div class="row">
+							<label class="control-label col-md-4">Address: </label>
+							<div class="col-md-8">
+								<div *ngIf="person.homeAddress.line1">{{person.homeAddress.line1}}</div>
+								<div *ngIf="person.homeAddress.line2">{{person.homeAddress.line2}}</div>
+								<div *ngIf="person.homeAddress.line3">{{person.homeAddress.line3}}</div>
+								<div *ngIf="person.homeAddress.city">{{person.homeAddress.city}}</div>
+								<div *ngIf="person.homeAddress.district">{{person.homeAddress.district}}</div>
+								<div *ngIf="person.homeAddress.postalCode">{{person.homeAddress.postalCode}}</div>
 							</div>
 							</div>
             </div>
+
 					<div class="form-group col-md-6">
 						<div class="row">
 						<label class="control-label col-md-3">Born: </label>
 						<div class="col-md-9">{{person.dateOfBirth | cuiDateOfBirth}}</div>
 						</div>
+						<div class="row" *ngIf="person.dateOfDeath">
+							<label class="control-label col-md-3">Died: </label>
+							<div class="col-md-9">{{person.dateOfDeath | cuiDateOfBirth}}</div>
+						</div>
 						<div class="row">
 						<label class="control-label col-md-3">Gender: </label>
 						<div class="col-md-9">{{person.gender | cuiGender}}</div>
 						</div>
+						<div class="row">
+							<label class="control-label col-md-3">Marital: </label>
+							<div class="col-md-9">{{person.maritalStatus?.text}}</div>
+						</div>						<div class="row">
+							<label class="control-label col-md-3">Ethnicity: </label>
+							<div class="col-md-9">{{person.ethnicity?.text}}</div>
+						</div>
+						<div class="row">
+							<label class="control-label col-md-3">Religion: </label>
+							<div class="col-md-9">{{person.religion?.text}}</div>
+						</div>						<div class="row">
+						<label class="control-label col-md-3">Language: </label>
+						<div class="col-md-9">{{person.language?.text}}</div>
+					</div>						<div class="row">
+							<label class="control-label col-md-3">Telecoms: </label>
+							<div class="col-md-9">
+								<div *ngFor="let telecom of person.telecoms">{{telecom.use}} {{ telecom.system }} {{ telecom.value }}</div>
+							</div>
+						</div>
 					</div>
+
+					<label class="col-md-12" *ngIf="hasCarers()">Carer(s):</label>
+					<div class="form-group col-md-12" *ngFor="let carer of person.carerOrganisations">
+						<div class="row">
+							<div class="col-md-6">{{carer.name}}</div>
+							<div class="col-md-6">{{carer.type}}</div>
+						</div>
+					</div>
+					<div class="form-group col-md-12" *ngFor="let carer of person.carerPractitioners">
+						<div class="row">
+							<div class="col-md-6">{{carer.name | cuiName}}</div>
+							<div class="col-md-6">{{carer.active}}</div>
+						</div>
+					</div>
+
+					<label class="col-md-12">Contact(s):</label>
+					<div class="form-group col-md-12" *ngFor="let contact of person.contacts">
+						<div class="row">
+							<div class="col-md-3">{{contact.name | cuiName}}</div>
+							<div class="col-md-3">{{contact.dateOfBirth | cuiDateOfBirth}}</div>
+							<div class="col-md-3">{{formatRelationships(contact.relationships)}}</div>
+							<div class="col-md-3">
+								<div *ngIf="!contact.homeAddress.show" (click)="contact.homeAddress.show = true">(Address)<span class="fa fa-chevron-circle-down pull-right"></span></div>
+								<div *ngIf="contact.homeAddress.show" (click)="contact.homeAddress.show = false">
+									<div class="fa fa-chevron-circle-up pull-right"></div>
+									<div *ngIf="contact.homeAddress.line1">{{contact.homeAddress.line1}}</div>
+									<div *ngIf="contact.homeAddress.line2">{{contact.homeAddress.line2}}</div>
+									<div *ngIf="contact.homeAddress.line3">{{contact.homeAddress.line3}}</div>
+									<div *ngIf="contact.homeAddress.city">{{contact.homeAddress.city}}</div>
+									<div *ngIf="contact.homeAddress.district">{{contact.homeAddress.district}}</div>
+									<div *ngIf="contact.homeAddress.postalCode">{{contact.homeAddress.postalCode}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</form>
 
     </div>
