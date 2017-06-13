@@ -20,7 +20,7 @@ import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class PatientFindDialog {
 
-    selectedService: UIService = null;
+    services: UIService[] = null;
     loading : boolean = false;
     searchTerms: string;
     searchedTerms: string;
@@ -53,11 +53,8 @@ export class PatientFindDialog {
         var vm = this;
         vm.recordViewerService.getServices()
           .subscribe(
-            (result) => {
-                vm.selectedService = linq(result)
-                  .Where(t => t.serviceId === vm.securityService.currentUser.organisation)
-                  .First();
-            });
+            (result) => vm.services = result
+					);
     }
 
     findPatient() {
