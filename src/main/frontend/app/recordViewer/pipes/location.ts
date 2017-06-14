@@ -43,3 +43,22 @@ export class LocationIcon implements PipeTransform {
 		return LocationIcon.get(locationType);
 	}
 }
+
+
+@Pipe({name : 'locationTypeName'})
+export class LocationTypeName implements PipeTransform {
+	public static get(locationType: string): string {
+		switch (locationType) {
+			case 'PR':
+				return 'GP Surgery';
+			case 'TR' :
+				return 'Hospital';
+			default:
+				return locationType;
+		}
+	}
+
+	transform(locationType: string): string {
+		return LocationIcon.get(locationType);
+	}
+}

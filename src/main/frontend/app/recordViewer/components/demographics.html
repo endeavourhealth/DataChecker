@@ -44,7 +44,7 @@
 						</div>
 						<div class="row">
 							<label class="control-label col-md-3">Died: </label>
-							<div class="col-md-9">{{person.dateOfDeath | cuiDateOfBirth}}</div>
+							<div class="col-md-9" *ngIf="person.dateOfDeath">{{person.dateOfDeath | cuiDateOfBirth}}</div>
 						</div>
 						<div class="row">
 						<label class="control-label col-md-3">Gender: </label>
@@ -75,13 +75,13 @@
 					<div class="form-group col-md-12" *ngFor="let carer of person.carerOrganisations">
 						<div class="row">
 							<div class="col-md-6">{{carer.name}}</div>
-							<div class="col-md-6">{{carer.type}}</div>
+							<div class="col-md-6">{{carer.type | locationTypeName }}</div>
 						</div>
 					</div>
 					<div class="form-group col-md-12" *ngFor="let carer of person.carerPractitioners">
 						<div class="row">
 							<div class="col-md-6">{{carer.name | cuiName}}</div>
-							<div class="col-md-6">{{carer.active}}</div>
+							<div class="col-md-6">{{ getPractitionerActiveText(carer.active)}}</div>
 						</div>
 					</div>
 

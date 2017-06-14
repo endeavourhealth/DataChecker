@@ -27,7 +27,7 @@ import {InvestigationsComponent} from "./components/investigations.component";
 import {CodeTooltipComponent} from "./components/codeTooltip.component";
 import {GPViewComponent} from "./gpView.component";
 import {EpisodeViewComponent} from "./episodeView.component";
-import {LocationClass, LocationIcon} from "./pipes/location";
+import {LocationClass, LocationIcon, LocationTypeName} from "./pipes/location";
 import {CommonModule, ControlsModule, DialogsModule, LoggerModule} from 'eds-common-js';
 import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 import {DemographicsDialog} from "./components/demographics.dialog";
@@ -78,6 +78,7 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 
 		LocationClass,
 		LocationIcon,
+		LocationTypeName,
 
 		Parentheses
 	],
@@ -101,7 +102,8 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 		CuiGender,
 
 		LocationClass,
-		LocationIcon
+		LocationIcon,
+		LocationTypeName
 	]
 })
 export class RecordViewerModule {}

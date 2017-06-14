@@ -18,39 +18,46 @@ import {UIAddress} from "../models/types/UIAddress";
     template: require('./demographics.html')
 })
 export class DemographicsDialog {
-	@Input() person : UIPatient;
+	@Input() person: UIPatient;
 
-    public static open(modalService: NgbModal, person : UIPatient) {
-        const modalRef = modalService.open(DemographicsDialog, {backdrop: "static", size: 'lg'});
-				modalRef.componentInstance.person = person;
-        return modalRef;
-    }
+	public static open(modalService: NgbModal, person: UIPatient) {
+		const modalRef = modalService.open(DemographicsDialog, {backdrop: "static", size: 'lg'});
+		modalRef.componentInstance.person = person;
+		return modalRef;
+	}
 
-    constructor(protected activeModal: NgbActiveModal) {
+	constructor(protected activeModal: NgbActiveModal) {
 
-    }
+	}
 
-    formatRelationships(relationships : UICodeableConcept[]) {
-    	let result : string = '';
-    	for (let relationship of relationships) {
-    		if (result != '')
-    			result += ', ';
-    		result += relationship.text;
-			}
-			return result;
+	formatRelationships(relationships: UICodeableConcept[]) {
+		let result: string = '';
+		for (let relationship of relationships) {
+			if (result != '')
+				result += ', ';
+			result += relationship.text;
 		}
+		return result;
+	}
 
-		hasCarers() {
-    	if (this.person.carerOrganisations && this.person.carerOrganisations.length > 0)
-    		return true;
+	hasCarers() {
+		if (this.person.carerOrganisations && this.person.carerOrganisations.length > 0)
+			return true;
 
-    	if (this.person.carerPractitioners && this.person.carerPractitioners.length > 0)
-    		return true;
+		if (this.person.carerPractitioners && this.person.carerPractitioners.length > 0)
+			return true;
 
-    	return false;
-		}
+		return false;
+	}
 
-    ok() {
-        this.activeModal.close(null);
-    }
+	getPractitionerActiveText(isActive: boolean) {
+		if (isActive)
+			return 'Active';
+
+		return 'Inactive';
+	}
+
+	ok() {
+		this.activeModal.close(null);
+	}
 }
