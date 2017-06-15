@@ -116,16 +116,18 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				for (PatientSearch searchPatient : patientsFound) {
 					if (!allowedOrgs.stream().anyMatch(o -> o.equals(searchPatient.getServiceId())))
 						continue;
-				if (!result.containsKey(searchPatient.getNhsNumber())) {
 
-                    UIPatient patient = getPatient(
-                            UUID.fromString(searchPatient.getServiceId()),
-                            UUID.fromString(searchPatient.getSystemId()),
-                            UUID.fromString(searchPatient.getPatientId())
-                    );
-                    result.put(searchPatient.getNhsNumber(), patient);
+                if (StringUtils.isNotBlank(searchPatient.getNhsNumber()))
+                    if (result.containsKey(searchPatient.getNhsNumber()))
+                        continue;
 
-				}
+                UIPatient patient = getPatient(
+                        UUID.fromString(searchPatient.getServiceId()),
+                        UUID.fromString(searchPatient.getSystemId()),
+                        UUID.fromString(searchPatient.getPatientId())
+                );
+
+                result.put(searchPatient.getNhsNumber(), patient);
 			}
 		}
 
