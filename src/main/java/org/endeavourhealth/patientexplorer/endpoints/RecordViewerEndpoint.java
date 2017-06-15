@@ -151,6 +151,8 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 						.setDateOfBirth(new UIDate().setDate(searchPatient.getDateOfBirth()));
 			}
 
+			patient.setId(searchPatient.getPatientId());
+
 			if (nhsNumber == null || nhsNumber.isEmpty())
 				result.add(patient);
 			else if (!addedNhsNumbers.contains(nhsNumber)) {
@@ -223,12 +225,18 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/getEpisodes")
 	public Response getEpisodes(@Context SecurityContext sc,
-															@QueryParam("nhsNumber") String nhsNumber) throws Exception {
+															@QueryParam("nhsNumber") String nhsNumber,
+															@QueryParam("patientId") String patientId) throws Exception {
 		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Episodes");
 		LOG.debug("getEpisodes");
 
+		List<PatientSearch> patientSearches;
 		// Get list of patients by NHS number
-		List<PatientSearch> patientSearches = PatientSearchHelper.searchByNhsNumber(nhsNumber);
+		if (nhsNumber != null && !nhsNumber.isEmpty())
+			patientSearches = PatientSearchHelper.searchByNhsNumber(nhsNumber);
+		else
+			patientSearches = Collections.singletonList(PatientSearchHelper.searchByPatientId(UUID.fromString(patientId)));
+
 		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
 		List<String> allowedOrgs = getUserAllowedOrganisations(sc);

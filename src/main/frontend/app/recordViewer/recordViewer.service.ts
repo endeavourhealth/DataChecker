@@ -29,6 +29,7 @@ export class RecordViewerService extends BaseHttp2Service {
 	getEpisodes(person: UIPerson): Observable<UIEpisodeOfCare[]> {
 		var params = new URLSearchParams();
 		params.append('nhsNumber', person.nhsNumber);
+		params.append('patientId', person.id);
 
 		return this.httpGet('api/recordViewer/getEpisodes', {search: params});
 	}
