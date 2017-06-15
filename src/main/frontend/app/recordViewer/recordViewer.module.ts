@@ -4,7 +4,7 @@ import {FormsModule} from "@angular/forms";
 import {RecordViewerComponent} from "./recordViewer.component";
 import {PatientFindDialog} from "./patientFind.dialog";
 import {RecordViewerService} from "./recordViewer.service";
-import {CodeSignificance} from "./pipes/coding";
+import {CheckTextForCode, CodeSignificance} from "./pipes/coding";
 import {
 	CuiDate, CuiDateOfBirth, CuiName, CuiNhsNumber,
 	CuiSingleLineAddress, CuiGender, CuiQuantity
@@ -67,6 +67,7 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 		DiaryComponent,
 
 		CodeSignificance,
+		CheckTextForCode,
 
 		CuiDate,
 		CuiDateOfBirth,
@@ -93,6 +94,7 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 	],
 	exports : [
 		CodeSignificance,
+		CheckTextForCode,
 
 		CuiDate,
 		CuiDateOfBirth,

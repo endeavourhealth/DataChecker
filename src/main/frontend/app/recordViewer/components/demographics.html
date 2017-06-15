@@ -55,7 +55,7 @@
 							<div class="col-md-9">{{person.maritalStatus?.text}}</div>
 						</div>						<div class="row">
 							<label class="control-label col-md-3">Ethnicity: </label>
-							<div class="col-md-9">{{person.ethnicity?.text}}</div>
+							<div class="col-md-9">{{person.ethnicity | checkTextForCode}}</div>
 						</div>
 						<div class="row">
 							<label class="control-label col-md-3">Religion: </label>
