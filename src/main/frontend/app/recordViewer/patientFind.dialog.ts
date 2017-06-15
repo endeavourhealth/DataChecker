@@ -4,6 +4,7 @@ import {UIService} from "./models/UIService";
 import {linq, SecurityService} from "eds-common-js";
 import {Component} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {UIAddress} from "./models/types/UIAddress";
 
 // enum KeyCodes {
 // 		ReturnKey = 13,
@@ -112,6 +113,12 @@ export class PatientFindDialog {
         if (--selectedPatientIndex >= 0)
             this.selectedPatient = this.foundPatients[selectedPatientIndex];
     }
+
+    getAddressClass(homeAddress : UIAddress) {
+    	if (homeAddress.line1 == 'Error loading patient details')
+    		return 'text-danger';
+    	return '';
+		}
 
     searchTermsChanged() {
         this.searchedTerms = null;

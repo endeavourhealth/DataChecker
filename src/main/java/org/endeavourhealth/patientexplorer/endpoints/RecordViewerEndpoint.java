@@ -19,8 +19,7 @@ import org.endeavourhealth.transform.ui.helpers.ReferencedResources;
 import org.endeavourhealth.transform.ui.models.resources.UIResource;
 import org.endeavourhealth.transform.ui.models.resources.admin.UIPatient;
 import org.endeavourhealth.transform.ui.models.resources.clinicial.*;
-import org.endeavourhealth.transform.ui.models.types.UIInternalIdentifier;
-import org.endeavourhealth.transform.ui.models.types.UIService;
+import org.endeavourhealth.transform.ui.models.types.*;
 import org.endeavourhealth.transform.ui.transforms.UITransform;
 import org.endeavourhealth.transform.ui.transforms.clinical.UIClinicalTransform;
 import org.hl7.fhir.instance.model.*;
@@ -90,8 +89,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		LOG.debug("findPerson");
 
 		Set<String> userServiceAccessList = SecurityUtils.getOrganisationRoles(sc).keySet();
-		Map<String, UIPatient> result = new HashMap<>();
-
+		List<UIPatient> result = new ArrayList<>();
 
 		if (!StringUtils.isEmpty(searchTerms)) {
 
@@ -108,30 +106,60 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 			if (parser.hasDateOfBirth())
 				patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
 
-
 			patientsFound.addAll(PatientSearchHelper.searchByNames(userServiceAccessList, parser.getNames()));
 
-			List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+			result = buildPatientResultList(sc, patientsFound);
+		}
 
-				for (PatientSearch searchPatient : patientsFound) {
-					if (!allowedOrgs.stream().anyMatch(o -> o.equals(searchPatient.getServiceId())))
-						continue;
+		return buildResponse(result);
+	}
 
-                if (StringUtils.isNotBlank(searchPatient.getNhsNumber()))
-                    if (result.containsKey(searchPatient.getNhsNumber()))
-                        continue;
+	private List<UIPatient> buildPatientResultList(SecurityContext sc, List<PatientSearch> patientsFound) {
+		List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+		List<UIPatient> result = new ArrayList<>();
+		Set<String> addedNhsNumbers = new HashSet<>();
 
-                UIPatient patient = getPatient(
-                        UUID.fromString(searchPatient.getServiceId()),
-                        UUID.fromString(searchPatient.getSystemId()),
-                        UUID.fromString(searchPatient.getPatientId())
-                );
+		for (PatientSearch searchPatient : patientsFound) {
+			// Exclude patients the user is not allowed to view
+			if (allowedOrgs.stream().noneMatch(o -> o.equals(searchPatient.getServiceId())))
+				continue;
 
-                result.put(searchPatient.getNhsNumber(), patient);
+			UUID serviceId = UUID.fromString(searchPatient.getServiceId());
+			UUID systemId = UUID.fromString(searchPatient.getSystemId());
+			UUID patientId = UUID.fromString(searchPatient.getPatientId());
+			String nhsNumber = searchPatient.getNhsNumber();
+
+			UIPatient patient;
+
+			try {
+				// Try load details
+				patient = getPatient(serviceId, systemId, patientId);
+			} catch (Exception e) {
+				LOG.error("Error loading patient ", e);
+				// If load fails, create basic patient with error message
+				patient = new UIPatient()
+						.setNhsNumber(nhsNumber)
+						.setPatientId(new UIInternalIdentifier()
+								.setServiceId(serviceId)
+								.setSystemId(systemId)
+								.setResourceId(patientId))
+						.setName(new UIHumanName()
+								.setFamilyName(searchPatient.getSurname())
+								.setGivenNames(Collections.singletonList(searchPatient.getForenames())))
+						.setHomeAddress(new UIAddress()
+								.setLine1("Error loading patient details"))
+						.setDateOfBirth(new UIDate().setDate(searchPatient.getDateOfBirth()));
+			}
+
+			if (nhsNumber == null || nhsNumber.isEmpty())
+				result.add(patient);
+			else if (!addedNhsNumbers.contains(nhsNumber)) {
+				result.add(patient);
+				addedNhsNumbers.add(nhsNumber);
 			}
 		}
 
-		return buildResponse(result.values());
+		return result;
 	}
 
 	@GET
