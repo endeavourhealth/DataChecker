@@ -52,17 +52,17 @@
 						</div>
 						<div class="row">
 							<label class="control-label col-md-3">Marital: </label>
-							<div class="col-md-9">{{person.maritalStatus?.text}}</div>
+							<div class="col-md-9">{{person.maritalStatus | checkTextForCode}}</div>
 						</div>						<div class="row">
 							<label class="control-label col-md-3">Ethnicity: </label>
 							<div class="col-md-9">{{person.ethnicity | checkTextForCode}}</div>
 						</div>
 						<div class="row">
 							<label class="control-label col-md-3">Religion: </label>
-							<div class="col-md-9">{{person.religion?.text}}</div>
+							<div class="col-md-9">{{person.religion | checkTextForCode}}</div>
 						</div>						<div class="row">
 						<label class="control-label col-md-3">Language: </label>
-						<div class="col-md-9">{{person.language?.text}}</div>
+						<div class="col-md-9">{{person.language | checkTextForCode}}</div>
 					</div>						<div class="row">
 							<label class="control-label col-md-3">Telecoms: </label>
 							<div class="col-md-9">
