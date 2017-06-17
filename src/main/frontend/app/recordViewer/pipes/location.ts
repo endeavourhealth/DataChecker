@@ -47,7 +47,7 @@ export class LocationIcon implements PipeTransform {
 
 @Pipe({name : 'locationTypeName'})
 export class LocationTypeName implements PipeTransform {
-	public static get(locationType: string): string {
+	transform(locationType: string): string {
 		switch (locationType) {
 			case 'PR':
 				return 'GP Surgery';
@@ -56,9 +56,5 @@ export class LocationTypeName implements PipeTransform {
 			default:
 				return locationType;
 		}
-	}
-
-	transform(locationType: string): string {
-		return LocationIcon.get(locationType);
 	}
 }

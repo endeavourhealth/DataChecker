@@ -35,6 +35,22 @@
 								<div *ngIf="person.homeAddress.postalCode">{{person.homeAddress.postalCode}}</div>
 							</div>
 							</div>
+							<div class="row" *ngIf="usualGP">
+								<label class="control-label col-md-4">Usual GP: </label>
+								<div class="col-md-8">{{usualGP?.name | cuiName}}</div>
+							</div>
+							<div class="row" *ngIf="usualGPPractice">
+								<label class="control-label col-md-4">GP Practice: </label>
+								<div class="col-md-8">
+									<div *ngIf="usualGPPractice.name">{{usualGPPractice.name}} <span *ngIf="usualGPPractice.odsCode"> ({{usualGPPractice.odsCode}})</span> </div>
+									<div *ngIf="usualGPPractice.address.line1">{{usualGPPractice.address.line1}}</div>
+									<div *ngIf="usualGPPractice.address.line2">{{usualGPPractice.address.line2}}</div>
+									<div *ngIf="usualGPPractice.address.line3">{{usualGPPractice.address.line3}}</div>
+									<div *ngIf="usualGPPractice.address.city">{{usualGPPractice.address.city}}</div>
+									<div *ngIf="usualGPPractice.address.district">{{usualGPPractice.address.district}}</div>
+									<div *ngIf="usualGPPractice.address.postalCode">{{usualGPPractice.address.postalCode}}</div>
+								</div>
+							</div>
             </div>
 
 					<div class="form-group col-md-6">
@@ -53,35 +69,24 @@
 						<div class="row">
 							<label class="control-label col-md-3">Marital: </label>
 							<div class="col-md-9">{{person.maritalStatus | checkTextForCode}}</div>
-						</div>						<div class="row">
+						</div>
+						<div class="row">
 							<label class="control-label col-md-3">Ethnicity: </label>
 							<div class="col-md-9">{{person.ethnicity | checkTextForCode}}</div>
 						</div>
 						<div class="row">
 							<label class="control-label col-md-3">Religion: </label>
 							<div class="col-md-9">{{person.religion | checkTextForCode}}</div>
-						</div>						<div class="row">
+						</div>
+						<div class="row">
 						<label class="control-label col-md-3">Language: </label>
 						<div class="col-md-9">{{person.language | checkTextForCode}}</div>
-					</div>						<div class="row">
+					</div>
+						<div class="row">
 							<label class="control-label col-md-3">Telecoms: </label>
 							<div class="col-md-9">
 								<div *ngFor="let telecom of person.telecoms">{{telecom.use}} {{ telecom.system }} {{ telecom.value }}</div>
 							</div>
-						</div>
-					</div>
-
-					<label class="col-md-12" *ngIf="hasCarers()">Carer(s):</label>
-					<div class="form-group col-md-12" *ngFor="let carer of person.carerOrganisations">
-						<div class="row">
-							<div class="col-md-6">{{carer.name}}</div>
-							<div class="col-md-6">{{carer.type | locationTypeName }}</div>
-						</div>
-					</div>
-					<div class="form-group col-md-12" *ngFor="let carer of person.carerPractitioners">
-						<div class="row">
-							<div class="col-md-6">{{carer.name | cuiName}}</div>
-							<div class="col-md-6">{{ getPractitionerActiveText(carer.active)}}</div>
 						</div>
 					</div>
 

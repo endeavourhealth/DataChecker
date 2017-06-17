@@ -1,8 +1,10 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnChanges, OnInit} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {UIPatient} from "../models/resources/admin/UIPatient";
 import {UICodeableConcept} from "../models/types/UICodeableConcept";
 import {UIAddress} from "../models/types/UIAddress";
+import {UIPractitioner} from "../models/resources/admin/UIPractitioner";
+import {UIOrganisation} from "../models/resources/admin/UIOrganisation";
 
 // enum KeyCodes {
 // 		ReturnKey = 13,
@@ -17,8 +19,10 @@ import {UIAddress} from "../models/types/UIAddress";
     selector: 'ngbd-modal-content',
     template: require('./demographics.html')
 })
-export class DemographicsDialog {
+export class DemographicsDialog implements OnInit{
 	@Input() person: UIPatient;
+	usualGP : UIPractitioner;
+	usualGPPractice : UIOrganisation;
 
 	public static open(modalService: NgbModal, person: UIPatient) {
 		const modalRef = modalService.open(DemographicsDialog, {backdrop: "static", size: 'lg'});
@@ -27,7 +31,27 @@ export class DemographicsDialog {
 	}
 
 	constructor(protected activeModal: NgbActiveModal) {
+	}
 
+	ngOnInit() {
+		// When patient is set, determine usual gp and org
+		this.usualGP = null;
+		this.usualGPPractice = null;
+		if (!this.person)
+			return;
+
+		if (this.person.carerPractitioners && this.person.carerPractitioners.length > 0)
+			this.usualGP = this.person.carerPractitioners[0];
+
+		if (this.person.carerOrganisations && this.person.carerOrganisations.length > 0)
+			this.usualGPPractice = this.person.carerOrganisations[0];
+	}
+
+	hasCarers() : boolean {
+		if (this.usualGP || this.usualGPPractice)
+			return true;
+
+		return false;
 	}
 
 	formatRelationships(relationships: UICodeableConcept[]) {
@@ -38,16 +62,6 @@ export class DemographicsDialog {
 			result += relationship.text;
 		}
 		return result;
-	}
-
-	hasCarers() {
-		if (this.person.carerOrganisations && this.person.carerOrganisations.length > 0)
-			return true;
-
-		if (this.person.carerPractitioners && this.person.carerPractitioners.length > 0)
-			return true;
-
-		return false;
 	}
 
 	getPractitionerActiveText(isActive: boolean) {
