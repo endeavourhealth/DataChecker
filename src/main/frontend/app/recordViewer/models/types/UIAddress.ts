@@ -5,4 +5,6 @@ export class UIAddress {
     city: string;
     district: string;
     postalCode: string;
+    country: string;
+    use : string;
 }

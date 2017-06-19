@@ -3,5 +3,6 @@ import {UIResource} from "../UIResource";
 
 export class UIPractitioner extends UIResource {
     name: UIHumanName;
-    active: boolean;
+    active: boolean
+		gpCode : string;
 }

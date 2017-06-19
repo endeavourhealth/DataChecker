@@ -64,7 +64,7 @@ export class CuiName implements PipeTransform {
             return null;
 
         let prefix: string;
-        let firstGivenName: string;
+        let givenNames: string;
         let familyName: string;
 
         if (name != null) {
@@ -72,19 +72,19 @@ export class CuiName implements PipeTransform {
 
             if (name.givenNames != null)
                 if (name.givenNames.length > 0)
-                    firstGivenName = name.givenNames[0];
+                    givenNames = name.givenNames.join(' ');
 
             familyName = name.familyName;
 
             if (prefix == null)
                 prefix = "";
-            if (firstGivenName == null)
-                firstGivenName = "";
+            if (givenNames == null)
+                givenNames = "";
             if (familyName == null)
                 familyName = "";
 
             prefix = titleCase(prefix.trim());
-            firstGivenName = titleCase(firstGivenName.trim());
+            givenNames = titleCase(givenNames.trim());
             familyName = familyName.trim().toUpperCase();
         }
 
@@ -93,8 +93,8 @@ export class CuiName implements PipeTransform {
 
         let result: string = familyName;
 
-        if (firstGivenName != "")
-            result += ", " + firstGivenName;
+        if (givenNames != "")
+            result += ", " + givenNames;
 
         if (prefix != "")
             result += " (" + prefix + ")";

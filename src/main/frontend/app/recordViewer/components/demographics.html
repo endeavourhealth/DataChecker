@@ -7,7 +7,7 @@
     <div class="container-fluid">
 
         <form id="patient-find-search-criteria">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-7">
 							<div class="row">
 							<label class="control-label col-md-4">Name: </label>
 								<div class="col-md-8" *ngIf="!person.showNames" (click)="person.showNames = !person.showNames">
@@ -33,33 +33,37 @@
 							<div class="row">
 							<label class="control-label col-md-4">Address: </label>
 							<div class="col-md-8">
+								<div *ngIf="person.homeAddress.use"><b>{{person.homeAddress.use}}</b></div>
 								<div *ngIf="person.homeAddress.line1">{{person.homeAddress.line1}}</div>
 								<div *ngIf="person.homeAddress.line2">{{person.homeAddress.line2}}</div>
 								<div *ngIf="person.homeAddress.line3">{{person.homeAddress.line3}}</div>
 								<div *ngIf="person.homeAddress.city">{{person.homeAddress.city}}</div>
 								<div *ngIf="person.homeAddress.district">{{person.homeAddress.district}}</div>
 								<div *ngIf="person.homeAddress.postalCode">{{person.homeAddress.postalCode}}</div>
+								<div *ngIf="person.homeAddress.country">{{person.homeAddress.country}}</div>
 							</div>
 							</div>
 							<div class="row" *ngIf="usualGP">
 								<label class="control-label col-md-4">Usual GP: </label>
-								<div class="col-md-8">{{usualGP?.name | cuiName}}</div>
+								<div class="col-md-8">{{usualGP?.name | cuiName}} <span *ngIf="usualGP.gpCode"> ({{usualGP.gpCode}})</span></div>
 							</div>
 							<div class="row" *ngIf="usualGPPractice">
 								<label class="control-label col-md-4">GP Practice: </label>
 								<div class="col-md-8">
 									<div *ngIf="usualGPPractice.name">{{usualGPPractice.name}} <span *ngIf="usualGPPractice.odsCode"> ({{usualGPPractice.odsCode}})</span> </div>
+									<div *ngIf="usualGPPractice.address.use"><b>{{usualGPPractice.address.use}}</b></div>
 									<div *ngIf="usualGPPractice.address.line1">{{usualGPPractice.address.line1}}</div>
 									<div *ngIf="usualGPPractice.address.line2">{{usualGPPractice.address.line2}}</div>
 									<div *ngIf="usualGPPractice.address.line3">{{usualGPPractice.address.line3}}</div>
 									<div *ngIf="usualGPPractice.address.city">{{usualGPPractice.address.city}}</div>
 									<div *ngIf="usualGPPractice.address.district">{{usualGPPractice.address.district}}</div>
 									<div *ngIf="usualGPPractice.address.postalCode">{{usualGPPractice.address.postalCode}}</div>
+									<div *ngIf="usualGPPractice.address.country">{{usualGPPractice.address.country}}</div>
 								</div>
 							</div>
             </div>
 
-					<div class="form-group col-md-6">
+					<div class="form-group col-md-5">
 						<div class="row">
 						<label class="control-label col-md-3">Born: </label>
 						<div class="col-md-9">{{person.dateOfBirth | cuiDateOfBirth}}</div>
@@ -106,12 +110,14 @@
 								<div *ngIf="!contact.homeAddress.show" (click)="contact.homeAddress.show = true">(Address)<span class="fa fa-chevron-circle-down pull-right"></span></div>
 								<div *ngIf="contact.homeAddress.show" (click)="contact.homeAddress.show = false">
 									<div class="fa fa-chevron-circle-up pull-right"></div>
+									<div *ngIf="contact.homeAddress.use"><b>{{contact.homeAddress.use}}</b></div>
 									<div *ngIf="contact.homeAddress.line1">{{contact.homeAddress.line1}}</div>
 									<div *ngIf="contact.homeAddress.line2">{{contact.homeAddress.line2}}</div>
 									<div *ngIf="contact.homeAddress.line3">{{contact.homeAddress.line3}}</div>
 									<div *ngIf="contact.homeAddress.city">{{contact.homeAddress.city}}</div>
 									<div *ngIf="contact.homeAddress.district">{{contact.homeAddress.district}}</div>
 									<div *ngIf="contact.homeAddress.postalCode">{{contact.homeAddress.postalCode}}</div>
+									<div *ngIf="contact.homeAddress.country">{{contact.homeAddress.country}}</div>
 								</div>
 							</div>
 						</div>
