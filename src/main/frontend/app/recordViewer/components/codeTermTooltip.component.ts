@@ -2,10 +2,10 @@ import {Component, Input} from "@angular/core";
 import {UICodeableConcept} from "../models/types/UICodeableConcept";
 
 @Component({
-	selector : 'codeTooltip',
-	template : require('./codeTooltip.html')
+	selector : 'codeTermTooltip',
+	template : require('./codeTermTooltip.html')
 })
-export class CodeTooltipComponent {
+export class CodeTermTooltipComponent {
 	@Input() code : UICodeableConcept;
 
 	private getSystem(system : string) : string {

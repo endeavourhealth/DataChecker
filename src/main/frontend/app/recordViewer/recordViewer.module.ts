@@ -4,7 +4,7 @@ import {FormsModule} from "@angular/forms";
 import {RecordViewerComponent} from "./recordViewer.component";
 import {PatientFindDialog} from "./patientFind.dialog";
 import {RecordViewerService} from "./recordViewer.service";
-import {CheckTextForCode, CodeSignificance} from "./pipes/coding";
+import {CodeSignificance} from "./pipes/coding";
 import {
 	CuiDate, CuiDateOfBirth, CuiName, CuiNhsNumber,
 	CuiSingleLineAddress, CuiGender, CuiQuantity
@@ -31,6 +31,7 @@ import {LocationClass, LocationIcon, LocationTypeName} from "./pipes/location";
 import {CommonModule, ControlsModule, DialogsModule, LoggerModule} from 'eds-common-js';
 import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 import {DemographicsDialog} from "./components/demographics.dialog";
+import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
 
 @NgModule({
 	imports : [
@@ -54,6 +55,7 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 
 		PrecisComponent,
 		CodeTooltipComponent,
+		CodeTermTooltipComponent,
 		SummaryComponent,
 		ConsultationsComponent,
 		MedicationComponent,
@@ -67,7 +69,6 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 		DiaryComponent,
 
 		CodeSignificance,
-		CheckTextForCode,
 
 		CuiDate,
 		CuiDateOfBirth,
@@ -94,7 +95,6 @@ import {DemographicsDialog} from "./components/demographics.dialog";
 	],
 	exports : [
 		CodeSignificance,
-		CheckTextForCode,
 
 		CuiDate,
 		CuiDateOfBirth,

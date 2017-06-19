@@ -21,21 +21,4 @@ function getCodeSignificance(significance: UICode): string {
     }
 }
 
-@Pipe({name : 'checkTextForCode'})
-export class CheckTextForCode implements PipeTransform {
-	transform(concept: UICodeableConcept): string {
-		if (!concept)
-			return '';
-
-		if (!concept.codes || concept.codes.length == 0)
-			return concept.text;
-
-		let code : UICode = linq(concept.codes).Where(c => c.code == concept.text).FirstOrDefault();
-
-		if (code)
-			return code.display;
-
-		return concept.text;
-	}
-}
 

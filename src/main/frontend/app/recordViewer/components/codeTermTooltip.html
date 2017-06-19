@@ -1,0 +1,8 @@
+<template #tooltipTemplate>
+	<table width="100px">
+		<tr *ngFor="let coding of code.codes">
+			<td class="text-left text-nowrap">{{getSystem(coding.code)}} </td><td class="text-left text-nowrap"> : {{coding.display}}</td>
+		</tr>
+	</table>
+</template>
+<span class="fa fa-info-circle" [ngbTooltip]="tooltipTemplate"></span>
