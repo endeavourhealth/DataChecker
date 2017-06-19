@@ -10,7 +10,13 @@
             <div class="form-group col-md-6">
 							<div class="row">
 							<label class="control-label col-md-4">Name: </label>
-							<div class="col-md-8">{{person.name | cuiName}}</div>
+								<div class="col-md-8" *ngIf="!person.showNames" (click)="person.showNames = !person.showNames">
+									{{person.name | cuiName}} <span class="fa fa-chevron-circle-down pull-right" *ngIf="person.otherNames.length > 1"></span>
+								</div>
+								<div class="col-md-8" *ngIf="person.showNames" (click)="person.showNames = !person.showNames">
+									<span class="fa fa-chevron-circle-up pull-right" *ngIf="person.otherNames.length > 1"></span>
+									<div *ngFor="let name of person.otherNames">{{name | cuiName}} <span class="small text-muted">({{name.use}})</span></div>
+								</div>
 							</div>
 							<div class="row">
 							<label class="control-label col-md-4">NHS No: </label>
@@ -21,8 +27,8 @@
 								<div class="col-md-8">{{person.managingOrganisation?.name}}</div>
 							</div>
 							<div class="row">
-								<label class="control-label col-md-4">Local ID: </label>
-								<div class="col-md-8">{{person.localPatientIdentifier}}</div>
+								<label class="control-label col-md-4">Local IDs: </label>
+								<div class="col-md-8">{{getLocalIdsAsCSV()}}</div>
 							</div>
 							<div class="row">
 							<label class="control-label col-md-4">Address: </label>

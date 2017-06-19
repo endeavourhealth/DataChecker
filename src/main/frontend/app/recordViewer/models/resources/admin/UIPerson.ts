@@ -12,6 +12,7 @@ import {UIPractitioner} from "./UIPractitioner";
 export class UIPerson extends UIResource {
 	nhsNumber: string;
 	name: UIHumanName;
+	otherNames : UIHumanName[];
 	dateOfBirth: UIDate;
 	dateOfDeath: UIDate;
 	gender: string;
@@ -19,7 +20,7 @@ export class UIPerson extends UIResource {
 	ethnicity : UICodeableConcept;
 	contacts : UIContact[];
 	telecoms : UIContactPoint[];
-	localPatientIdentifier : string;
+	localPatientIdentifiers : string[];
 	managingOrganisation : UIOrganisation;
 	maritalStatus : UICodeableConcept;
 	language : UICodeableConcept;

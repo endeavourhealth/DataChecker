@@ -1,19 +1,9 @@
-import {Component, Input, OnChanges, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {UIPatient} from "../models/resources/admin/UIPatient";
 import {UICodeableConcept} from "../models/types/UICodeableConcept";
-import {UIAddress} from "../models/types/UIAddress";
 import {UIPractitioner} from "../models/resources/admin/UIPractitioner";
 import {UIOrganisation} from "../models/resources/admin/UIOrganisation";
-
-// enum KeyCodes {
-// 		ReturnKey = 13,
-// 		Escape = 27,
-// 		LeftArrow = 37,
-// 		UpArrow = 38,
-// 		RightArrow = 39,
-// 		DownArrow = 40
-// }
 
 @Component({
     selector: 'ngbd-modal-content',
@@ -47,14 +37,7 @@ export class DemographicsDialog implements OnInit{
 			this.usualGPPractice = this.person.carerOrganisations[0];
 	}
 
-	hasCarers() : boolean {
-		if (this.usualGP || this.usualGPPractice)
-			return true;
-
-		return false;
-	}
-
-	formatRelationships(relationships: UICodeableConcept[]) {
+	formatRelationships(relationships: UICodeableConcept[]) : string {
 		let result: string = '';
 		for (let relationship of relationships) {
 			if (result != '')
@@ -64,11 +47,11 @@ export class DemographicsDialog implements OnInit{
 		return result;
 	}
 
-	getPractitionerActiveText(isActive: boolean) {
-		if (isActive)
-			return 'Active';
+	getLocalIdsAsCSV() : string {
+		if (!this.person.localPatientIdentifiers || this.person.localPatientIdentifiers.length == 0)
+			return '';
 
-		return 'Inactive';
+		return this.person.localPatientIdentifiers.join(', ');
 	}
 
 	ok() {

@@ -89,7 +89,7 @@ export class CuiName implements PipeTransform {
         }
 
         if (familyName == "")
-            familyName = "UNKNOWN";
+            familyName = "";
 
         let result: string = familyName;
 
@@ -99,7 +99,13 @@ export class CuiName implements PipeTransform {
         if (prefix != "")
             result += " (" + prefix + ")";
 
-        return result;
+        if (result != "")
+        	return result;
+
+        if (name.text != "")
+        	return name.text;
+
+        return "UNKNOWN";
     }
 }
 
