@@ -115,7 +115,7 @@ export class PatientFindDialog {
     }
 
     getAddressClass(homeAddress : UIAddress) {
-    	if (homeAddress.line1 == 'Error loading patient details')
+    	if (homeAddress && homeAddress.line1 == 'Error loading patient details')
     		return 'text-danger';
     	return '';
 		}
