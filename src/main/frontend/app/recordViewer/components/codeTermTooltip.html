@@ -1,6 +1,6 @@
 <template #tooltipTemplate>
 	<table width="100px">
-		<tr *ngFor="let coding of code.codes">
+		<tr *ngFor="let coding of code.codes" [ngStyle]="{'font-weight': coding.userSelected ? '900' : 'normal'}">
 			<td class="text-left text-nowrap">{{getSystem(coding.code)}} </td><td class="text-left text-nowrap"> : {{coding.display}}</td>
 		</tr>
 	</table>
