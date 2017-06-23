@@ -5,6 +5,7 @@ import Moment = moment.Moment;
 import {TreeComponent} from "angular2-tree-component";
 import {linq} from "eds-common-js";
 import {TreeNode} from "../models/TreeNode";
+import {UIEpisodeOfCare} from "../models/resources/clinical/UIEpisodeOfCare";
 
 @Component({
 	selector : 'consultations',
@@ -12,25 +13,25 @@ import {TreeNode} from "../models/TreeNode";
 })
 export class ConsultationsComponent implements OnChanges {
 	@Input() consultations : UIEncounter[] = [];
+	@Input() episodes : UIEpisodeOfCare[];
 	@ViewChild(TreeComponent) tree: TreeComponent;
 	dateTreeData : TreeNode[] = [];
 	filteredConsultations : UIEncounter[] = [];
 
 	ngOnChanges(): void {
-		// Rebuild date tree
+		this.dateTreeData = [
+			{
+				id: 0,
+				title: 'All',
+				data: this.consultations,
+				children: []
+			}
+		];
+
 		if (this.consultations) {
 			this.consultations = linq(this.consultations)
 				.OrderByDescending(c => c.period.start.date)
 				.ToArray();
-
-			this.dateTreeData = [
-				{
-					id : 0,
-					title : 'All',
-					data : this.consultations,
-					children : []
-				}
-			]
 
 			for (let encounter of this.consultations) {
 				let encounterDate: Moment = moment(encounter.period.start.date);

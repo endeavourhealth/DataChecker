@@ -530,6 +530,9 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 		ReferencedResources referencedResources = new ReferencedResources();
 
+		List<UUID> locationIds = getIdsOfType(references, ResourceType.Location);
+		referencedResources.setLocations(ResourceFetcher.getResourcesByService(serviceId, systemId, locationIds, Location.class));
+
 		List<UUID> practitionerIds = getIdsOfType(references, ResourceType.Practitioner);
 		referencedResources.setPractitioners(ResourceFetcher.getResourcesByService(serviceId, systemId, practitionerIds, Practitioner.class));
 

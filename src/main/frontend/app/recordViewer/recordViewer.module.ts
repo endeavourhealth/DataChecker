@@ -7,7 +7,7 @@ import {RecordViewerService} from "./recordViewer.service";
 import {CodeSignificance} from "./pipes/coding";
 import {
 	CuiDate, CuiDateOfBirth, CuiName, CuiNhsNumber,
-	CuiSingleLineAddress, CuiGender, CuiQuantity
+	CuiSingleLineAddress, CuiGender, CuiQuantity, CuiDateTime
 } from "./pipes/cui";
 import {Parentheses} from "./pipes/general";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
@@ -71,6 +71,7 @@ import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
 		CodeSignificance,
 
 		CuiDate,
+		CuiDateTime,
 		CuiDateOfBirth,
 		CuiName,
 		CuiNhsNumber,
@@ -97,6 +98,7 @@ import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
 		CodeSignificance,
 
 		CuiDate,
+		CuiDateTime,
 		CuiDateOfBirth,
 		CuiName,
 		CuiNhsNumber,

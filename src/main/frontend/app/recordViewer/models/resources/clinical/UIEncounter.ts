@@ -17,4 +17,5 @@ export class UIEncounter extends UIResource {
     serviceProvider : UIOrganisation;
     encounterSource : UICodeableConcept;
     location : UILocation;
+    referredBy : UIPractitioner;
 }

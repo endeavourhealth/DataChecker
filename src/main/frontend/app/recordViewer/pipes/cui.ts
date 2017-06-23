@@ -31,6 +31,13 @@ export class CuiDate implements PipeTransform {
     }
 }
 
+@Pipe({name : 'cuiDateTime'})
+export class CuiDateTime implements PipeTransform {
+	transform(date: UIDate): string {
+		return formatCuiDateTime(date);
+	}
+}
+
 @Pipe({name : 'cuiDateOfBirth'})
 export class CuiDateOfBirth implements PipeTransform {
     transform(dateOfBirth: UIDate): string {
@@ -154,6 +161,16 @@ function formatCuiDate(date: UIDate): string {
         return "Unknown";
 
     return moment(date.date).format("DD-MMM-YYYY");
+}
+
+function formatCuiDateTime(date: UIDate): string {
+		if ((date == null) || (date.precision == "unknown"))
+			return "Unknown";
+
+		switch (date.precision) {
+			case 'millisecond' : return moment(date.date).format("DD-MMM-YYYY HH:mm:ss");
+			default : return moment(date.date).format("DD-MMM-YYYY HH:mm:ss");
+		}
 }
 
 
