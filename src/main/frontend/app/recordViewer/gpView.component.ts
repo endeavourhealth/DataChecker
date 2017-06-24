@@ -13,6 +13,7 @@ import {UIMedicationStatement} from "./models/resources/clinical/UIMedicationSta
 import {LoggerService} from "eds-common-js";
 import {Observable} from "rxjs";
 import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
+import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 
 @Component({
 	selector : 'gpView',
@@ -21,6 +22,9 @@ import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
 export class GPViewComponent {
 	@ViewChild('recordTabs') recordTabs: any;
 	private activeId : string = "summary";
+	@Input()
+	private episodes: UIEpisodeOfCare[];
+
 	private _person: UIPersonRecord;
 
 	@Input()

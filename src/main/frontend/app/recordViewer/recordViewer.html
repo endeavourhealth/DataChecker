@@ -14,7 +14,7 @@
                  <episodeView [person]="person" (episodeChange)="onEpisodeSelect($event)"></episodeView>
              </div>
             <div name="patientSelectedView" *ngIf="personRecord">
-                <gpView [personRecord]="personRecord"></gpView>
+                <gpView [personRecord]="personRecord" [episodes]="episodes"></gpView>
             </div>
         </div>
     </div>

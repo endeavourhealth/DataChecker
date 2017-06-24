@@ -19,4 +19,5 @@ export class UIEncounter extends UIResource {
     location : UILocation;
     referredBy : UIPractitioner;
     messageType : UICodeableConcept;
+    episodeOfCare : string;
 }

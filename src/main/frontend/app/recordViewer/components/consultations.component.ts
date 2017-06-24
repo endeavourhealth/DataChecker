@@ -13,8 +13,10 @@ import {UIEpisodeOfCare} from "../models/resources/clinical/UIEpisodeOfCare";
 })
 export class ConsultationsComponent implements OnChanges {
 	@Input() consultations : UIEncounter[] = [];
-	@Input() episodes : UIEpisodeOfCare[];
+	@Input() episodes : UIEpisodeOfCare[] = [];
 	@ViewChild(TreeComponent) tree: TreeComponent;
+
+	episodeMap : Map<string, TreeNode>;
 	dateTreeData : TreeNode[] = [];
 	filteredConsultations : UIEncounter[] = [];
 
@@ -40,6 +42,21 @@ export class ConsultationsComponent implements OnChanges {
 			}
 		];
 
+		this.episodeMap = new Map();
+
+		for (let episode of this.episodes) {
+			let episodeDate: Moment = moment(episode.period.start.date);
+			let episodeNode : TreeNode = {
+				id: -episodeDate.milliseconds(),
+				title: episodeDate.format("DD-MMM-YYYY"),
+				data: [],
+				children: []
+			};
+
+			this.dateTreeData[1].children.push(episodeNode);
+			this.episodeMap.set(episode.id, episodeNode);
+		}
+
 		if (this.consultations) {
 			this.consultations = linq(this.consultations)
 				.OrderByDescending(c => c.period.start.date)
@@ -47,6 +64,13 @@ export class ConsultationsComponent implements OnChanges {
 
 			for (let encounter of this.consultations) {
 				let encounterDate: Moment = moment(encounter.period.start.date);
+
+				if (encounter.episodeOfCare) {
+					let node : TreeNode = this.episodeMap.get(encounter.episodeOfCare);
+					if (node)
+						node.data.push(encounter);
+				}
+
 				this.getDateNode(this.dateTreeData[2], encounterDate).data.push(encounter);
 			}
 
