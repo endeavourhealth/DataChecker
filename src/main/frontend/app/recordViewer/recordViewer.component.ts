@@ -17,6 +17,7 @@ export class RecordViewerComponent {
 		public person : UIPerson;
 		public episodes : UIEpisodeOfCare[];
 		public personRecord: UIPersonRecord;
+		public filterEpisode : UIEpisodeOfCare;
 
 		constructor(private $modal: NgbModal,
 								protected logger : LoggerService,
@@ -42,6 +43,7 @@ export class RecordViewerComponent {
 		public setPerson(person : UIPerson) {
 			this.clearPerson();
 			this.person = person;
+			this.loadEpisodes();
 		}
 
 		public clearPerson() {
@@ -51,12 +53,21 @@ export class RecordViewerComponent {
 
 		public clearEpisode() {
 			this.clearPatientRecord();
-			this.episodes = null;
+			this.filterEpisode = null;
 		}
 
-		onEpisodeSelect(episodes : UIEpisodeOfCare[]) {
+	loadEpisodes() {
+		let vm = this;
+		vm.episodes = null;
+		vm.recordViewerService.getEpisodes(vm.person).subscribe(
+			(episodes : UIEpisodeOfCare[]) => vm.episodes = episodes,
+			(error) => vm.logger.error("Error loading episodes",error)
+		);
+	}
+
+		onEpisodeSelect(episode : UIEpisodeOfCare) {
 			let vm = this;
-			vm.episodes = episodes;
+			vm.filterEpisode = episode;
 
 			let o : Observable<UIPatient>[] = linq(vm.episodes)
 				.Select(e => e.patient.patientId)

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, OnChanges} from "@angular/core";
+import {Component, Input, ViewChild, OnChanges, AfterViewInit} from "@angular/core";
 import {UIEncounter} from "../models/resources/clinical/UIEncounter";
 import moment = require("moment");
 import Moment = moment.Moment;
@@ -14,6 +14,7 @@ import {UIEpisodeOfCare} from "../models/resources/clinical/UIEpisodeOfCare";
 export class ConsultationsComponent implements OnChanges {
 	@Input() consultations : UIEncounter[] = [];
 	@Input() episodes : UIEpisodeOfCare[] = [];
+	@Input() filterEpisode : UIEpisodeOfCare;
 	@ViewChild(TreeComponent) tree: TreeComponent;
 
 	episodeMap : Map<string, TreeNode>;
@@ -46,8 +47,8 @@ export class ConsultationsComponent implements OnChanges {
 
 		for (let episode of this.episodes) {
 			let episodeDate: Moment = moment(episode.period.start.date);
-			let episodeNode : TreeNode = {
-				id: -episodeDate.milliseconds(),
+			let episodeNode: TreeNode = {
+				id: -episodeDate.valueOf(),
 				title: episodeDate.format("DD-MMM-YYYY"),
 				data: [],
 				children: []
@@ -66,7 +67,7 @@ export class ConsultationsComponent implements OnChanges {
 				let encounterDate: Moment = moment(encounter.period.start.date);
 
 				if (encounter.episodeOfCare) {
-					let node : TreeNode = this.episodeMap.get(encounter.episodeOfCare);
+					let node: TreeNode = this.episodeMap.get(encounter.episodeOfCare);
 					if (node)
 						node.data.push(encounter);
 				}
@@ -84,9 +85,17 @@ export class ConsultationsComponent implements OnChanges {
 	}
 
 	onUpdateData() {
-		let node = this.tree.treeModel.getFirstRoot();
+		let node = null;
+		if (this.filterEpisode) {
+			let episodeDate: Moment = moment(this.filterEpisode.period.start.date);
+			node = this.tree.treeModel.getNodeById(-episodeDate.valueOf());
+		} else {
+			node = this.tree.treeModel.getFirstRoot();
+		}
+
 		if (node)
 			node.setActiveAndVisible();
+
 	}
 
 	selectDate(selection) {
@@ -110,7 +119,7 @@ export class ConsultationsComponent implements OnChanges {
 		let dateNode : TreeNode = monthNode.children.find((e) => { return e.title === moment.format("Do"); });
 		if (!dateNode) {
 			dateNode = {
-				id : moment.milliseconds() * root.id,
+				id : moment.valueOf(),
 				title : moment.format("Do"),
 				data : [],
 				children : []
@@ -127,7 +136,7 @@ export class ConsultationsComponent implements OnChanges {
 		let monthNode : TreeNode = yearNode.children.find( (e) => { return e.title === moment.format("MMM"); });
 		if (!monthNode) {
 			monthNode = {
-				id : moment.milliseconds() * root.id,
+				id : moment.valueOf(),
 				title : moment.format("MMM"),
 				data : [],
 				children : []
@@ -143,7 +152,7 @@ export class ConsultationsComponent implements OnChanges {
 
 		if (!yearNode) {
 			yearNode = {
-				id : moment.milliseconds() * root.id,
+				id : moment.valueOf(),
 				title : moment.format("YYYY"),
 				data : [],
 				children : []

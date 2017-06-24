@@ -11,10 +11,10 @@
             <precis [person]="person" [episodes]="episodes"></precis>
 
             <div name="noPatientSelectedView" [hidden]="personRecord">
-                 <episodeView [person]="person" (episodeChange)="onEpisodeSelect($event)"></episodeView>
+                 <episodeView [person]="person" [episodes]="episodes"  (episodeChange)="onEpisodeSelect($event)"></episodeView>
              </div>
             <div name="patientSelectedView" *ngIf="personRecord">
-                <gpView [personRecord]="personRecord" [episodes]="episodes"></gpView>
+                <gpView [personRecord]="personRecord" [episodes]="episodes" [filterEpisode]="filterEpisode"></gpView>
             </div>
         </div>
     </div>

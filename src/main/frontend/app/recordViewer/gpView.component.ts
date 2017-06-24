@@ -5,7 +5,7 @@ import {linq} from "eds-common-js";
 import {UIPersonRecord} from "./models/UIPersonRecord";
 import {UIDiary} from "./models/resources/clinical/UIDiary";
 import {UIObservation} from "./models/resources/clinical/UIObservation";
-import {Component, ViewChild, Input} from "@angular/core";
+import {Component, ViewChild, Input, OnInit, AfterViewInit} from "@angular/core";
 import {UIAllergy} from "./models/resources/clinical/UIAllergy";
 import {UIImmunisation} from "./models/resources/clinical/UIImmunisation";
 import {UIFamilyHistory} from "./models/resources/clinical/UIFamilyHistory";
@@ -19,11 +19,13 @@ import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 	selector : 'gpView',
 	template : require('./gpView.html')
 })
-export class GPViewComponent {
+export class GPViewComponent implements AfterViewInit {
 	@ViewChild('recordTabs') recordTabs: any;
 	private activeId : string = "summary";
 	@Input()
 	private episodes: UIEpisodeOfCare[];
+	@Input()
+	private filterEpisode : UIEpisodeOfCare;
 
 	private _person: UIPersonRecord;
 
@@ -38,6 +40,26 @@ export class GPViewComponent {
 
 	constructor(protected logger: LoggerService,
 							protected recordViewerService: RecordViewerService) {
+	}
+
+	ngAfterViewInit() {
+		if (this.filterEpisode) {
+			console.info(this.filterEpisode);
+			let ctrl = this;
+
+			let observers : Observable<UIEncounter[]>[] = linq(ctrl._person.patients)
+				.Select(p => ctrl.recordViewerService.getEncounters(p.patientId))
+				.ToArray();
+
+			Observable.forkJoin(observers)
+				.subscribe(
+					(result) =>
+						{
+							ctrl._person.encounters = result.reduce((a,b) => a.concat(b));
+							ctrl.recordTabs.select("consultations");
+						}
+				);
+		}
 	}
 
 	loadDataForTab(tabId: string) {

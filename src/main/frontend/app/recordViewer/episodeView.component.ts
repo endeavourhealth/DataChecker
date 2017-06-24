@@ -23,10 +23,24 @@ export class EpisodeViewComponent {
 	@Input()
 	set person(person: any) {
 		this._person = person;
-		this.loadEpisodes();
 	}
 
-	@Output() episodeChange: EventEmitter<UIEpisodeOfCare[]> = new EventEmitter<UIEpisodeOfCare[]>();
+	@Input()
+	set episodes(episodes : UIEpisodeOfCare[]) {
+		if (episodes) {
+			this.currentEpisodes = linq(episodes)
+				.Where(t => t.period.end == null)
+				.OrderByDescending(t => t.period.start.date)
+				.ToArray();
+			this.pastEpisodes = linq(episodes)
+				.Where(t => t.period.end != null)
+				.OrderByDescending(t => t.period.start.date)
+				.ToArray();
+			this.showTimeLine();
+		}
+	}
+
+	@Output() episodeChange: EventEmitter<UIEpisodeOfCare> = new EventEmitter<UIEpisodeOfCare>();
 	private _person: UIPerson;
 	private _chart : any;
 	private _hoverEpisode : UIEpisodeOfCare;
@@ -36,40 +50,12 @@ export class EpisodeViewComponent {
 	constructor(protected logger: LoggerService, protected recordViewerService : RecordViewerService) {
 	}
 
-	loadEpisodes() {
-		let vm = this;
-		vm.currentEpisodes = null;
-		vm.pastEpisodes = null;
-		vm.recordViewerService.getEpisodes(vm._person).subscribe(
-			(episodes : UIEpisodeOfCare[]) => {
-				vm.currentEpisodes = linq(episodes)
-					.Where(t => t.period.end == null)
-					.OrderByDescending(t => t.period.start.date)
-					.ToArray();
-				vm.pastEpisodes = linq(episodes)
-					.Where(t => t.period.end != null)
-					.OrderByDescending(t => t.period.start.date)
-					.ToArray();
-				vm.showTimeLine();
-			},
-			(error) => vm.logger.error("Error loading episodes",error)
-		);
+	viewAll() {
+		this.episodeChange.emit(null);
 	}
 
 	selectEpisode(episode: UIEpisodeOfCare) {
-		this.episodeChange.emit([episode]);
-	}
-
-	selectCurrentEpisodes() {
-		this.episodeChange.emit(this.currentEpisodes);
-	}
-
-	selectPastEpisodes() {
-		this.episodeChange.emit(this.pastEpisodes);
-	}
-
-	selectAllEpisodes() {
-		this.episodeChange.emit(this.currentEpisodes.concat(this.pastEpisodes));
+		this.episodeChange.emit(episode);
 	}
 
 	showTimeLine() {

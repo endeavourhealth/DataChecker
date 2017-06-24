@@ -23,7 +23,7 @@
                         <template ngbTabContent>
                             <div class="tab-panel">
                               <loadingIndicator [done]="personRecord.encounters">
-                                <consultations [consultations]="personRecord.encounters" [episodes]="episodes"></consultations>
+                                <consultations [consultations]="personRecord.encounters" [episodes]="episodes" [filterEpisode]="filterEpisode"></consultations>
                               </loadingIndicator>
                             </div>
                         </template>
