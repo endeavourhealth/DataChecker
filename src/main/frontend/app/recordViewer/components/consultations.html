@@ -15,7 +15,7 @@
 				<tr>
 					<th>
 						<div>Consultation date</div>
-						<div>&nbsp;</div>
+						<div>Source</div>
 					</th>
 					<th>
 						<div>Reason</div>
@@ -35,14 +35,19 @@
 					</th>
 					<th>
 						<div>Status</div>
-						<div>Source</div>
+						<div>Message</div>
 					</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr *ngIf="!filteredConsultations || filteredConsultations.length == 0"><td colspan="2"><i>(no consultations)</i></td></tr>
 				<tr *ngFor="let consultation of filteredConsultations">
-					<td>{{ consultation.period.start | cuiDateTime }}</td>
+					<td>
+						<div>{{ consultation.period.start | cuiDateTime }} &nbsp;</div>
+						<div *ngIf="consultation.encounterSource">
+							{{ consultation.encounterSource.text }}
+						</div>
+					</td>
 					<td>
 						<div *ngFor="let reason of consultation.reason">
 							<span class="problem-associated-text">{{ reason.text }}</span>
@@ -66,8 +71,8 @@
 					</td>
 					<td>
 						<div>{{ consultation.status }} &nbsp;</div>
-						<div *ngIf="consultation.encounterSource">
-							{{ consultation.encounterSource.text }}
+						<div *ngIf="consultation.messageType">
+							{{ consultation.messageType.text }} <codeTermTooltip [code]="consultation.messageType"></codeTermTooltip>
 						</div>
 					</td>
 				</tr>

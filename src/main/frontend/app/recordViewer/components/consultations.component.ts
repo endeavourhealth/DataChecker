@@ -25,6 +25,18 @@ export class ConsultationsComponent implements OnChanges {
 				title: 'All',
 				data: this.consultations,
 				children: []
+			},
+			{
+				id: -1,
+				title: 'Episodes',
+				data: [],
+				children: []
+			},
+			{
+				id: 1,
+				title: 'Encounters',
+				data: [],
+				children: []
 			}
 		];
 
@@ -35,7 +47,7 @@ export class ConsultationsComponent implements OnChanges {
 
 			for (let encounter of this.consultations) {
 				let encounterDate: Moment = moment(encounter.period.start.date);
-				this.getDateNode(encounterDate).data.push(encounter);
+				this.getDateNode(this.dateTreeData[2], encounterDate).data.push(encounter);
 			}
 
 			this.tree.treeModel.update();
@@ -68,13 +80,13 @@ export class ConsultationsComponent implements OnChanges {
 		}
 	}
 
-	getDateNode(moment : Moment) : TreeNode {
-		let monthNode : TreeNode = this.getMonthNode(moment);
+	getDateNode(root : TreeNode, moment : Moment) : TreeNode {
+		let monthNode : TreeNode = this.getMonthNode(root, moment);
 
 		let dateNode : TreeNode = monthNode.children.find((e) => { return e.title === moment.format("Do"); });
 		if (!dateNode) {
 			dateNode = {
-				id : moment.milliseconds(),
+				id : moment.milliseconds() * root.id,
 				title : moment.format("Do"),
 				data : [],
 				children : []
@@ -85,13 +97,13 @@ export class ConsultationsComponent implements OnChanges {
 		return dateNode;
 	}
 
-	getMonthNode(moment : Moment) : TreeNode {
-		let yearNode : TreeNode = this.getYearNode(moment);
+	getMonthNode(root : TreeNode, moment : Moment) : TreeNode {
+		let yearNode : TreeNode = this.getYearNode(root, moment);
 
 		let monthNode : TreeNode = yearNode.children.find( (e) => { return e.title === moment.format("MMM"); });
 		if (!monthNode) {
 			monthNode = {
-				id : moment.milliseconds(),
+				id : moment.milliseconds() * root.id,
 				title : moment.format("MMM"),
 				data : [],
 				children : []
@@ -102,17 +114,17 @@ export class ConsultationsComponent implements OnChanges {
 		return monthNode;
 	}
 
-	getYearNode(moment : Moment) : TreeNode {
-		let yearNode : TreeNode = this.dateTreeData.find( (e) => { return e.title === moment.format("YYYY"); });
+	getYearNode(root : TreeNode, moment : Moment) : TreeNode {
+		let yearNode : TreeNode = root.children.find( (e) => { return e.title === moment.format("YYYY"); });
 
 		if (!yearNode) {
 			yearNode = {
-				id : moment.milliseconds(),
+				id : moment.milliseconds() * root.id,
 				title : moment.format("YYYY"),
 				data : [],
 				children : []
 			};
-			this.dateTreeData.push(yearNode);
+			root.children.push(yearNode);
 		}
 
 		return yearNode;
