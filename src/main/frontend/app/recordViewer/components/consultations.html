@@ -41,12 +41,11 @@
 			</thead>
 			<tbody>
 				<tr *ngIf="!filteredConsultations || filteredConsultations.length == 0"><td colspan="2"><i>(no consultations)</i></td></tr>
-				<tr *ngFor="let consultation of filteredConsultations">
+				<tr *ngFor="let consultation of filteredConsultations" [ngClass]="{'collapsed' : !consultation.showDetail}" (click)="consultation.showDetail = !consultation.showDetail">
 					<td>
 						<div>{{ consultation.period.start | cuiDateTime }} &nbsp;</div>
-						<div *ngIf="consultation.encounterSource">
-							{{ consultation.encounterSource.text }}
-						</div>
+						<div>{{ consultation.encounterSource?.text }} &nbsp;</div>
+						<div *ngIf="consultation.showDetail && consultation.admitted" class="probl"><b>Admitted : </b>{{consultation.admitted | cuiDateTime}}</div>
 					</td>
 					<td>
 						<div *ngFor="let reason of consultation.reason">
@@ -55,26 +54,26 @@
 					</td>
 					<td>
 						<div class="problem-term-significance-text">{{consultation.serviceProvider?.name}} &nbsp;</div>
-						<div>{{consultation.location?.name}} <span class="fa fa-info-circle" *ngIf="consultation.location?.description" ngbTooltip="{{consultation.location?.description}}"></span></div>
+						<div>{{consultation.location?.name}} <span class="fa fa-info-circle" *ngIf="consultation.location?.description" ngbTooltip="{{consultation.location?.description}}"></span>&nbsp;</div>
+						<div *ngIf="consultation.showDetail && consultation.discharged"><b>Discharged : </b>{{consultation.discharged | cuiDateTime}}</div>
 					</td>
 					<td>
 						<div class="problem-term-text">{{ consultation.performedBy?.name | cuiName }} &nbsp;</div>
-						<div class="problem-term-text">{{ consultation.referredBy?.name | cuiName }}</div>
+						<div class="problem-term-text">{{ consultation.referredBy?.name | cuiName }} &nbsp;</div>
+						<div *ngIf="consultation.showDetail && consultation.dischargeLocation"><b>Discharge To : </b>{{consultation.dischargeLocation}}</div>
 					</td>
 					<td>
-						<div>
-							{{ consultation.class_ }} &nbsp;
-						</div>
+						<div>{{ consultation.class_ }} &nbsp;</div>
 						<div *ngIf="consultation.types && consultation.types.length == 1">
 							{{ consultation.types[0].text }} <codeTermTooltip [code]="consultation.types[0]"></codeTermTooltip>
 						</div>
 					</td>
 					<td>
 						<div>{{ consultation.status }} &nbsp;</div>
-						<div *ngIf="consultation.messageType">
-							{{ consultation.messageType.text }} <codeTermTooltip [code]="consultation.messageType"></codeTermTooltip>
-						</div>
+						<div><span *ngIf="consultation.messageType">{{ consultation.messageType.text }} <codeTermTooltip [code]="consultation.messageType"></codeTermTooltip></span>&nbsp;</div>
+						<div *ngIf="consultation.showDetail && consultation.dischargeDisposition"><b>Disposition : </b>{{consultation.dischargeDisposition}}</div>
 					</td>
+					<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
 				</tr>
 			</tbody>
 		</table>

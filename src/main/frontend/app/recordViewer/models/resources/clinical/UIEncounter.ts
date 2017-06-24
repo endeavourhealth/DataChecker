@@ -5,6 +5,7 @@ import {UIResource} from "../UIResource";
 import {UIOrganisation} from "../admin/UIOrganisation";
 import {UICodeableConcept} from "../../types/UICodeableConcept";
 import {UILocation} from "../admin/UILocation";
+import {UIDate} from "../../types/UIDate";
 
 export class UIEncounter extends UIResource {
     status: string;
@@ -20,4 +21,8 @@ export class UIEncounter extends UIResource {
     referredBy : UIPractitioner;
     messageType : UICodeableConcept;
     episodeOfCare : string;
+    admitted : UIDate;
+    discharged : UIDate;
+    dischargeLocation : UILocation;
+    dischargeDisposition : UICodeableConcept;
 }
