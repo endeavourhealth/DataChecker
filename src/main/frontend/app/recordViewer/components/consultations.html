@@ -2,7 +2,7 @@
 
 <div class="row">
 	<div class="col-md-2">
-		<span class="consultation-title">Date filter</span>
+		<span class="consultation-title">Filters</span>
 		<Tree [nodes]="dateTreeData" (onActivate)="selectDate($event.node.data)" (onUpdateData)="onUpdateData()" (onInitialized)="onInitialized()">
 			<template #treeNodeTemplate let-node>
 				{{ node.data.title }}
@@ -60,7 +60,7 @@
 					<td>
 						<div class="problem-term-text">{{ consultation.performedBy?.name | cuiName }} &nbsp;</div>
 						<div class="problem-term-text">{{ consultation.referredBy?.name | cuiName }} &nbsp;</div>
-						<div *ngIf="consultation.showDetail && consultation.dischargeLocation"><b>Discharge To : </b>{{consultation.dischargeLocation}}</div>
+						<div *ngIf="consultation.showDetail && consultation.dischargeLocation"><b>Discharge To : </b>{{consultation.dischargeLocation.name}} <span class="fa fa-info-circle" *ngIf="consultation.dischargeLocation?.description" ngbTooltip="{{consultation.dischargeLocation?.description}}"></span></div>
 					</td>
 					<td>
 						<div>{{ consultation.class_ }} &nbsp;</div>
@@ -71,7 +71,7 @@
 					<td>
 						<div>{{ consultation.status }} &nbsp;</div>
 						<div><span *ngIf="consultation.messageType">{{ consultation.messageType.text }} <codeTermTooltip [code]="consultation.messageType"></codeTermTooltip></span>&nbsp;</div>
-						<div *ngIf="consultation.showDetail && consultation.dischargeDisposition"><b>Disposition : </b>{{consultation.dischargeDisposition}}</div>
+						<div *ngIf="consultation.showDetail && consultation.dischargeDisposition"><b>Disposition : </b>{{consultation.dischargeDisposition.text}}<codeTermTooltip [code]="consultation.dischargeDisposition"></codeTermTooltip></div>
 					</td>
 					<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
 				</tr>
