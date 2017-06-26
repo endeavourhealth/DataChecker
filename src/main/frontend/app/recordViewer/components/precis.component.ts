@@ -37,10 +37,15 @@ export class PrecisComponent {
 	}
 
 	getName() : string {
-		if (this.episodes && this.episodes.length == 1)
+		let distinctOrgs = linq(this.episodes)
+			.Select(e => e.managingOrganisation.odsCode)
+			.Distinct()
+			.ToArray();
+
+		if (distinctOrgs.length == 1)
 			return this.episodes[0].managingOrganisation.name;
 		else
-			return this.episodes.length.toString() + ' organisations';
+			return distinctOrgs.length.toString() + ' organisations';
 	}
 
 	showDemographics() {
