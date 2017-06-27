@@ -21,8 +21,8 @@ export class UIEncounter extends UIResource {
     referredBy : UIPractitioner;
     messageType : UICodeableConcept;
     episodeOfCare : string;
-    admitted : UIPeriod;
-    discharged : UIPeriod;
+    admitted : UIDate;
+    discharged : UIDate;
     dischargeLocation : UILocation;
     dischargeDisposition : UICodeableConcept;
 }
