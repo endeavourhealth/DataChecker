@@ -76,7 +76,7 @@
         <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
         <init-param>
             <param-name>cors.allowed.origins</param-name>
-            <param-value>http://10.44.112.51:8080 https://eds.endeavourhealth.net http://35.177.247.26:8080 https://deveds.endeavourhealth.net</param-value>
+            <param-value>*</param-value>
         </init-param>
         <init-param>
             <param-name>cors.allowed.methods</param-name>
@@ -85,19 +85,6 @@
     </filter>
     <filter-mapping>
         <filter-name>CorsFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
-        <filter-name>HttpHeaderSecurityFilter</filter-name>
-        <filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
-        <init-param>
-            <param-name>xssProtectionEnabled</param-name>
-            <param-value>1</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>HttpHeaderSecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
@@ -132,14 +119,4 @@
     <security-role>
         <role-name>eds_user</role-name>
     </security-role>
-
-
-    <session-config>
-        <session-timeout>60</session-timeout>
-        <cookie-config>
-            <http-only>true</http-only>
-            <secure>true</secure>
-        </cookie-config>
-        <tracking-mode>COOKIE</tracking-mode>
-    </session-config>
 </web-app>
