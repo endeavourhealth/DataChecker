@@ -29,15 +29,19 @@ export class EpisodeViewComponent {
 	set episodes(episodes : UIEpisodeOfCare[]) {
 		if (episodes) {
 			this.currentEpisodes = linq(episodes)
-				.Where(t => t.period.end == null)
+				.Where(t => !this.isPast(t))
 				.OrderByDescending(t => t.period.start.date)
 				.ToArray();
 			this.pastEpisodes = linq(episodes)
-				.Where(t => t.period.end != null)
+				.Where(t => this.isPast(t))
 				.OrderByDescending(t => t.period.start.date)
 				.ToArray();
 			this.showTimeLine();
 		}
+	}
+
+	private isPast(episode : UIEpisodeOfCare) : boolean {
+		return	(episode.period.end != null) || (episode.status == 'finished') || (episode.status == 'cancelled');
 	}
 
 	@Output() episodeChange: EventEmitter<UIEpisodeOfCare> = new EventEmitter<UIEpisodeOfCare>();

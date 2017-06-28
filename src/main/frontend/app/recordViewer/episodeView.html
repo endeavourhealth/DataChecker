@@ -14,7 +14,7 @@
 				<div class="panel hover-box" [ngClass]="item.managingOrganisation.type | locationClass" (click)="selectEpisode(item)">
 					<div class="panel-heading">
 						<h4 class="panel-title"><i class="fa" [ngClass]="item.managingOrganisation.type | locationIcon"></i> {{item.managingOrganisation.name}}</h4>
-						<small>{{item.patient.name | cuiName }}</small>
+						<small *ngIf="item.status"><b>Status: </b>{{item.status}}</small>
 					</div>
 					<div class="panel-body" [ngClass]="{'bg-info' : item == _hoverEpisode }">
 						Start: <b>{{item.period.start | cuiDate}}</b>
@@ -33,7 +33,11 @@
 			<div *ngFor="let item of pastEpisodes" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 				<div class="panel hover-box" [ngClass]="item.managingOrganisation.type | locationClass" (click)="selectEpisode(item)">
 					<div class="panel-heading">
-						<h4 class="panel-title"><i class="fa" [ngClass]="item.managingOrganisation.type | locationIcon"></i> {{item.managingOrganisation.name}}</h4>
+						<h4 class="panel-title">
+							<i class="fa" [ngClass]="item.managingOrganisation.type | locationIcon"></i>
+							<span [ngStyle]="{'text-decoration': (item.status == 'cancelled') ? 'line-through' : '' }">{{item.managingOrganisation.name}}</span>
+						</h4>
+						<small *ngIf="item.status"><b>Status: </b>{{item.status}}</small>
 					</div>
 					<div class="panel-body" [ngClass]="{'bg-info' : item == _hoverEpisode }">
 						Start: <b>{{item.period.start | cuiDate}}</b><br>
