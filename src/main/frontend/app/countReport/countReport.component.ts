@@ -4,7 +4,7 @@ import {CountReportService} from "./countReport.service";
 import {ReportParamsDialog} from "./reportParams.dialog";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FolderNode} from "eds-common-js/dist/folder/models/FolderNode";
-import {FolderItem} from "eds-common-js/dist/folder/models/FolderContent";
+import {FolderItem} from "eds-common-js/dist/folder/models/FolderItem";
 import {ItemType} from "eds-common-js/dist/folder/models/ItemType";
 import {SecurityService} from "eds-common-js";
 import {ItemSummaryList} from "eds-common-js/dist/library/models/ItemSummaryList";

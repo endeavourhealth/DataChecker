@@ -9,6 +9,7 @@ import {UIPerson} from "./models/resources/admin/UIPerson";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 import {Observable} from "rxjs";
 import {linq} from "eds-common-js";
+import {UIInternalIdentifier} from "./models/UIInternalIdentifier";
 
 @Component({
 		template : require('./recordViewer.html')
@@ -71,7 +72,7 @@ export class RecordViewerComponent {
 
 			let o : Observable<UIPatient>[] = linq(vm.episodes)
 				.Select(e => e.patient.patientId)
-				.Distinct()
+				.DistinctBy(p => this.buildUniqueId(p))
 				.Select(p => vm.recordViewerService.getPatient(p))
 				.ToArray();
 
@@ -80,6 +81,10 @@ export class RecordViewerComponent {
 					(result) => this.setPatientRecord(result),
 					(error) => this.logger.error("Failed to load episode", error, "Error")
 				);
+		}
+
+		buildUniqueId(id : UIInternalIdentifier) : string {
+			return id.serviceId + ',' + id.systemId + ',' + id.resourceId;
 		}
 
 		public setPatientRecord(patients: UIPatient[]): void {

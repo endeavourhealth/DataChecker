@@ -4,6 +4,7 @@ import {UIEpisodeOfCare} from "../models/resources/clinical/UIEpisodeOfCare";
 import {linq} from "eds-common-js";
 import {DemographicsDialog} from "./demographics.dialog";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {UIDate} from "../models/types/UIDate";
 
 @Component({
 	selector : 'precis',
@@ -24,13 +25,13 @@ export class PrecisComponent {
 			return 'Multiple';
 	}
 
-	getPeriodStart() : Date {
+	getPeriodStart() : UIDate {
 		return linq(this.episodes)
 			.Select(e => e.period.start)
 			.Min();
 	}
 
-	getPeriodEnd() : Date {
+	getPeriodEnd() : UIDate {
 		return linq(this.episodes)
 			.Select(e => e.period.end)
 			.Max();
