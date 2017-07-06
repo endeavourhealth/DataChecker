@@ -21,6 +21,9 @@ import org.endeavourhealth.transform.ui.models.resources.admin.UIPatient;
 import org.endeavourhealth.transform.ui.models.resources.clinicial.*;
 import org.endeavourhealth.transform.ui.models.types.*;
 import org.endeavourhealth.transform.ui.transforms.UITransform;
+import org.endeavourhealth.transform.ui.transforms.admin.UILocationTransform;
+import org.endeavourhealth.transform.ui.transforms.admin.UIOrganisationTransform;
+import org.endeavourhealth.transform.ui.transforms.admin.UIPractitionerTransform;
 import org.endeavourhealth.transform.ui.transforms.clinical.UIClinicalTransform;
 import org.hl7.fhir.instance.model.*;
 import org.keycloak.representations.AccessToken;
@@ -470,7 +473,66 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 		return getClinicalResourceResponse(serviceId, systemId, patientId, FamilyMemberHistory.class, UIFamilyMemberHistory.class);
 	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getPractitioner")
+	public Response getPractitioner(@Context SecurityContext sc,
+																	 @QueryParam("serviceId") UUID serviceId,
+																	 @QueryParam("systemId") UUID systemId,
+																	 @QueryParam("practitionerId") UUID practitionerId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Practitioner",
+				"PractitionerId", practitionerId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getPractitioner");
+
+		Practitioner practitioner = ResourceFetcher.getSingleResourceByService(serviceId, systemId, practitionerId, Practitioner.class);
+
+		return buildResponse(UIPractitionerTransform.transform(practitioner));
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getOrganisation")
+	public Response getOrganisation(@Context SecurityContext sc,
+																	@QueryParam("serviceId") UUID serviceId,
+																	@QueryParam("systemId") UUID systemId,
+																	@QueryParam("organisationId") UUID organisationId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Organisation",
+				"OrganisationId", organisationId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getOrganisation");
+
+		Organization organization= ResourceFetcher.getSingleResourceByService(serviceId, systemId, organisationId, Organization.class);
+
+		return buildResponse(UIOrganisationTransform.transform(organization));
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getLocation")
+	public Response getLocation(@Context SecurityContext sc,
+																	@QueryParam("serviceId") UUID serviceId,
+																	@QueryParam("systemId") UUID systemId,
+																	@QueryParam("locationId") UUID locationId) throws Exception {
+		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+				"Location",
+				"LocationId", locationId,
+				"ServiceId", serviceId,
+				"SystemId", systemId);
+		LOG.debug("getLocation");
+
+		Location location = ResourceFetcher.getSingleResourceByService(serviceId, systemId, locationId, Location.class);
+
+		return buildResponse(UILocationTransform.transform(location));
+	}	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private static void validateIdentifiers(UUID serviceId, UUID systemId, UUID patientId) {
 		Validate.notNull(serviceId, "serviceId");
@@ -487,7 +549,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		references.addAll(patient.getCareProvider());
 		ReferencedResources referencedResources = getReferencedResources(serviceId, systemId, patientId, references);
 
-		UIPatient uiPatient = UITransform.transformPatient(patient, referencedResources);
+		UIPatient uiPatient = UITransform.transformPatient(serviceId, systemId, patient, referencedResources);
 
 		return uiPatient
 				.setPatientId(new UIInternalIdentifier()
@@ -523,7 +585,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		List<Reference> references = transform.getReferences(resources);
 		ReferencedResources referencedResources = getReferencedResources(serviceId, systemId, patientId, references);
 
-		return transform.transform(resources, referencedResources);
+		return transform.transform(serviceId, systemId, resources, referencedResources);
 	}
 
 	private static ReferencedResources getReferencedResources(UUID serviceId, UUID systemId, UUID patientId, List<Reference> references) throws Exception {
@@ -533,17 +595,14 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		List<UUID> locationIds = getIdsOfType(references, ResourceType.Location);
 		referencedResources.setLocations(ResourceFetcher.getResourcesByService(serviceId, systemId, locationIds, Location.class));
 
-		List<UUID> practitionerIds = getIdsOfType(references, ResourceType.Practitioner);
-		referencedResources.setPractitioners(ResourceFetcher.getResourcesByService(serviceId, systemId, practitionerIds, Practitioner.class));
-
 		List<UUID> organisationIds = getIdsOfType(references, ResourceType.Organization);
 		referencedResources.setOrganisations(ResourceFetcher.getResourcesByService(serviceId, systemId, organisationIds, Organization.class));
 
 		referencedResources.setMedications(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Medication.class));
 
-		referencedResources.setMedicationStatements(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, MedicationStatement.class), referencedResources);
+		referencedResources.setMedicationStatements(serviceId, systemId, ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, MedicationStatement.class), referencedResources);
 
-		referencedResources.setObservations(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Observation.class), referencedResources);
+		referencedResources.setObservations(serviceId, systemId, ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Observation.class), referencedResources);
 
 		return referencedResources;
 	}

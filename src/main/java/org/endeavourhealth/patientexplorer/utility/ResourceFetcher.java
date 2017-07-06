@@ -5,9 +5,7 @@ import org.endeavourhealth.core.data.ehr.ResourceRepository;
 import org.endeavourhealth.core.data.ehr.models.ResourceByPatient;
 import org.endeavourhealth.core.data.ehr.models.ResourceByService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResourceFetcher {
@@ -43,8 +41,8 @@ public class ResourceFetcher {
         return parse(resources, resourceType);
     }
 
-    public static <T> T getSingleResourceByService(UUID serviceId, UUID systemId, List<UUID> resourceIds, Class<T> resourceType) throws Exception {
-        List<T> resources = getResourcesByService(serviceId, systemId, resourceIds, resourceType);
+    public static <T> T getSingleResourceByService(UUID serviceId, UUID systemId, UUID resourceId, Class<T> resourceType) throws Exception {
+        List<T> resources = getResourcesByService(serviceId, systemId, Collections.singletonList(resourceId), resourceType);
 
         return ensureSingleResource(resources, resourceType);
     }

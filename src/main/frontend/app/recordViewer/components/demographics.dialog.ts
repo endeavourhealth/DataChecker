@@ -4,6 +4,7 @@ import {UIPatient} from "../models/resources/admin/UIPatient";
 import {UICodeableConcept} from "../models/types/UICodeableConcept";
 import {UIPractitioner} from "../models/resources/admin/UIPractitioner";
 import {UIOrganisation} from "../models/resources/admin/UIOrganisation";
+import {AdminCacheService} from "../adminCache.service";
 
 @Component({
     selector: 'ngbd-modal-content',
@@ -20,7 +21,7 @@ export class DemographicsDialog implements OnInit{
 		return modalRef;
 	}
 
-	constructor(protected activeModal: NgbActiveModal) {
+	constructor(private adminCache : AdminCacheService, protected activeModal: NgbActiveModal) {
 	}
 
 	ngOnInit() {
@@ -31,7 +32,7 @@ export class DemographicsDialog implements OnInit{
 			return;
 
 		if (this.person.carerPractitioners && this.person.carerPractitioners.length > 0)
-			this.usualGP = this.person.carerPractitioners[0];
+			this.usualGP = this.adminCache.getPractitioner(this.person.carerPractitioners[0]);
 
 		if (this.person.carerOrganisations && this.person.carerOrganisations.length > 0)
 			this.usualGPPractice = this.person.carerOrganisations[0];

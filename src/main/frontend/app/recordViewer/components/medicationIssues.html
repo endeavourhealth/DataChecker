@@ -19,7 +19,7 @@
 										<tr *ngIf="!issues.length > 0"><td colspan="4"><i>(no issues found)</i></td></tr>
 										<tr *ngFor="let issue of issues">
 														<td>{{issue.date | cuiDate}}</td>
-											<td>{{issue.prescriber?.name | cuiName }}</td>
+											<td>{{getPractitionerName(issue.prescriber) | cuiName }}</td>
 											<td>{{issue.quantity | cuiQuantity}}</td>
 											<td>{{issue.expectedDuration}}</td>
 												</tr>

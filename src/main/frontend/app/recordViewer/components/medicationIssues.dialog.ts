@@ -1,6 +1,8 @@
 import {Component, Input} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {UIMedicationOrder} from "../models/resources/clinical/UIMedicationOrder";
+import {AdminCacheBaseComponent} from "./adminCacheBaseComponent";
+import {AdminCacheService} from "../adminCache.service";
 
 // enum KeyCodes {
 // 		ReturnKey = 13,
@@ -15,7 +17,7 @@ import {UIMedicationOrder} from "../models/resources/clinical/UIMedicationOrder"
     selector: 'ngbd-modal-content',
     template: require('./medicationIssues.html')
 })
-export class MedicationIssuesDialog {
+export class MedicationIssuesDialog extends AdminCacheBaseComponent {
 	@Input() issues: UIMedicationOrder[];
 
 	public static open(modalService: NgbModal, issues: UIMedicationOrder[]) {
@@ -24,8 +26,8 @@ export class MedicationIssuesDialog {
 		return modalRef;
 	}
 
-	constructor(protected activeModal: NgbActiveModal) {
-
+	constructor(adminCache : AdminCacheService, protected activeModal: NgbActiveModal) {
+		super(adminCache);
 	}
 
 	close() {

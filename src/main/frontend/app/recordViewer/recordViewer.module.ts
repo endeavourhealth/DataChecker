@@ -32,6 +32,7 @@ import {CommonModule, ControlsModule, DialogsModule, LoggerModule} from 'eds-com
 import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 import {DemographicsDialog} from "./components/demographics.dialog";
 import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
+import {AdminCacheService} from "./adminCache.service";
 
 @NgModule({
 	imports : [
@@ -92,7 +93,8 @@ import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
 	],
 	providers :
 	[
-		RecordViewerService
+		RecordViewerService,
+		AdminCacheService
 	],
 	exports : [
 		CodeSignificance,

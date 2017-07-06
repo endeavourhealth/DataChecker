@@ -1,28 +1,25 @@
-import {UIPractitioner} from "../admin/UIPractitioner";
-import {UICode} from "../../types/UICode";
 import {UIPeriod} from "../../types/UIPeriod";
 import {UIResource} from "../UIResource";
-import {UIOrganisation} from "../admin/UIOrganisation";
 import {UICodeableConcept} from "../../types/UICodeableConcept";
-import {UILocation} from "../admin/UILocation";
 import {UIDate} from "../../types/UIDate";
+import {UIInternalIdentifier} from "../../UIInternalIdentifier";
 
 export class UIEncounter extends UIResource {
     status: string;
     class_ : string;
     types : UICodeableConcept[];
-    performedBy: UIPractitioner;
-    enteredBy: UIPractitioner;
+    performedBy: UIInternalIdentifier;
+    enteredBy: UIInternalIdentifier;
     reason: UICodeableConcept[];
     period: UIPeriod;
-    serviceProvider : UIOrganisation;
+    serviceProvider : UIInternalIdentifier;
     encounterSource : UICodeableConcept;
-    location : UILocation;
-    referredBy : UIPractitioner;
+    location : UIInternalIdentifier;
+    referredBy : UIInternalIdentifier;
     messageType : UICodeableConcept;
     episodeOfCare : string;
     admitted : UIDate;
     discharged : UIDate;
-    dischargeLocation : UILocation;
+    dischargeLocation : UIInternalIdentifier;
     dischargeDisposition : UICodeableConcept;
 }

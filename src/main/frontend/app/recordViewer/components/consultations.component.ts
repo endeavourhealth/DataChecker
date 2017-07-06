@@ -6,12 +6,19 @@ import {TreeComponent} from "angular2-tree-component";
 import {linq} from "eds-common-js";
 import {TreeNode} from "../models/TreeNode";
 import {UIEpisodeOfCare} from "../models/resources/clinical/UIEpisodeOfCare";
+import {UIPractitioner} from "../models/resources/admin/UIPractitioner";
+import {AdminCacheService} from "../adminCache.service";
+import {UIHumanName} from "../models/types/UIHumanName";
+import {UIInternalIdentifier} from "../models/UIInternalIdentifier";
+import {UIOrganisation} from "../models/resources/admin/UIOrganisation";
+import {UILocation} from "../models/resources/admin/UILocation";
+import {AdminCacheBaseComponent} from "./adminCacheBaseComponent";
 
 @Component({
 	selector : 'consultations',
 	template : require('./consultations.html')
 })
-export class ConsultationsComponent implements OnChanges {
+export class ConsultationsComponent extends AdminCacheBaseComponent implements OnChanges {
 	@Input() consultations : UIEncounter[] = [];
 	@Input() episodes : UIEpisodeOfCare[] = [];
 	@Input() filterEpisode : UIEpisodeOfCare;
@@ -20,6 +27,10 @@ export class ConsultationsComponent implements OnChanges {
 	episodeMap : Map<string, TreeNode>;
 	dateTreeData : TreeNode[] = [];
 	filteredConsultations : UIEncounter[] = [];
+
+	constructor(adminCache : AdminCacheService) {
+		super(adminCache);
+	}
 
 	ngOnChanges(): void {
 		this.dateTreeData = [
@@ -162,5 +173,4 @@ export class ConsultationsComponent implements OnChanges {
 
 		return yearNode;
 	}
-
 }

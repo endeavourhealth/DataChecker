@@ -1,17 +1,19 @@
 import {Component, Input} from "@angular/core";
 import {UIMedicationOrder} from "../models/resources/clinical/UIMedicationOrder";
 import {UIMedicationStatement} from "../models/resources/clinical/UIMedicationStatement";
-import {linq, LoggerService, MessageBoxDialog} from "eds-common-js";
+import {linq} from "eds-common-js";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {MedicationIssuesDialog} from "./medicationIssues.dialog";
 import {List} from "linqts/dist/linq";
 import {UIHumanName} from "../models/types/UIHumanName";
+import {AdminCacheService} from "../adminCache.service";
+import {AdminCacheBaseComponent} from "./adminCacheBaseComponent";
 
 @Component({
 	selector : 'medication',
 	template : require('./medication.html')
 })
-export class MedicationComponent {
+export class MedicationComponent extends AdminCacheBaseComponent {
 	@Input() title : string;
 	@Input() medication : UIMedicationStatement[];
 	@Input() medicationOrders : UIMedicationOrder[];
@@ -19,7 +21,8 @@ export class MedicationComponent {
 	@Input() placeholder : string;
 	private blockHide : boolean = false;
 
-	constructor(protected $modal : NgbModal) {
+	constructor(adminCache : AdminCacheService, protected $modal : NgbModal) {
+		super(adminCache);
 	}
 
 	toggleDetail(med : any) {
@@ -32,11 +35,11 @@ export class MedicationComponent {
 	getPrescriber(med : UIMedicationStatement) : UIHumanName {
 		let latestOrder : UIMedicationOrder = this.getIssues(med.id).FirstOrDefault();
 
-		if (latestOrder && latestOrder.prescriber && latestOrder.prescriber.name)
-			return latestOrder.prescriber.name;
+		if (latestOrder && latestOrder.prescriber)
+			return this.getPractitionerName(latestOrder.prescriber);
 
 		if (med.prescriber)
-			return med.prescriber.name;
+			return this.getPractitionerName(med.prescriber);
 
 		return null;
 	}

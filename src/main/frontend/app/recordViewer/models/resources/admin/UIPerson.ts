@@ -26,5 +26,5 @@ export class UIPerson extends UIResource {
 	language : UICodeableConcept;
 	religion : UICodeableConcept;
 	carerOrganisations : UIOrganisation[];
-	carerPractitioners : UIPractitioner[];
+	carerPractitioners : UIInternalIdentifier[];
 }

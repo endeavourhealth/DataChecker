@@ -9,12 +9,14 @@ const Highcharts = require('highcharts/highcharts.src');
 import 'highcharts/adapters/standalone-framework.src';
 import {LocationIcon} from "./pipes/location";
 import {UIOrganisation} from "./models/resources/admin/UIOrganisation";
+import {AdminCacheBaseComponent} from "./components/adminCacheBaseComponent";
+import {AdminCacheService} from "./adminCache.service";
 
 @Component({
 	selector : 'episodeView',
 	template : require('./episodeView.html')
 })
-export class EpisodeViewComponent {
+export class EpisodeViewComponent extends AdminCacheBaseComponent {
 	private UNKNOWN : number = 2;
 	private GP : number = 1;
 	private COMMUNITY : number = -1;
@@ -51,7 +53,8 @@ export class EpisodeViewComponent {
 	public currentEpisodes: UIEpisodeOfCare[];
 	public pastEpisodes: UIEpisodeOfCare[];
 
-	constructor(protected logger: LoggerService, protected recordViewerService : RecordViewerService) {
+	constructor(adminCache : AdminCacheService, protected logger: LoggerService, protected recordViewerService : RecordViewerService) {
+		super(adminCache);
 	}
 
 	viewAll() {

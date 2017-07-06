@@ -1,13 +1,13 @@
 import {UICodeableConcept} from "../../types/UICodeableConcept";
 import {UIDate} from "../../types/UIDate";
-import {UIPractitioner} from "../admin/UIPractitioner";
 import {UIResource} from "../UIResource";
+import {UIInternalIdentifier} from "../../UIInternalIdentifier";
 
 export class UIClinicalResource extends UIResource {
     code: UICodeableConcept;
-    effectivePractitioner: UIPractitioner;
+    effectivePractitioner: UIInternalIdentifier;
     effectiveDate: UIDate;
-    recordingPractitioner: UIPractitioner;
+    recordingPractitioner: UIInternalIdentifier;
     recordedDate: UIDate;
     notes: String;
 }

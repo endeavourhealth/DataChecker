@@ -23,7 +23,7 @@
 							<tr *ngIf="problem.hasAbated"><td>Has abated?</td><td> : <b>Yes</b></td></tr>
 							<tr *ngIf="problem.hasAbated"><td>Abatement date</td><td> : <b>{{problem.abatementDate | cuiDate}}</b></td></tr>
 							<tr *ngIf="problem.lastReviewDate"><td>Last review date</td><td> : <b>{{problem.lastReviewDate | cuiDate}}</b></td></tr>
-							<tr *ngIf="problem.lastReviewer"><td>Last reviewer</td><td> : <b>{{problem.lastReviewer.name | cuiName}}</b></td></tr>
+							<tr *ngIf="problem.lastReviewer"><td>Last reviewer</td><td> : <b>{{getPractitionerName(problem.lastReviewer) | cuiName}}</b></td></tr>
 						</tbody>
 					</table>
 				</div>

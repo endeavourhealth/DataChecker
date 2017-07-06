@@ -15,6 +15,9 @@ import {UIMedicationStatement} from "./models/resources/clinical/UIMedicationSta
 import {UIPerson} from "./models/resources/admin/UIPerson";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
+import {UIPractitioner} from "./models/resources/admin/UIPractitioner";
+import {UIOrganisation} from "./models/resources/admin/UIOrganisation";
+import {UILocation} from "./models/resources/admin/UILocation";
 
 @Injectable()
 export class RecordViewerService extends BaseHttp2Service {
@@ -97,5 +100,33 @@ export class RecordViewerService extends BaseHttp2Service {
 		params.append('patientId', patientId.resourceId);
 
 		return {search: params};
+	}
+
+	/////////////////////////// ADMIN DATA ///////////////////////////
+	getPractitioner(practitionerId : UIInternalIdentifier) : Observable<UIPractitioner> {
+		let params = new URLSearchParams();
+		params.append('serviceId', practitionerId.serviceId);
+		params.append('systemId', practitionerId.systemId);
+		params.append('practitionerId', practitionerId.resourceId);
+
+		return this.httpGet('api/recordViewer/getPractitioner', {search: params});
+	}
+
+	getOrganisation(organisationId : UIInternalIdentifier) : Observable<UIOrganisation> {
+		let params = new URLSearchParams();
+		params.append('serviceId', organisationId.serviceId);
+		params.append('systemId', organisationId.systemId);
+		params.append('organisationId', organisationId.resourceId);
+
+		return this.httpGet('api/recordViewer/getOrganisation', {search: params});
+	}
+
+	getLocation(locationId : UIInternalIdentifier) : Observable<UILocation> {
+		let params = new URLSearchParams();
+		params.append('serviceId', locationId.serviceId);
+		params.append('systemId', locationId.systemId);
+		params.append('locationId', locationId.resourceId);
+
+		return this.httpGet('api/recordViewer/getLocation', {search: params});
 	}
 }

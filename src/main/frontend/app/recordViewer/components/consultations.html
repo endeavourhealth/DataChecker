@@ -45,7 +45,7 @@
 					<td>
 						<div>{{ consultation.period.start | cuiDateTime }} &nbsp;</div>
 						<div>{{ consultation.encounterSource?.text }} &nbsp;</div>
-						<div *ngIf="consultation.showDetail && consultation.admitted" class="probl"><b>Admitted : </b>{{consultation.admitted | cuiDateTime}}</div>
+						<div *ngIf="consultation.showDetail && consultation.admitted"><b>Admitted : </b>{{consultation.admitted | cuiDateTime}}</div>
 					</td>
 					<td>
 						<div *ngFor="let reason of consultation.reason">
@@ -53,14 +53,14 @@
 						</div>
 					</td>
 					<td>
-						<div class="problem-term-significance-text">{{consultation.serviceProvider?.name}} &nbsp;</div>
-						<div>{{consultation.location?.name}} <span class="fa fa-info-circle" *ngIf="consultation.location?.description" ngbTooltip="{{consultation.location?.description}}"></span>&nbsp;</div>
+						<div class="problem-term-significance-text">{{ getOrganisationName(consultation.serviceProvider) }} &nbsp;</div>
+						<div>{{getLocation(consultation.location)?.name}} <span class="fa fa-info-circle" *ngIf="getLocation(consultation.location)?.description" ngbTooltip="{{getLocation(consultation.location)?.description}}"></span>&nbsp;</div>
 						<div *ngIf="consultation.showDetail && consultation.discharged"><b>Discharged : </b>{{consultation.discharged | cuiDateTime}}</div>
 					</td>
 					<td>
-						<div class="problem-term-text">{{ consultation.performedBy?.name | cuiName }} &nbsp;</div>
-						<div class="problem-term-text">{{ consultation.referredBy?.name | cuiName }} &nbsp;</div>
-						<div *ngIf="consultation.showDetail && consultation.dischargeLocation"><b>Discharge To : </b>{{consultation.dischargeLocation.name}} <span class="fa fa-info-circle" *ngIf="consultation.dischargeLocation?.description" ngbTooltip="{{consultation.dischargeLocation?.description}}"></span></div>
+						<div class="problem-term-text">{{ getPractitionerName(consultation.performedBy) | cuiName }} &nbsp;</div>
+						<div class="problem-term-text">{{ getPractitionerName(consultation.referredBy) | cuiName }} &nbsp;</div>
+						<div *ngIf="consultation.showDetail && consultation.dischargeLocation"><b>Discharge To : </b>{{ getLocation(consultation.dischargeLocation)?.name}} <span class="fa fa-info-circle" *ngIf="consultation.dischargeLocation?.description" ngbTooltip="{{consultation.dischargeLocation?.description}}"></span></div>
 					</td>
 					<td>
 						<div>{{ consultation.class_ }} &nbsp;</div>
