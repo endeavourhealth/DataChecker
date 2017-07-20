@@ -4,7 +4,7 @@
 	<div class="col-md-12">
 		<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
 			<thead>
-				<th>Authorised</th>
+				<th>Last Issue</th>
 				<th *ngIf="showDateEnded">Ended</th>
 				<th>Medication</th>
 				<th>Type</th>
@@ -13,7 +13,7 @@
 			<tbody>
 				<tr *ngIf="!medication || medication.length == 0"><td colspan="4"><i>{{placeholder}}</i></td></tr>
 				<tr *ngFor="let med of medication" (click)="toggleDetail(med)" [ngClass]="{'collapsed' : !med.showDetail}">
-					<td>{{med.dateAuthorised | cuiDate}}</td>
+					<td>{{med.mostRecentIssue | cuiDate}}</td>
 					<td *ngIf="showDateEnded">{{med.dateEnded | cuiDate}}</td>
 					<td>
 						<span>{{med.medication.code.text}}</span>
@@ -22,7 +22,7 @@
 								<tr><td>Dosage </td><td> : <b>{{med.dosage}}</b></td></tr>
 								<tr><td>Quantity </td><td> : <b>{{med.authorisedQuantity | cuiQuantity}}</b></td></tr>
 								<tr><td>No. of issues </td><td> : <b> {{med.repeatsIssued}} </b><button class="btn btn-xs btn-info" (click)="showIssues(med.id)">View</button></td></tr>
-								<tr><td>Last issue date </td><td> : <b> {{med.mostRecentIssue | cuiDate }}</b></td></tr>
+								<tr><td>Authorised date </td><td> : <b> {{med.dateAuthorised | cuiDate }}</b></td></tr>
 							</table>
 						</div>
 					</td>

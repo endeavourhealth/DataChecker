@@ -71,18 +71,21 @@ export class UIPersonRecord {
     public getAcuteMedication(): UIMedicationStatement[] {
         return linq(this.medication)
           .Where(t=> t.status != 'Completed' && t.authorisationType.code == 'acute')
+					.OrderByDescending(t => this.getMedicationOrderingDate(t))
           .ToArray();
     }
 
     public getRepeatMedication(): UIMedicationStatement[] {
         return linq(this.medication)
 					.Where(t=> t.status != 'Completed' && t.authorisationType.code != 'acute')
+					.OrderByDescending(t => this.getMedicationOrderingDate(t))
 					.ToArray();
     }
 
     public getPastMedication(): UIMedicationStatement[] {
         return linq(this.medication)
 					.Where(t=> t.status == 'Completed')
+					.OrderByDescending(t => this.getMedicationOrderingDate(t))
 					.ToArray();
     }
 
@@ -91,4 +94,14 @@ export class UIPersonRecord {
           .Where(t => t.related && t.related.filter((r) => r.type === 'has-member').length > 0)
           .ToArray();
     }
+
+
+	private getMedicationOrderingDate ( medicationStatement : UIMedicationStatement) : Date {
+		if (medicationStatement == null
+			|| medicationStatement.mostRecentIssue == null)
+
+			return null;
+
+		return medicationStatement.mostRecentIssue.date;
+	}
 }
