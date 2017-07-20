@@ -16,7 +16,7 @@
         <eds-api.version>1.0-SNAPSHOT</eds-api.version>
         <eds-config.version>1.08-SNAPSHOT</eds-config.version>
         <eds-core.version>1.5-SNAPSHOT</eds-core.version>
-        <eds-transforms.version>1.24-SNAPSHOT</eds-transforms.version>
+        <eds-transforms.version>1.26-SNAPSHOT</eds-transforms.version>
 
         <amqp-client.version>3.6.2</amqp-client.version>
         <cassandra-driver.version>3.1.1</cassandra-driver.version>

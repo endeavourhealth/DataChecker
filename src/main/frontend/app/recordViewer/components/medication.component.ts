@@ -54,6 +54,6 @@ export class MedicationComponent extends AdminCacheBaseComponent {
 	private getIssues(medicationId : String) : List<UIMedicationOrder> {
 		return linq(this.medicationOrders)
 			.Where(o => o.medicationStatement && o.medicationStatement.id == medicationId)
-			.OrderByDescending(o => o.date);
+			.OrderByDescending(o => o.date.date);
 	}
 }
