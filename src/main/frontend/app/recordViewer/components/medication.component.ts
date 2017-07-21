@@ -8,6 +8,7 @@ import {List} from "linqts/dist/linq";
 import {UIHumanName} from "../models/types/UIHumanName";
 import {AdminCacheService} from "../adminCache.service";
 import {AdminCacheBaseComponent} from "./adminCacheBaseComponent";
+import {UIDate} from "../models/types/UIDate";
 
 @Component({
 	selector : 'medication',
@@ -55,5 +56,25 @@ export class MedicationComponent extends AdminCacheBaseComponent {
 		return linq(this.medicationOrders)
 			.Where(o => o.medicationStatement && o.medicationStatement.id == medicationId)
 			.OrderByDescending(o => o.date.date);
+	}
+
+	private getLastIssueDate(medicationStatement : UIMedicationStatement) : UIDate {
+		// TODO : CHECK INBOUND DATA AND CALCULATE ON SAVE?
+		if (!medicationStatement.mostRecentIssue) {
+			let latestOrder: UIMedicationOrder = linq(this.medicationOrders)
+				.Where(o => o.medicationStatement && o.medicationStatement.id == medicationStatement.id)
+				.OrderByDescending(o => o.date.date)
+				.FirstOrDefault();
+
+			if (latestOrder)
+				medicationStatement.mostRecentIssue = latestOrder.date;
+			else {
+				medicationStatement.mostRecentIssue = new UIDate();
+				medicationStatement.mostRecentIssue.date = null;
+				medicationStatement.mostRecentIssue.precision = "unknown";
+			}
+		}
+
+		return medicationStatement.mostRecentIssue;
 	}
 }

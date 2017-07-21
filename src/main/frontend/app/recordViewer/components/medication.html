@@ -13,7 +13,7 @@
 			<tbody>
 				<tr *ngIf="!medication || medication.length == 0"><td colspan="4"><i>{{placeholder}}</i></td></tr>
 				<tr *ngFor="let med of medication" (click)="toggleDetail(med)" [ngClass]="{'collapsed' : !med.showDetail}">
-					<td>{{med.mostRecentIssue | cuiDate}}</td>
+					<td>{{getLastIssueDate(med) | cuiDate}}</td>
 					<td *ngIf="showDateEnded">{{med.dateEnded | cuiDate}}</td>
 					<td>
 						<span>{{med.medication.code.text}}</span>
