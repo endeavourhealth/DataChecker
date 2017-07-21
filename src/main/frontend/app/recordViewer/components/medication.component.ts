@@ -60,7 +60,7 @@ export class MedicationComponent extends AdminCacheBaseComponent {
 
 	private getLastIssueDate(medicationStatement : UIMedicationStatement) : UIDate {
 		// TODO : CHECK INBOUND DATA AND CALCULATE ON SAVE?
-		if (!medicationStatement.mostRecentIssue) {
+		if (!medicationStatement.mostRecentIssue && this.medicationOrders) {
 			let latestOrder: UIMedicationOrder = linq(this.medicationOrders)
 				.Where(o => o.medicationStatement && o.medicationStatement.id == medicationStatement.id)
 				.OrderByDescending(o => o.date.date)
