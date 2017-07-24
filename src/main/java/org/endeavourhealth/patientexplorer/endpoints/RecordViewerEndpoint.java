@@ -474,22 +474,39 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		return getClinicalResourceResponse(serviceId, systemId, patientId, Immunization.class, UIImmunisation.class);
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/getFamilyHistory")
-	public Response getFamilyHistory(@Context SecurityContext sc,
-																	 @QueryParam("serviceId") UUID serviceId,
-																	 @QueryParam("systemId") UUID systemId,
-																	 @QueryParam("patientId") UUID patientId) throws Exception {
-		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
-				"Family History",
-				"PatientId", patientId,
-				"ServiceId", serviceId,
-				"SystemId", systemId);
-		LOG.debug("getFamilyHistory");
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getFamilyHistory")
+    public Response getFamilyHistory(@Context SecurityContext sc,
+                                     @QueryParam("serviceId") UUID serviceId,
+                                     @QueryParam("systemId") UUID systemId,
+                                     @QueryParam("patientId") UUID patientId) throws Exception {
+        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+            "Family History",
+            "PatientId", patientId,
+            "ServiceId", serviceId,
+            "SystemId", systemId);
+        LOG.debug("getFamilyHistory");
 
-		return getClinicalResourceResponse(serviceId, systemId, patientId, FamilyMemberHistory.class, UIFamilyMemberHistory.class);
-	}
+        return getClinicalResourceResponse(serviceId, systemId, patientId, FamilyMemberHistory.class, UIFamilyMemberHistory.class);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getTestRequests")
+    public Response getTestRequests(@Context SecurityContext sc,
+                                     @QueryParam("serviceId") UUID serviceId,
+                                     @QueryParam("systemId") UUID systemId,
+                                     @QueryParam("patientId") UUID patientId) throws Exception {
+        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+            "Test Requests",
+            "PatientId", patientId,
+            "ServiceId", serviceId,
+            "SystemId", systemId);
+        LOG.debug("getTestRequests");
+
+        return getClinicalResourceResponse(serviceId, systemId, patientId, DiagnosticOrder.class, UIDiagnosticOrder.class);
+    }
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

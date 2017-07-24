@@ -15,6 +15,7 @@ import {Observable} from "rxjs";
 import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 import {UIDiagnosticReport} from "./models/resources/clinical/UIDiagnosticReport";
+import {UIDiagnosticOrder} from "./models/resources/clinical/UIDiagnosticOrder";
 
 @Component({
 	selector : 'gpView',
@@ -99,6 +100,9 @@ export class GPViewComponent implements AfterViewInit {
 				this.loadAllergies();
 				this.loadMedication();
 				this.loadImmunisations();
+				break;
+			case 'testRequests' :
+				this.loadTestRequests();
 				break;
 		}
 	}
@@ -272,4 +276,22 @@ export class GPViewComponent implements AfterViewInit {
 					.ToArray()
 			);
 	}
+
+	public loadTestRequests(): void {
+		if (this._person.testRequests != null)
+			return;
+
+		let ctrl = this;
+		let observers : Observable<UIDiagnosticOrder[]>[] = linq(ctrl._person.patients)
+			.Select(p => ctrl.recordViewerService.getTestRequests(p.patientId))
+			.ToArray();
+
+		Observable.forkJoin(observers)
+			.subscribe(
+				(result) => ctrl._person.testRequests = linq(result.reduce((a,b) => a.concat(b)))
+					.OrderByDescending(t => t.effectiveDate.date)
+					.ToArray()
+			);
+	}
+
 }

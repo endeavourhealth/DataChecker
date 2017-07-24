@@ -90,6 +90,21 @@
                         </template>
                     </ngb-tab>
 
+										<!------------------------------------------------------------------------------------------------->
+										<!-- Test requests -->
+										<!------------------------------------------------------------------------------------------------->
+										<ngb-tab id="testRequests" title="Test Requests">
+											<template ngbTabContent>
+												<div class="tab-panel">
+													<loadingIndicator [done]="personRecord.testRequests">
+														<div class="container-fluid">
+															<testRequests [testRequests]="personRecord.testRequests"></testRequests>
+														</div>
+													</loadingIndicator>
+												</div>
+											</template>
+										</ngb-tab>
+
                     <!------------------------------------------------------------------------------------------------->
                     <!-- Allergies -->
                     <!------------------------------------------------------------------------------------------------->

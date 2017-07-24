@@ -10,8 +10,8 @@ export interface UIInvestigation {
 	code : UICodeableConcept;
 	recordingPractitioner : UIInternalIdentifier;
 	effectiveDate : UIDate;
-	status : string;
 	encounter : UIEncounter;
 	related : UIObservationRelation[];
 	value? : UIQuantity;
+	status : string;
 }

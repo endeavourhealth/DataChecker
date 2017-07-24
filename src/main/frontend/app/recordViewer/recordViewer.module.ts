@@ -33,6 +33,7 @@ import {MedicationIssuesDialog} from "./components/medicationIssues.dialog";
 import {DemographicsDialog} from "./components/demographics.dialog";
 import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
 import {AdminCacheService} from "./adminCache.service";
+import {TestRequestsComponent} from "./components/testRequests.component";
 
 @NgModule({
 	imports : [
@@ -68,6 +69,7 @@ import {AdminCacheService} from "./adminCache.service";
 		FamilyHistoryComponent,
 			FamilyHistoryConditionComponent,
 		DiaryComponent,
+		TestRequestsComponent,
 
 		CodeSignificance,
 
