@@ -10,6 +10,8 @@ import {UIImmunisation} from "./resources/clinical/UIImmunisation";
 import {UIFamilyHistory} from "./resources/clinical/UIFamilyHistory";
 import {UIMedicationStatement} from "./resources/clinical/UIMedicationStatement";
 import {UIMedicationOrder} from "./resources/clinical/UIMedicationOrder";
+import {UIDiagnosticReport} from "./resources/clinical/UIDiagnosticReport";
+import {UIInvestigation} from "./resources/clinical/UIInvestigation";
 
 export class UIPersonRecord {
     patients: UIPatient[];
@@ -23,6 +25,7 @@ export class UIPersonRecord {
     allergies : UIAllergy[];
     immunisations : UIImmunisation[];
     familyHistory : UIFamilyHistory[];
+    diagnosticReports : UIDiagnosticReport[];
 
     constructor(patients: UIPatient[]) {
         this.patients = patients;
@@ -89,8 +92,9 @@ export class UIPersonRecord {
 					.ToArray();
     }
 
-    public getInvestigations() : UIObservation[] {
-        return linq(this.observations)
+    public getInvestigations() : UIInvestigation[] {
+        return linq(this.observations as Array<UIInvestigation>)
+					.Concat(linq(this.diagnosticReports as Array<UIInvestigation>))
           .Where(t => t.related && t.related.filter((r) => r.type === 'has-member').length > 0)
           .ToArray();
     }

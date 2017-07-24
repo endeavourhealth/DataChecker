@@ -14,6 +14,7 @@ import {LoggerService} from "eds-common-js";
 import {Observable} from "rxjs";
 import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
+import {UIDiagnosticReport} from "./models/resources/clinical/UIDiagnosticReport";
 
 @Component({
 	selector : 'gpView',
@@ -76,6 +77,8 @@ export class GPViewComponent implements AfterViewInit {
 				this.loadProblems();
 				break;
 			case 'investigations' :
+				this.loadDiagnosticReports();
+				// DONT BREAK - LOAD OBS TOO!
 			case 'careHistory' :
 				this.loadObservations();
 				break;
@@ -213,6 +216,24 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.allergies = linq(result.reduce((a,b) => a.concat(b)))
+					.OrderByDescending(t => t.effectiveDate.date)
+					.ToArray()
+			);
+	}
+
+
+	public loadDiagnosticReports(): void {
+		if (this._person.diagnosticReports != null)
+			return;
+
+		let ctrl = this;
+		let observers : Observable<UIDiagnosticReport[]>[] = linq(ctrl._person.patients)
+			.Select(p => ctrl.recordViewerService.getDiagnosticReports(p.patientId))
+			.ToArray();
+
+		Observable.forkJoin(observers)
+			.subscribe(
+				(result) => ctrl._person.diagnosticReports = linq(result.reduce((a,b) => a.concat(b)))
 					.OrderByDescending(t => t.effectiveDate.date)
 					.ToArray()
 			);

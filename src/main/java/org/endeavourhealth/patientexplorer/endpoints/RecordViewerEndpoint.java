@@ -440,7 +440,24 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		return getClinicalResourceResponse(serviceId, systemId, patientId, AllergyIntolerance.class, UIAllergyIntolerance.class);
 	}
 
-	@GET
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getDiagnosticReports")
+    public Response getDiagnosticReports(@Context SecurityContext sc,
+                                 @QueryParam("serviceId") UUID serviceId,
+                                 @QueryParam("systemId") UUID systemId,
+                                 @QueryParam("patientId") UUID patientId) throws Exception {
+        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+            "Diagnostic Reports",
+            "PatientId", patientId,
+            "ServiceId", serviceId,
+            "SystemId", systemId);
+        LOG.debug("getDiagnosticReports");
+
+        return getClinicalResourceResponse(serviceId, systemId, patientId, DiagnosticReport.class, UIDiagnosticReport.class);
+    }
+
+    @GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/getImmunisations")
 	public Response getImmunisations(@Context SecurityContext sc,
