@@ -508,7 +508,25 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
         return getClinicalResourceResponse(serviceId, systemId, patientId, DiagnosticOrder.class, UIDiagnosticOrder.class);
     }
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getReferralRequests")
+    public Response getReferralRequests(@Context SecurityContext sc,
+                                    @QueryParam("serviceId") UUID serviceId,
+                                    @QueryParam("systemId") UUID systemId,
+                                    @QueryParam("patientId") UUID patientId) throws Exception {
+        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+            "Referral Requests",
+            "PatientId", patientId,
+            "ServiceId", serviceId,
+            "SystemId", systemId);
+        LOG.debug("getReferralRequests");
+
+        return getClinicalResourceResponse(serviceId, systemId, patientId, ReferralRequest.class, UIReferral.class);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	@GET

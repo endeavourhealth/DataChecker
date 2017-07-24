@@ -144,6 +144,19 @@
                         </template>
                     </ngb-tab>
 
+										<!------------------------------------------------------------------------------------------------->
+										<!-- Referrals -->
+										<!------------------------------------------------------------------------------------------------->
+										<ngb-tab id="referrals" title="Referrals">
+											<template ngbTabContent>
+												<div class="tab-panel">
+													<loadingIndicator [done]="personRecord.referrals">
+														<referrals [referrals]="personRecord.referrals"></referrals>
+													</loadingIndicator>
+												</div>
+											</template>
+										</ngb-tab>
+
                     <!------------------------------------------------------------------------------------------------->
                     <!-- DIARY -->
                     <!------------------------------------------------------------------------------------------------->

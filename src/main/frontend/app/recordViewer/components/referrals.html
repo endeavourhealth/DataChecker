@@ -1,0 +1,23 @@
+<div class="row">
+	<div class="col-md-12">
+
+		<h4 class="page-sub-header">Referrals <small> ({{referrals?.length}} items)</small></h4>
+
+		<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+			<thead>
+				<th>Date</th>
+				<th>Term</th>
+			</thead>
+			<tbody>
+				<tr *ngIf="!referrals || referrals.length == 0"><td colspan="2"><i>(no referrals)</i></td></tr>
+				<tr *ngFor="let referral of referrals">
+					<td>{{referral.effectiveDate | cuiDate}}</td>
+					<td>
+						<codeTooltip [code]="referral.code"></codeTooltip>
+						<span class="problem-term-text">{{referral.code?.text}}</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

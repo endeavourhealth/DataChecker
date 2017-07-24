@@ -16,6 +16,7 @@ import {UIMedicationOrder} from "./models/resources/clinical/UIMedicationOrder";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 import {UIDiagnosticReport} from "./models/resources/clinical/UIDiagnosticReport";
 import {UIDiagnosticOrder} from "./models/resources/clinical/UIDiagnosticOrder";
+import {UIReferral} from "./models/resources/clinical/UIReferral";
 
 @Component({
 	selector : 'gpView',
@@ -103,6 +104,9 @@ export class GPViewComponent implements AfterViewInit {
 				break;
 			case 'testRequests' :
 				this.loadTestRequests();
+				break;
+			case 'referrals' :
+				this.loadReferrals();
 				break;
 		}
 	}
@@ -294,4 +298,21 @@ export class GPViewComponent implements AfterViewInit {
 			);
 	}
 
+
+	public loadReferrals(): void {
+		if (this._person.referrals != null)
+			return;
+
+		let ctrl = this;
+		let observers : Observable<UIReferral[]>[] = linq(ctrl._person.patients)
+			.Select(p => ctrl.recordViewerService.getReferralRequests(p.patientId))
+			.ToArray();
+
+		Observable.forkJoin(observers)
+			.subscribe(
+				(result) => ctrl._person.referrals = linq(result.reduce((a,b) => a.concat(b)))
+					.OrderByDescending(t => t.effectiveDate.date)
+					.ToArray()
+			);
+	}
 }
