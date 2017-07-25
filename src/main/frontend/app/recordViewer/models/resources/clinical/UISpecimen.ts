@@ -9,11 +9,9 @@ import {UIQuantity} from "../../types/UIQuantity";
 import {UISimpleEvent} from "../UISimpleEvent";
 import {UITest} from "./UITest";
 
-export class UIDiagnosticOrder extends UIResource implements UITest {
+export class UISpecimen extends UIResource implements UITest {
 	effectiveDate : UIDate;
 	recordingPractitioner : UIInternalIdentifier;
-	encounter : UIEncounter;
 	code : UICodeableConcept;
-	events : UISimpleEvent[];
 	status : UISimpleEvent;
 }

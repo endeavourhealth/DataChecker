@@ -93,12 +93,12 @@
 										<!------------------------------------------------------------------------------------------------->
 										<!-- Test requests -->
 										<!------------------------------------------------------------------------------------------------->
-										<ngb-tab id="testRequests" title="Test Requests">
+										<ngb-tab id="tests" title="Tests">
 											<template ngbTabContent>
 												<div class="tab-panel">
 													<loadingIndicator [done]="personRecord.testRequests">
 														<div class="container-fluid">
-															<testRequests [testRequests]="personRecord.testRequests"></testRequests>
+															<tests [tests]="personRecord.getTests()"></tests>
 														</div>
 													</loadingIndicator>
 												</div>

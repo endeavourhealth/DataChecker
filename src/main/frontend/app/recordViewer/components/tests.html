@@ -1,0 +1,27 @@
+<div class="row">
+	<div class="col-md-12">
+
+		<h4 class="page-sub-header">Tests <small> ({{tests?.length}} items)</small></h4>
+
+		<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+			<thead>
+				<th>Date</th>
+				<th>Term</th>
+				<th>Latest Status</th>
+			</thead>
+			<tbody>
+				<tr *ngIf="!tests || tests.length == 0"><td colspan="2"><i>(no test requests)</i></td></tr>
+				<tr *ngFor="let test of tests">
+					<td>{{test.effectiveDate | cuiDate}}</td>
+					<td>
+						<codeTooltip [code]="test.code"></codeTooltip>
+						<span class="problem-term-text">{{test.code.text}}</span>
+					</td>
+					<td>
+						{{test.status?.status}} <span *ngIf="test.status?.date">({{test.status.date | cuiDate}})</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
