@@ -1,20 +1,95 @@
-<h4 class="page-sub-header">{{title}} <small> ({{medication.length}} items)</small></h4>
+<form role="form" class="form-inline">
+	<h4 class="page-sub-header">
+		<div class="form-group">
+			<label for="selectView" style="float:left;padding: 6px 12px 2px 12px;">View </label>
+			<select id="selectView" style="width:auto;" class="form-control selectWidth" [(ngModel)]="viewMode" name="selectView">
+				<option value="current">Current medication</option>
+				<option value="past">Past medication</option>
+				<option value="issues">Issue history</option>
+			</select>
+		</div>
+	</h4>
+</form>
 
-<div class="row">
+<!-- ******** CURRENT VIEW ******** -->
+<div class="row" *ngIf="viewMode == 'current'">
+<div class="col-md-12">
+	<h4>Acute Medication <small>({{getAcuteMedication().length}} items)</small></h4>
+	<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+		<thead>
+			<th class="col-md-6">Medication</th>
+			<th class="col-md-2">Last Issue</th>
+			<th class="col-md-4">Prescriber</th>
+		</thead>
+		<tbody>
+			<tr *ngIf="getAcuteMedication().length == 0"><td colspan="4"><i>No acute medication</i></td></tr>
+			<tr *ngFor="let med of getAcuteMedication()" (click)="toggleDetail(med)" [ngClass]="{'collapsed' : !med.showDetail}">
+				<td>
+					<span>{{med.medication.code.text}}</span>
+					<div class="problem-detail" [hidden]="!med.showDetail">
+						<table>
+							<tr><td>Dosage </td><td> : <b>{{med.dosage}}</b></td></tr>
+							<tr><td>Quantity </td><td> : <b>{{med.authorisedQuantity | cuiQuantity}}</b></td></tr>
+							<tr><td>No. of issues </td><td> : <b> {{med.repeatsIssued}} </b><button class="btn btn-xs btn-info" (click)="showIssues(med.id)">View</button></td></tr>
+							<tr><td>Authorised date </td><td> : <b> {{med.dateAuthorised | cuiDate }}</b></td></tr>
+						</table>
+					</div>
+				</td>
+				<td>{{getLastIssueDate(med) | cuiDate}}</td>
+				<td>{{getPrescriber(med) | cuiName}}</td>
+				<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="col-md-12">
+	<h4>Repeat Medication <small>({{getRepeatMedication().length}} items)</small></h4>
+	<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+		<thead>
+			<th class="col-md-6">Medication</th>
+			<th class="col-md-2">Last Issue</th>
+			<th class="col-md-4">Prescriber</th>
+		</thead>
+		<tbody>
+			<tr *ngIf="getRepeatMedication().length == 0"><td colspan="4"><i>No acute medication</i></td></tr>
+			<tr *ngFor="let med of getRepeatMedication()" (click)="toggleDetail(med)" [ngClass]="{'collapsed' : !med.showDetail}">
+				<td>
+					<span>{{med.medication.code.text}}</span>
+					<div class="problem-detail" [hidden]="!med.showDetail">
+						<table>
+							<tr><td>Dosage </td><td> : <b>{{med.dosage}}</b></td></tr>
+							<tr><td>Quantity </td><td> : <b>{{med.authorisedQuantity | cuiQuantity}}</b></td></tr>
+							<tr><td>No. of issues </td><td> : <b> {{med.repeatsIssued}} </b><button class="btn btn-xs btn-info" (click)="showIssues(med.id)">View</button></td></tr>
+							<tr><td>Authorised date </td><td> : <b> {{med.dateAuthorised | cuiDate }}</b></td></tr>
+						</table>
+					</div>
+				</td>
+				<td>{{getLastIssueDate(med) | cuiDate}}</td>
+				<td>{{getPrescriber(med) | cuiName}}</td>
+				<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</div>
+
+<!-- ******** PAST VIEW ******** -->
+<div class="row" *ngIf="viewMode == 'past'">
 	<div class="col-md-12">
+		<h4>Acute Medication <small>({{getPastMedication().length}} items)</small></h4>
 		<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
 			<thead>
-				<th>Last Issue</th>
-				<th *ngIf="showDateEnded">Ended</th>
-				<th>Medication</th>
-				<th>Type</th>
-				<th>Prescriber</th>
+				<th class="col-md-2">Last Issue</th>
+				<th class="col-md-1">Ended</th>
+				<th class="col-md-5">Medication</th>
+				<th class="col-md-1">Type</th>
+				<th class="col-md-3">Prescriber</th>
 			</thead>
 			<tbody>
-				<tr *ngIf="!medication || medication.length == 0"><td colspan="4"><i>{{placeholder}}</i></td></tr>
-				<tr *ngFor="let med of medication" (click)="toggleDetail(med)" [ngClass]="{'collapsed' : !med.showDetail}">
+				<tr *ngIf="getPastMedication().length == 0"><td colspan="5"><i>No acute medication</i></td></tr>
+				<tr *ngFor="let med of getPastMedication()" (click)="toggleDetail(med)" [ngClass]="{'collapsed' : !med.showDetail}">
 					<td>{{getLastIssueDate(med) | cuiDate}}</td>
-					<td *ngIf="showDateEnded">{{med.dateEnded | cuiDate}}</td>
+					<td>{{med.dateEnded | cuiDate}}</td>
 					<td>
 						<span>{{med.medication.code.text}}</span>
 						<div class="problem-detail" [hidden]="!med.showDetail">
@@ -29,6 +104,32 @@
 					<td>{{med.authorisationType?.display}}</td>
 					<td>{{getPrescriber(med) | cuiName}}</td>
 					<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- ******** ISSUES VIEW ******** -->
+<div class="row" *ngIf="viewMode == 'issues'">
+	<div class="col-md-12">
+		<h4>Medication issues <small>({{getIssues().length}} items)</small></h4>
+		<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+			<thead>
+				<th>Date</th>
+				<th>Medication</th>
+				<th>Prescribed By</th>
+				<th>Quantity</th>
+				<th>Expected Duration</th>
+			</thead>
+			<tbody>
+				<tr *ngIf="!getIssues().length > 0"><td colspan="4"><i>(no issues found)</i></td></tr>
+				<tr *ngFor="let issue of getIssues()">
+					<td>{{issue.date | cuiDate}}</td>
+					<td>{{getIssueDrugName(issue)}}</td>
+					<td>{{getPractitionerName(issue.prescriber) | cuiName }}</td>
+					<td>{{issue.quantity | cuiQuantity}}</td>
+					<td>{{issue.expectedDuration}}</td>
 				</tr>
 			</tbody>
 		</table>

@@ -36,9 +36,7 @@
                         <template ngbTabContent>
                             <div class="tab-panel">
                               <loadingIndicator [done]="personRecord.medication">
-                                <medication title="Acute medication" [medication]="personRecord.getAcuteMedication()" [medicationOrders]="personRecord.medicationOrder" placeholder="(No acute medication)"></medication>
-                                <medication title="Repeat medication" [medication]="personRecord.getRepeatMedication()" [medicationOrders]="personRecord.medicationOrder" placeholder="(No repeat medication)"></medication>
-                                <medication title="Past medication" [medication]="personRecord.getPastMedication()" [medicationOrders]="personRecord.medicationOrder" placeholder="(No past medication)"></medication>
+                                <medication [medication]="personRecord.medication" [medicationOrders]="personRecord.medicationOrder" placeholder="(No medication)"></medication>
                               </loadingIndicator>
                             </div>
                         </template>

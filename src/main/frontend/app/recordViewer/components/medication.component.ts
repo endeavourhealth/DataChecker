@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {UIMedicationOrder} from "../models/resources/clinical/UIMedicationOrder";
 import {UIMedicationStatement} from "../models/resources/clinical/UIMedicationStatement";
 import {linq} from "eds-common-js";
@@ -15,12 +15,11 @@ import {UIDate} from "../models/types/UIDate";
 	template : require('./medication.html')
 })
 export class MedicationComponent extends AdminCacheBaseComponent {
-	@Input() title : string;
 	@Input() medication : UIMedicationStatement[];
 	@Input() medicationOrders : UIMedicationOrder[];
-	@Input() showDateEnded : boolean = false;
 	@Input() placeholder : string;
 	private blockHide : boolean = false;
+	private viewMode : string = 'current';
 
 	constructor(adminCache : AdminCacheService, protected $modal : NgbModal) {
 		super(adminCache);
@@ -34,7 +33,7 @@ export class MedicationComponent extends AdminCacheBaseComponent {
 	}
 
 	getPrescriber(med : UIMedicationStatement) : UIHumanName {
-		let latestOrder : UIMedicationOrder = this.getIssues(med.id).FirstOrDefault();
+		let latestOrder : UIMedicationOrder = this.getMedicationIssues(med.id).FirstOrDefault();
 
 		if (latestOrder && latestOrder.prescriber)
 			return this.getPractitionerName(latestOrder.prescriber);
@@ -47,12 +46,12 @@ export class MedicationComponent extends AdminCacheBaseComponent {
 
 	private showIssues(medicationId : String) {
 		this.blockHide = true;
-		let statementOrders = this.getIssues(medicationId).ToArray();
+		let statementOrders = this.getMedicationIssues(medicationId).ToArray();
 		console.info("Medication Orders:" + statementOrders.length.toString());
 		MedicationIssuesDialog.open(this.$modal, statementOrders);
 	}
 
-	private getIssues(medicationId : String) : List<UIMedicationOrder> {
+	private getMedicationIssues(medicationId : String) : List<UIMedicationOrder> {
 		return linq(this.medicationOrders)
 			.Where(o => o.medicationStatement && o.medicationStatement.id == medicationId)
 			.OrderByDescending(o => o.date.date);
@@ -77,4 +76,76 @@ export class MedicationComponent extends AdminCacheBaseComponent {
 
 		return medicationStatement.mostRecentIssue;
 	}
+
+	public getAcuteMedication(): UIMedicationStatement[] {
+		return linq(this.medication)
+			.Where(t => t.status != 'Completed' && t.authorisationType.code == 'acute')
+			.OrderByDescending(t => this.getMedicationName(t, 'ZZZZZZ'))
+			.ToArray();
+	}
+
+	public getRepeatMedication(): UIMedicationStatement[] {
+		return linq(this.medication)
+			.Where(t => t.status != 'Completed' && t.authorisationType.code != 'acute')
+			.OrderByDescending(t => this.getMedicationName(t, 'ZZZZZZ'))
+			.ToArray();
+	}
+
+	private getMedicationName(medicationStatement : UIMedicationStatement, unknownValue : string = 'Unknown') : string {
+		if (medicationStatement
+			&& medicationStatement.medication
+			&& medicationStatement.medication.code)
+			return medicationStatement.medication.code.text;
+
+		return unknownValue;
+	}
+
+	public getPastMedication(): UIMedicationStatement[] {
+		let groupedMeds = linq(this.medication)
+			.Where(t => t.status == 'Completed')
+			.OrderByDescending(t => this.getMedicationOrderingDate(t))
+			.GroupBy(t => this.getMedicationName(t), g => g);
+
+		return linq(Object.keys(groupedMeds))
+			.Select(key => groupedMeds[key][0])
+			.ToArray();
+	}
+
+	private getMedicationOrderingDate(medicationStatement: UIMedicationStatement): Date {
+		if (medicationStatement == null
+			|| medicationStatement.mostRecentIssue == null)
+
+			return null;
+
+		return medicationStatement.mostRecentIssue.date;
+	}
+
+	private getIssues() : UIMedicationOrder[] {
+		return linq(this.medicationOrders)
+			.OrderByDescending(o => o.date.date)
+			.ToArray();
+	}
+
+	private getIssueDrugName(issue : UIMedicationOrder) : string {
+		return this.getMedicationName(issue.medicationStatement);
+
+		/* if (!issue.medicationStatement || !issue.medicationStatement.id)
+			return "Unknown";
+
+		if (issue.medicationStatement.medication
+		&& issue.medicationStatement.medication.code)
+			return issue.medicationStatement.medication.code.text;
+
+		let medicationStatement : UIMedicationStatement = linq(this.medication)
+			.Where(ms => ms.id == issue.medicationStatement.id)
+			.FirstOrDefault();
+
+		if (medicationStatement) {
+			issue.medicationStatement = medicationStatement;
+			return medicationStatement.medication.code.text;
+		}
+
+		return "Unknown"; */
+	}
+
 }
