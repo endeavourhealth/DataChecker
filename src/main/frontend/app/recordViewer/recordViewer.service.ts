@@ -57,6 +57,13 @@ export class RecordViewerService extends BaseHttp2Service {
 		return this.httpGet('api/recordViewer/findPerson', {search: params});
 	}
 
+	getPerson(nhsNumber : string) : Observable<UIPatient> {
+		var params = new URLSearchParams();
+		params.append('nhsNumber', nhsNumber);
+
+		return this.httpGet('api/recordViewer/getPerson', {search: params});
+	}
+
 	getPatient(patientId: UIInternalIdentifier): Observable<UIPatient> {
 		return this.httpGet('api/recordViewer/getPatient', this.getParams(patientId));
 	}

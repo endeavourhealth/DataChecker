@@ -81,6 +81,25 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		return buildResponse(null);
 	}
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPerson")
+    public Response getPerson(@Context SecurityContext sc, @QueryParam("nhsNumber") String nhsNumber) throws Exception {
+        userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
+            "Get person",
+            "nhsNumber", nhsNumber);
+        LOG.debug("getPerson");
+
+        List<PatientSearch> patients = PatientSearchHelper.searchByNhsNumber(nhsNumber);
+
+        if (patients.size() > 0) {
+            List<UIPatient> result = buildPatientResultList(sc, patients);
+            if (result.size() > 0)
+                return buildResponse(result.get(0));
+        }
+
+        return buildResponse(null);
+    }
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

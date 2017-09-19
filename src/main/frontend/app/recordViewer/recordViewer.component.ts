@@ -10,6 +10,7 @@ import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
 import {Observable} from "rxjs";
 import {linq} from "eds-common-js";
 import {UIInternalIdentifier} from "./models/UIInternalIdentifier";
+import {Transition} from "ui-router-ng2";
 
 @Component({
 		template : require('./recordViewer.html')
@@ -23,7 +24,10 @@ export class RecordViewerComponent {
 		constructor(private $modal: NgbModal,
 								protected logger : LoggerService,
 								protected recordViewerService: RecordViewerService,
-								protected securityService : SecurityService) {
+								protected securityService : SecurityService,
+								private transition: Transition) {
+			if (transition.params()['nhsNumber'])
+				this.loadPatient(transition.params()['nhsNumber']);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +59,16 @@ export class RecordViewerComponent {
 		public clearEpisode() {
 			this.clearPatientRecord();
 			this.filterEpisode = null;
+		}
+
+		private loadPatient(nhsNumber : string) {
+			let vm = this;
+
+			vm.recordViewerService.getPerson(nhsNumber)
+				.subscribe(
+					(result) => vm.setPerson(result),
+					(error) => vm.logger.error("Error navigating to patient", error)
+				);
 		}
 
 	loadEpisodes() {
