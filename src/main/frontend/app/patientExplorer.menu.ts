@@ -4,13 +4,16 @@ import {MenuOption} from "eds-common-js/dist/layout/models/MenuOption";
 
 @Injectable()
 export class PatientExplorerMenuService implements  MenuService {
+	getClientId() : string {
+		return 'eds-data-checker';
+	}
 	getApplicationTitle(): string {
 		return 'Discovery Data Checker';
 	}
 	getMenuOptions():MenuOption[] {
 		return [
-			{caption: 'Patient explorer', state: 'app.recordViewer', icon: 'fa fa-heart'},
-			{caption: 'Standard reports', state: 'app.countReports', icon: 'fa fa-balance-scale'},
+			{caption: 'Patient explorer', state: 'app.recordViewer', icon: 'fa fa-heart', role: 'eds-data-checker:patient-explorer'},
+			{caption: 'Standard reports', state: 'app.countReports', icon: 'fa fa-balance-scale', role: 'eds-data-checker:validation-reports'},
 			// {caption: 'SQL editor', state: 'app.sqlEditor', icon: 'fa fa-database'}
 		];
 	}
