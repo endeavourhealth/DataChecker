@@ -22,6 +22,7 @@ import {UIDiagnosticReport} from "./models/resources/clinical/UIDiagnosticReport
 import {UIDiagnosticOrder} from "./models/resources/clinical/UIDiagnosticOrder";
 import {UIReferral} from "./models/resources/clinical/UIReferral";
 import {UISpecimen} from "./models/resources/clinical/UISpecimen";
+import {UIProcedure} from "./models/resources/clinical/UIProcedure";
 
 @Injectable()
 export class RecordViewerService extends BaseHttp2Service {
@@ -118,6 +119,10 @@ export class RecordViewerService extends BaseHttp2Service {
 
 	getReferralRequests(patientId: UIInternalIdentifier): Observable<UIReferral[]> {
 		return this.httpGet('api/recordViewer/getReferralRequests', this.getParams(patientId));
+	}
+
+	getProcedures(patientId: UIInternalIdentifier): Observable<UIProcedure[]> {
+		return this.httpGet('api/recordViewer/getProcedures', this.getParams(patientId));
 	}
 
 	private getParams(patientId: UIInternalIdentifier): any {

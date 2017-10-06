@@ -16,6 +16,7 @@ import {UIDiagnosticOrder} from "./resources/clinical/UIDiagnosticOrder";
 import {UIReferral} from "./resources/clinical/UIReferral";
 import {UISpecimen} from "./resources/clinical/UISpecimen";
 import {UITest} from "./resources/clinical/UITest";
+import {UIProcedure} from "./resources/clinical/UIProcedure";
 
 export class UIPersonRecord {
 	patients: UIPatient[];
@@ -33,6 +34,7 @@ export class UIPersonRecord {
 	testRequests: UIDiagnosticOrder[];
 	specimens: UISpecimen[];
 	referrals: UIReferral[];
+	procedures : UIProcedure[];
 
 	constructor(patients: UIPatient[]) {
 		this.patients = patients;

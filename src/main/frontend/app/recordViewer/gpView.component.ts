@@ -18,6 +18,7 @@ import {UIDiagnosticReport} from "./models/resources/clinical/UIDiagnosticReport
 import {UIDiagnosticOrder} from "./models/resources/clinical/UIDiagnosticOrder";
 import {UIReferral} from "./models/resources/clinical/UIReferral";
 import {UISpecimen} from "./models/resources/clinical/UISpecimen";
+import {UIProcedure} from "./models/resources/clinical/UIProcedure";
 
 @Component({
 	selector : 'gpView',
@@ -109,6 +110,9 @@ export class GPViewComponent implements AfterViewInit {
 				break;
 			case 'referrals' :
 				this.loadReferrals();
+				break;
+			case 'procedures' :
+				this.loadProcedures();
 				break;
 		}
 	}
@@ -333,4 +337,22 @@ export class GPViewComponent implements AfterViewInit {
 					.ToArray()
 			);
 	}
+
+	public loadProcedures(): void {
+		if (this._person.procedures != null)
+			return;
+
+		let ctrl = this;
+		let observers : Observable<UIProcedure[]>[] = linq(ctrl._person.patients)
+			.Select(p => ctrl.recordViewerService.getProcedures(p.patientId))
+			.ToArray();
+
+		Observable.forkJoin(observers)
+			.subscribe(
+				(result) => ctrl._person.procedures = linq(result.reduce((a,b) => a.concat(b)))
+					.OrderByDescending(t => t.effectiveDate.date)
+					.ToArray()
+			);
+	}
+
 }

@@ -35,6 +35,7 @@ import {CodeTermTooltipComponent} from "./components/codeTermTooltip.component";
 import {AdminCacheService} from "./adminCache.service";
 import {TestsComponent} from "./components/tests.component";
 import {ReferralsComponent} from "./components/referrals.component";
+import {ProceduresComponent} from "./components/procedures.component";
 
 @NgModule({
 	imports : [
@@ -72,6 +73,7 @@ import {ReferralsComponent} from "./components/referrals.component";
 		DiaryComponent,
 		TestsComponent,
 		ReferralsComponent,
+		ProceduresComponent,
 
 		CodeSignificance,
 

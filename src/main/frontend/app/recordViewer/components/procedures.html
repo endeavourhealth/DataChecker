@@ -1,0 +1,18 @@
+<h4 class="page-sub-header">Procedures <small> ({{procedures?.length}} items)</small></h4>
+
+<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+	<thead>
+		<th>Date</th>
+		<th>Term</th>
+	</thead>
+	<tbody>
+		<tr *ngIf="!procedures || procedures.length == 0"><td colspan="2"><i>(no procedures)</i></td></tr>
+		<tr *ngFor="let procedure of procedures">
+			<td>{{procedure.effectiveDate | cuiDate}}</td>
+			<td>
+				<codeTooltip [code]="procedure.code"></codeTooltip>
+				<span class="problem-term-text">{{procedure.code.text}}</span>
+			</td>
+		</tr>
+	</tbody>
+</table>
