@@ -1,6 +1,5 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
-import {LoggerService} from "eds-common-js";
-import {RecordViewerService} from "./recordViewer.service";
+import {LibraryService, LoggerService} from "eds-common-js";
 import {UIPerson} from "./models/resources/admin/UIPerson";
 import {linq} from "eds-common-js";
 import {UIEpisodeOfCare} from "./models/resources/clinical/UIEpisodeOfCare";
@@ -30,6 +29,9 @@ export class EpisodeViewComponent extends AdminCacheBaseComponent {
 	@Input()
 	set episodes(episodes : UIEpisodeOfCare[]) {
 		if (episodes) {
+			linq(episodes)
+				.ForEach(e => this.getSystemName(e));
+
 			this.currentEpisodes = linq(episodes)
 				.Where(t => !this.isPast(t))
 				.OrderByDescending(t => t.period.start.date)
@@ -53,8 +55,24 @@ export class EpisodeViewComponent extends AdminCacheBaseComponent {
 	public currentEpisodes: UIEpisodeOfCare[];
 	public pastEpisodes: UIEpisodeOfCare[];
 
-	constructor(adminCache : AdminCacheService, protected logger: LoggerService, protected recordViewerService : RecordViewerService) {
+	constructor(adminCache : AdminCacheService, protected logger: LoggerService, protected libraryService : LibraryService) {
 		super(adminCache);
+	}
+
+	private getSystemName(episode : UIEpisodeOfCare) {
+		if (episode.systemName)
+			return;
+
+		if (!episode || !episode.patient || !episode.patient.patientId || !episode.patient.patientId.systemId)
+			episode.systemName = "Unknown";
+
+		var vm = this;
+		episode.systemName = "Loading...";
+		vm.libraryService.getLibraryItem(episode.patient.patientId.systemId)
+			.subscribe(
+				(result) => episode.systemName = result.name,
+				(error) => episode.systemName = "Unknown"
+			);
 	}
 
 	viewAll() {

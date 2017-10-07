@@ -14,6 +14,7 @@
 				<div class="panel hover-box" [ngClass]="item.managingOrganisation.type | locationClass" (click)="selectEpisode(item)">
 					<div class="panel-heading">
 						<h4 class="panel-title"><i class="fa" [ngClass]="item.managingOrganisation.type | locationIcon"></i> {{item.managingOrganisation.name}}</h4>
+						<small><b>System: </b>{{item.systemName}}</small><br>
 						<small *ngIf="item.status"><b>Status: </b>{{item.status}}</small>
 					</div>
 					<div class="panel-body" [ngClass]="{'bg-info' : item == _hoverEpisode }">
@@ -37,6 +38,7 @@
 							<i class="fa" [ngClass]="item.managingOrganisation.type | locationIcon"></i>
 							<span [ngStyle]="{'text-decoration': (item.status == 'cancelled') ? 'line-through' : '' }">{{item.managingOrganisation.name}}</span>
 						</h4>
+						<small><b>System: </b>{{item.systemName}}</small><br>
 						<small *ngIf="item.status"><b>Status: </b>{{item.status}}</small>
 					</div>
 					<div class="panel-body" [ngClass]="{'bg-info' : item == _hoverEpisode }">

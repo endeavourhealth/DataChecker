@@ -10,4 +10,5 @@ export class UIEpisodeOfCare extends UIResource {
     managingOrganisation: UIOrganisation;
     period: UIPeriod;
     careManager : UIInternalIdentifier;
+    systemName? : string;
 }
