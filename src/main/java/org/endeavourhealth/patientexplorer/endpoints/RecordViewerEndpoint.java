@@ -110,7 +110,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				"SearchTerm", searchTerms);
 		LOG.debug("findPerson");
 
-		Set<String> userServiceAccessList = SecurityUtils.getOrganisationRoles(sc).keySet();
+		Set<String> userServiceAccessList = getUserAllowedOrganisations(sc); // SecurityUtils.getOrganisationRoles(sc).keySet();
 		List<UIPatient> result = new ArrayList<>();
 
 		if (!StringUtils.isEmpty(searchTerms)) {
@@ -137,7 +137,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 	}
 
 	private List<UIPatient> buildPatientResultList(SecurityContext sc, List<PatientSearch> patientsFound) {
-		List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+		Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
 		List<UIPatient> result = new ArrayList<>();
 		Set<String> addedNhsNumbers = new HashSet<>();
 
@@ -230,7 +230,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 					.distinct()
 					.collect(Collectors.toList());
 
-			List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+			Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
 
 			for (UIInternalIdentifier identifier : uiInternalIdentifiers) {
 				if (!allowedOrgs.stream().anyMatch(o -> o.equals(identifier.getServiceId())))
@@ -261,7 +261,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
-		List<String> allowedOrgs = getUserAllowedOrganisations(sc);
+		Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
 
 		// Get episodes of care for each
 		for (PatientSearch patientSearch : patientSearches) {
@@ -730,8 +730,8 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				.build();
 	}
 
-	private List<String> getUserAllowedOrganisations(SecurityContext sc) {
-		List<String> orgs = new ArrayList<>();
+	private Set<String> getUserAllowedOrganisations(SecurityContext sc) {
+		Set<String> orgs = new HashSet<>();
 
 		AccessToken accessToken = SecurityUtils.getToken(sc);
 		List<Map<String, Object>> orgGroups = (List)accessToken.getOtherClaims().getOrDefault("orgGroups", (Object)null);
