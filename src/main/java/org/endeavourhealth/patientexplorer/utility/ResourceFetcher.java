@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 public class ResourceFetcher {
     public static final ParserPool PARSER_POOL = new ParserPool();
 
-    public static <T> List<T> getResourceByPatient(UUID serviceId, UUID systemId, UUID patientId, Class<T> resourceType) throws Exception {
+    public static <T> List<T> getResourceByPatient(UUID serviceId, UUID patientId, Class<T> resourceType) throws Exception {
         ResourceRepository resourceRepository = new ResourceRepository();
-        List<ResourceByPatient> resourceByPatientList = resourceRepository.getResourcesByPatient(serviceId, systemId, patientId, resourceType.getSimpleName());
+        List<ResourceByPatient> resourceByPatientList = resourceRepository.getResourcesByPatientAllSystems(serviceId, patientId, resourceType.getSimpleName());
 
         List<String> resources = resourceByPatientList
                 .stream()
@@ -23,15 +23,15 @@ public class ResourceFetcher {
         return parse(resources, resourceType);
     }
 
-    public static <T> T getSingleResourceByPatient(UUID serviceId, UUID systemId, UUID patientId, Class<T> resourceType) throws Exception {
-        List<T> resources = getResourceByPatient(serviceId, systemId, patientId, resourceType);
+    public static <T> T getSingleResourceByPatient(UUID serviceId, UUID patientId, Class<T> resourceType) throws Exception {
+        List<T> resources = getResourceByPatient(serviceId, patientId, resourceType);
 
         return ensureSingleResource(resources, resourceType);
     }
 
-    public static <T> List<T> getResourcesByService(UUID serviceId, UUID systemId, List<UUID> resourceIds, Class<T> resourceType) throws Exception {
+    public static <T> List<T> getResourcesByService(UUID serviceId, List<UUID> resourceIds, Class<T> resourceType) throws Exception {
         ResourceRepository resourceRepository = new ResourceRepository();
-        List<ResourceByService> resourceByServiceList = resourceRepository.getResourcesByService(serviceId, systemId, resourceType.getSimpleName(), resourceIds);
+        List<ResourceByService> resourceByServiceList = resourceRepository.getResourcesByServiceAllSystems(serviceId, resourceType.getSimpleName(), resourceIds);
 
         List<String> resources = resourceByServiceList
                 .stream()
@@ -41,8 +41,8 @@ public class ResourceFetcher {
         return parse(resources, resourceType);
     }
 
-    public static <T> T getSingleResourceByService(UUID serviceId, UUID systemId, UUID resourceId, Class<T> resourceType) throws Exception {
-        List<T> resources = getResourcesByService(serviceId, systemId, Collections.singletonList(resourceId), resourceType);
+    public static <T> T getSingleResourceByService(UUID serviceId, UUID resourceId, Class<T> resourceType) throws Exception {
+        List<T> resources = getResourcesByService(serviceId, Collections.singletonList(resourceId), resourceType);
 
         return ensureSingleResource(resources, resourceType);
     }

@@ -15,7 +15,7 @@
 
         <eds-api.version>1.4-SNAPSHOT</eds-api.version>
         <eds-config.version>1.08-SNAPSHOT</eds-config.version>
-        <eds-core.version>1.26-SNAPSHOT</eds-core.version>
+        <eds-core.version>1.27-SNAPSHOT</eds-core.version>
         <eds-transforms.version>1.50-SNAPSHOT</eds-transforms.version>
 
         <amqp-client.version>3.6.2</amqp-client.version>
