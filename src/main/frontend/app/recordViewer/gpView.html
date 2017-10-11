@@ -63,6 +63,21 @@
 	</ngb-tab>
 
 	<!------------------------------------------------------------------------------------------------->
+	<!-- CONDITIONS -->
+	<!------------------------------------------------------------------------------------------------->
+	<ngb-tab id="conditions" title="Conditions">
+		<template ngbTabContent>
+			<div class="tab-panel">
+				<loadingIndicator [done]="personRecord.conditions">
+					<div class="container-fluid">
+						<conditions [conditions]="personRecord.conditions"></conditions>
+					</div>
+				</loadingIndicator>
+			</div>
+		</template>
+	</ngb-tab>
+
+	<!------------------------------------------------------------------------------------------------->
 	<!-- Investigations -->
 	<!------------------------------------------------------------------------------------------------->
 	<ngb-tab id="investigations" title="Investigations">

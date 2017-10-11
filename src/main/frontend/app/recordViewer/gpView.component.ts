@@ -19,6 +19,7 @@ import {UIDiagnosticOrder} from "./models/resources/clinical/UIDiagnosticOrder";
 import {UIReferral} from "./models/resources/clinical/UIReferral";
 import {UISpecimen} from "./models/resources/clinical/UISpecimen";
 import {UIProcedure} from "./models/resources/clinical/UIProcedure";
+import {UICondition} from "./models/resources/clinical/UICondition";
 
 @Component({
 	selector : 'gpView',
@@ -80,9 +81,13 @@ export class GPViewComponent implements AfterViewInit {
 			case 'problems' :
 				this.loadProblems();
 				break;
+			case 'conditions' :
+				this.loadConditions();
+				break;
 			case 'investigations' :
 				this.loadDiagnosticReports();
-				// DONT BREAK - LOAD OBS TOO!
+				this.loadObservations();
+				break;
 			case 'careHistory' :
 				this.loadObservations();
 				break;
@@ -183,6 +188,24 @@ export class GPViewComponent implements AfterViewInit {
 					.ToArray()
 			);
 	}
+
+	public loadConditions(): void {
+		if (this._person.conditions != null)
+			return;
+
+		let ctrl = this;
+		let observers : Observable<UICondition[]>[] = linq(ctrl._person.patients)
+			.Select(p => ctrl.recordViewerService.getConditions(p.patientId))
+			.ToArray();
+
+		Observable.forkJoin(observers)
+			.subscribe(
+				(result) => ctrl._person.conditions = linq(result.reduce((a,b) => a.concat(b)))
+					.OrderByDescending(t => t.effectiveDate.date)
+					.ToArray()
+			);
+	}
+
 
 	public loadObservations(): void {
 		if (this._person.observations != null)

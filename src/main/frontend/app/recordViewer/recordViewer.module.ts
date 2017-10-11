@@ -36,6 +36,7 @@ import {AdminCacheService} from "./adminCache.service";
 import {TestsComponent} from "./components/tests.component";
 import {ReferralsComponent} from "./components/referrals.component";
 import {ProceduresComponent} from "./components/procedures.component";
+import {ConditionsComponent} from "./components/conditions.component";
 
 @NgModule({
 	imports : [
@@ -64,6 +65,7 @@ import {ProceduresComponent} from "./components/procedures.component";
 		ConsultationsComponent,
 		MedicationComponent,
 		ProblemsComponent,
+		ConditionsComponent,
 		CareHistoryComponent,
 		InvestigationsComponent,
 		AllergiesComponent,

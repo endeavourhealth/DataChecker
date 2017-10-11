@@ -1,0 +1,30 @@
+<h4 class="page-sub-header">Conditions <small> ({{conditions?.length}} items)</small></h4>
+
+<table class="table table-condensed table-striped table-hover table-selectable clinical-items-table">
+	<thead>
+		<th>Onset date</th>
+		<th>Problem</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<tr *ngIf="!conditions || conditions.length == 0"><td colspan="3"><i>(no conditions)</i></td></tr>
+		<tr *ngFor="let condition of conditions" (click)="condition.showDetail = !condition.showDetail" [ngClass]="{'collapsed' : !condition.showDetail}">
+			<td>{{condition.effectiveDate | cuiDate}}</td>
+			<td>
+				<codeTooltip [code]="condition.code"></codeTooltip>
+				<span class="problem-term-text">{{condition.code.text}}</span>
+				<span class="problem-associated-text">{{condition.notes}}</span>
+				<div class="problem-detail" [hidden]="!condition.showDetail">
+					<table>
+						<tbody>
+							<tr><td>Onset date</td><td> : <b>{{condition.effectiveDate | cuiDate}}</b></td></tr>
+							<tr *ngIf="condition.hasAbated"><td>Has abated?</td><td> : <b>Yes</b></td></tr>
+							<tr *ngIf="condition.hasAbated"><td>Abatement date</td><td> : <b>{{condition.abatementDate | cuiDate}}</b></td></tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+			<td width="20"><i class="fa toggle-icon" aria-hidden="true"></i></td>
+		</tr>
+	</tbody>
+</table>
