@@ -1,7 +1,7 @@
 package org.endeavourhealth.patientexplorer.endpoints;
 
 import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.data.audit.models.AuditModule;
+import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.database.EkbPostgresProvider;
 import org.endeavourhealth.patientexplorer.database.EkbProvider;
