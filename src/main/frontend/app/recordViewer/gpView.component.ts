@@ -150,7 +150,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.medication = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.dateAuthorised.date)
+					.OrderByDescending(t => { if (t.dateAuthorised) return t.dateAuthorised.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -184,7 +184,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.problems = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -201,7 +201,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.conditions = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -219,7 +219,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.observations = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -236,7 +236,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.diary = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -253,7 +253,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.allergies = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -271,7 +271,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.diagnosticReports = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -288,7 +288,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.immunisations = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -305,7 +305,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.familyHistory = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.recordedDate.date)
+					.OrderByDescending(t => { if (t.recordedDate) return t.recordedDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -322,7 +322,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.testRequests = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -339,7 +339,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.specimens = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -356,7 +356,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.referrals = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
@@ -373,7 +373,7 @@ export class GPViewComponent implements AfterViewInit {
 		Observable.forkJoin(observers)
 			.subscribe(
 				(result) => ctrl._person.procedures = linq(result.reduce((a,b) => a.concat(b)))
-					.OrderByDescending(t => t.effectiveDate.date)
+					.OrderByDescending(t => {if (t.effectiveDate) return t.effectiveDate.date; else return null; })
 					.ToArray()
 			);
 	}
