@@ -1,11 +1,12 @@
 package org.endeavourhealth.patientexplorer.endpoints;
 
-import org.endeavourhealth.core.data.admin.LibraryRepository;
-import org.endeavourhealth.core.data.admin.models.*;
-import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.rdbms.audit.models.AuditAction;
-import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.admin.LibraryDalI;
+import org.endeavourhealth.core.database.dal.admin.models.*;
+import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
 import org.endeavourhealth.common.security.SecurityUtils;
+import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
+import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
 import org.endeavourhealth.core.xml.QueryDocument.*;
 import org.endeavourhealth.core.xml.QueryDocumentSerializer;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
@@ -26,7 +27,8 @@ import java.util.*;
 public final class LibraryEndpoint extends AbstractEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(LibraryEndpoint.class);
-    private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsUiModule.Library);
+    private static final UserAuditDalI userAudit = DalProvider.factoryUserAuditDal(AuditModule.EdsUiModule.Library);
+    private static final LibraryDalI libraryRepository = DalProvider.factoryLibraryDal();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -41,11 +43,11 @@ public final class LibraryEndpoint extends AbstractEndpoint {
         UUID libraryItemUuid = UUID.fromString(uuidStr);
 
         LOG.trace("GettingLibraryItem for UUID {}", libraryItemUuid);
-        LibraryRepository repository = new LibraryRepository();
 
-        ActiveItem activeItem = repository.getActiveItemByItemId(libraryItemUuid);
 
-        Item item = repository.getItemByKey(activeItem.getItemId(), activeItem.getAuditId());
+        ActiveItem activeItem = libraryRepository.getActiveItemByItemId(libraryItemUuid);
+
+        Item item = libraryRepository.getItemByKey(activeItem.getItemId(), activeItem.getAuditId());
         String xml = item.getXmlContent();
 
         LibraryItem ret = QueryDocumentSerializer.readLibraryItemFromXml(xml);
@@ -69,8 +71,6 @@ public final class LibraryEndpoint extends AbstractEndpoint {
             "FolderContents",
             "Folder Id", uuidStr);
 
-        LibraryRepository repository = new LibraryRepository();
-
         UUID folderUuid = UUID.fromString(uuidStr);
 
         LOG.trace("GettingFolderContents for folder {}", folderUuid);
@@ -79,20 +79,21 @@ public final class LibraryEndpoint extends AbstractEndpoint {
 
         List<ActiveItem> childActiveItems = new ArrayList();
 
-        Iterable<ItemDependency> itemDependency = repository.getItemDependencyByDependentItemId(folderUuid, DependencyType.IsContainedWithin.getValue());
+        Iterable<ItemDependency> itemDependency = libraryRepository.getItemDependencyByDependentItemId(folderUuid, DependencyType.IsContainedWithin.getValue());
 
         for (ItemDependency dependency: itemDependency) {
-            Iterable<ActiveItem> item = repository.getActiveItemByAuditId(dependency.getAuditId());
+            Iterable<ActiveItem> item = libraryRepository.getActiveItemByAuditId(dependency.getAuditId());
             for (ActiveItem activeItem: item) {
-                if (activeItem.getIsDeleted()==false)
+                if (!activeItem.isDeleted()) {
                     childActiveItems.add(activeItem);
+                }
             }
         }
 
         HashMap<UUID, Audit> hmAuditsByAuditUuid = new HashMap<>();
         List<Audit> audits = new ArrayList<>();
         for (ActiveItem activeItem: childActiveItems) {
-            Audit audit = repository.getAuditByKey(activeItem.getAuditId());
+            Audit audit = libraryRepository.getAuditByKey(activeItem.getAuditId());
             audits.add(audit);
         }
 
@@ -103,7 +104,7 @@ public final class LibraryEndpoint extends AbstractEndpoint {
         HashMap<UUID, Item> hmItemsByItemUuid = new HashMap<>();
         List<Item> items = new ArrayList<>();
         for (ActiveItem activeItem: childActiveItems) {
-            Item item = repository.getItemByKey(activeItem.getItemId(), activeItem.getAuditId());
+            Item item = libraryRepository.getItemByKey(activeItem.getItemId(), activeItem.getAuditId());
             items.add(item);
         }
 

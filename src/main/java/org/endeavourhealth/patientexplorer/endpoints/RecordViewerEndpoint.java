@@ -5,13 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.endeavourhealth.common.fhir.ReferenceHelper;
 import org.endeavourhealth.common.security.SecurityUtils;
-import org.endeavourhealth.core.data.admin.ServiceRepository;
-import org.endeavourhealth.core.data.admin.models.Service;
-import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.rdbms.audit.models.AuditAction;
-import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
-import org.endeavourhealth.core.rdbms.eds.models.PatientSearch;
-import org.endeavourhealth.core.rdbms.eds.PatientSearchHelper;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.admin.ServiceDalI;
+import org.endeavourhealth.core.database.dal.admin.models.Service;
+import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
+import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
+import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.eds.PatientSearchDalI;
+import org.endeavourhealth.core.database.dal.eds.models.PatientSearch;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.utility.ResourceFetcher;
 import org.endeavourhealth.patientexplorer.utility.SearchTermsParser;
@@ -45,8 +46,9 @@ import java.util.stream.Collectors;
 public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RecordViewerEndpoint.class);
-	private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.RecordViewer);
-	private static final ServiceRepository serviceRepository = new ServiceRepository();
+	private static final UserAuditDalI userAudit = DalProvider.factoryUserAuditDal(AuditModule.EdsPatientExplorerModule.RecordViewer);
+	private static final ServiceDalI serviceRepository = DalProvider.factoryServiceDal();
+	private static final PatientSearchDalI patientSearchDal = DalProvider.factoryPatientSearchDal();
 	//private static final PatientIdentifierRepository identifierRepository = new PatientIdentifierRepository();
 
 	@GET
@@ -56,7 +58,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Service List");
 		LOG.debug("getServices");
 
-		List<UIService> uiServices = UITransform.transformServices(Lists.newArrayList(serviceRepository.getAll()));
+		List<UIService> uiServices = UITransform.transformServices(serviceRepository.getAll());
 
 		return buildResponse(uiServices);
 	}
@@ -70,7 +72,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				"ServiceId", serviceId);
 		LOG.debug("getServiceName");
 
-		List<Service> services = Lists.newArrayList(serviceRepository.getAll());
+		List<Service> services = serviceRepository.getAll();
 		Optional<Service> service = services.stream()
 				.filter(s -> s.getId().equals(serviceId))
 				.findFirst();
@@ -90,7 +92,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
             "nhsNumber", nhsNumber);
         LOG.debug("getPerson");
 
-        List<PatientSearch> patients = PatientSearchHelper.searchByNhsNumber(nhsNumber);
+        List<PatientSearch> patients = patientSearchDal.searchByNhsNumber(nhsNumber);
 
         if (patients.size() > 0) {
             List<UIPatient> result = buildPatientResultList(sc, patients);
@@ -120,15 +122,15 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 			List<PatientSearch> patientsFound = new ArrayList<>();
 
 			if (parser.hasNhsNumber())
-				patientsFound.addAll(PatientSearchHelper.searchByNhsNumber(userServiceAccessList, parser.getNhsNumber()));
+				patientsFound.addAll(patientSearchDal.searchByNhsNumber(userServiceAccessList, parser.getNhsNumber()));
 
 			if (parser.hasEmisNumber())
-				patientsFound.addAll(PatientSearchHelper.searchByLocalId(userServiceAccessList, parser.getEmisNumber()));
+				patientsFound.addAll(patientSearchDal.searchByLocalId(userServiceAccessList, parser.getEmisNumber()));
 
 			if (parser.hasDateOfBirth())
-				patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
+				patientsFound.addAll(patientSearchDal.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
 
-			patientsFound.addAll(PatientSearchHelper.searchByNames(userServiceAccessList, parser.getNames()));
+			patientsFound.addAll(patientSearchDal.searchByNames(userServiceAccessList, parser.getNames()));
 
 			result = buildPatientResultList(sc, patientsFound);
 		}
@@ -146,9 +148,9 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 			if (allowedOrgs.stream().noneMatch(o -> o.equals(searchPatient.getServiceId())))
 				continue;
 
-			UUID serviceId = UUID.fromString(searchPatient.getServiceId());
-			UUID systemId = UUID.fromString(searchPatient.getSystemId());
-			UUID patientId = UUID.fromString(searchPatient.getPatientId());
+			UUID serviceId = searchPatient.getServiceId();
+			UUID systemId = searchPatient.getSystemId();
+			UUID patientId = searchPatient.getPatientId();
 			String nhsNumber = searchPatient.getNhsNumber();
 
 			UIPatient patient;
@@ -173,7 +175,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 						.setDateOfBirth(new UIDate().setDate(searchPatient.getDateOfBirth()));
 			}
 
-			patient.setId(searchPatient.getPatientId());
+			patient.setId(searchPatient.getPatientId().toString());
 
 			if (nhsNumber == null || nhsNumber.isEmpty())
 				result.add(patient);
@@ -210,23 +212,23 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 			List<PatientSearch> patientsFound = new ArrayList<>();
 
 			if (parser.hasNhsNumber())
-				patientsFound.addAll(PatientSearchHelper.searchByNhsNumber(serviceId, systemId, parser.getNhsNumber()));
+				patientsFound.addAll(patientSearchDal.searchByNhsNumber(serviceId, systemId, parser.getNhsNumber()));
 
 			if (parser.hasEmisNumber())
-				patientsFound.addAll(PatientSearchHelper.searchByLocalId(serviceId, systemId, parser.getEmisNumber()));
+				patientsFound.addAll(patientSearchDal.searchByLocalId(serviceId, systemId, parser.getEmisNumber()));
 
 			if (parser.hasDateOfBirth())
-				patientsFound.addAll(PatientSearchHelper.searchByDateOfBirth(serviceId, systemId, parser.getDateOfBirth()));
+				patientsFound.addAll(patientSearchDal.searchByDateOfBirth(serviceId, systemId, parser.getDateOfBirth()));
 
 
-			patientsFound.addAll(PatientSearchHelper.searchByNames(serviceId, systemId, parser.getNames()));
+			patientsFound.addAll(patientSearchDal.searchByNames(serviceId, systemId, parser.getNames()));
 
 			List<UIInternalIdentifier> uiInternalIdentifiers = patientsFound
 					.stream()
 					.map(t -> new UIInternalIdentifier()
-							.setServiceId(UUID.fromString(t.getServiceId()))
-							.setSystemId(UUID.fromString(t.getSystemId()))
-							.setResourceId(UUID.fromString(t.getPatientId())))
+							.setServiceId(t.getServiceId())
+							.setSystemId(t.getSystemId())
+							.setResourceId(t.getPatientId()))
 					.distinct()
 					.collect(Collectors.toList());
 
@@ -255,9 +257,9 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		List<PatientSearch> patientSearches;
 		// Get list of patients by NHS number
 		if (nhsNumber != null && !nhsNumber.isEmpty())
-			patientSearches = PatientSearchHelper.searchByNhsNumber(nhsNumber);
+			patientSearches = patientSearchDal.searchByNhsNumber(nhsNumber);
 		else
-			patientSearches = Collections.singletonList(PatientSearchHelper.searchByPatientId(UUID.fromString(patientId)));
+			patientSearches = Collections.singletonList(patientSearchDal.searchByPatientId(UUID.fromString(patientId)));
 
 		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
@@ -270,15 +272,15 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 			try {
 				UIPatient patient = getPatient(
-						UUID.fromString(patientSearch.getServiceId()),
-						UUID.fromString(patientSearch.getSystemId()),
-						UUID.fromString(patientSearch.getPatientId())
+						patientSearch.getServiceId(),
+						patientSearch.getSystemId(),
+						patientSearch.getPatientId()
 				);
 
 				List<UIEpisodeOfCare> episodesOfCare = getClinicalResources(
-						UUID.fromString(patientSearch.getServiceId()),
-						UUID.fromString(patientSearch.getSystemId()),
-						UUID.fromString(patientSearch.getPatientId()),
+						patientSearch.getServiceId(),
+						patientSearch.getSystemId(),
+						patientSearch.getPatientId(),
 						EpisodeOfCare.class,
 						UIEpisodeOfCare.class
 				);

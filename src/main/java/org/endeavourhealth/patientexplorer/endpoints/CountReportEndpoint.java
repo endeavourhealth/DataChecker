@@ -2,10 +2,11 @@ package org.endeavourhealth.patientexplorer.endpoints;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.endeavourhealth.common.cache.ObjectMapperPool;
-import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.rdbms.audit.models.AuditAction;
-import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
 import org.endeavourhealth.common.security.SecurityUtils;
+import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
+import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.database.CountReportJdbcProvider;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 public final class CountReportEndpoint extends AbstractEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(CountReportEndpoint.class);
-    private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.CountReport);
+    private static final UserAuditDalI userAudit = DalProvider.factoryUserAuditDal(AuditModule.EdsPatientExplorerModule.CountReport);
     private static final CountReportProvider countReportProvider = new CountReportJdbcProvider();
 
     /**

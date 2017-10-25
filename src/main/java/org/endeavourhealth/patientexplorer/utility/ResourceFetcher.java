@@ -1,9 +1,9 @@
 package org.endeavourhealth.patientexplorer.utility;
 
 import org.endeavourhealth.common.cache.ParserPool;
-import org.endeavourhealth.core.data.ehr.ResourceRepository;
-import org.endeavourhealth.core.data.ehr.models.ResourceByPatient;
-import org.endeavourhealth.core.data.ehr.models.ResourceByService;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.ehr.ResourceDalI;
+import org.endeavourhealth.core.database.dal.ehr.models.ResourceWrapper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 public class ResourceFetcher {
     public static final ParserPool PARSER_POOL = new ParserPool();
 
+    private static final ResourceDalI resourceRepository = DalProvider.factoryResourceDal();
+
     public static <T> List<T> getResourceByPatient(UUID serviceId, UUID patientId, Class<T> resourceType) throws Exception {
-        ResourceRepository resourceRepository = new ResourceRepository();
-        List<ResourceByPatient> resourceByPatientList = resourceRepository.getResourcesByPatientAllSystems(serviceId, patientId, resourceType.getSimpleName());
+        List<ResourceWrapper> resourceByPatientList = resourceRepository.getResourcesByPatientAllSystems(serviceId, patientId, resourceType.getSimpleName());
 
         List<String> resources = resourceByPatientList
                 .stream()
@@ -30,8 +31,7 @@ public class ResourceFetcher {
     }
 
     public static <T> List<T> getResourcesByService(UUID serviceId, List<UUID> resourceIds, Class<T> resourceType) throws Exception {
-        ResourceRepository resourceRepository = new ResourceRepository();
-        List<ResourceByService> resourceByServiceList = resourceRepository.getResourcesByServiceAllSystems(serviceId, resourceType.getSimpleName(), resourceIds);
+        List<ResourceWrapper> resourceByServiceList = resourceRepository.getResourcesByServiceAllSystems(serviceId, resourceType.getSimpleName(), resourceIds);
 
         List<String> resources = resourceByServiceList
                 .stream()

@@ -1,7 +1,8 @@
 package org.endeavourhealth.patientexplorer.endpoints;
 
-import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
+import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.database.EkbPostgresProvider;
 import org.endeavourhealth.patientexplorer.database.EkbProvider;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Path("/ekb")
 public final class EkbEndpoint extends AbstractEndpoint {
 	private static final Logger LOG = LoggerFactory.getLogger(EkbEndpoint.class);
-	private UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsUiModule.Ekb);
+	private static final UserAuditDalI userAudit = DalProvider.factoryUserAuditDal(AuditModule.EdsUiModule.Ekb);
 	private EkbProvider ekbProvider = EkbPostgresProvider.INSTANCE;
 
 

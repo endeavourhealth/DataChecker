@@ -1,7 +1,7 @@
 package org.endeavourhealth.patientexplorer.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.endeavourhealth.core.data.admin.models.Item;
+import org.endeavourhealth.core.database.dal.admin.models.Item;
 
 import java.util.UUID;
 

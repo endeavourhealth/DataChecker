@@ -2,11 +2,12 @@ package org.endeavourhealth.patientexplorer.database;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.endeavourhealth.common.config.ConfigManager;
-import org.endeavourhealth.core.data.admin.LibraryRepository;
-import org.endeavourhealth.core.data.admin.ServiceRepository;
-import org.endeavourhealth.core.data.admin.models.ActiveItem;
-import org.endeavourhealth.core.data.admin.models.Item;
-import org.endeavourhealth.core.data.admin.models.Service;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.admin.LibraryDalI;
+import org.endeavourhealth.core.database.dal.admin.ServiceDalI;
+import org.endeavourhealth.core.database.dal.admin.models.ActiveItem;
+import org.endeavourhealth.core.database.dal.admin.models.Item;
+import org.endeavourhealth.core.database.dal.admin.models.Service;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.core.xml.QueryDocument.QueryDocument;
 import org.endeavourhealth.core.xml.QueryDocumentSerializer;
@@ -29,12 +30,12 @@ public class CountReportJdbcProvider implements CountReportProvider {
 
 	@Override
 	public LibraryItem runReport(UUID userUuid, UUID reportUuid, Map<String, String> reportParams) throws Exception {
-		ServiceRepository svcRepo = new ServiceRepository();
+		ServiceDalI svcRepo = DalProvider.factoryServiceDal();
 		Service svc = svcRepo.getById(UUID.fromString(reportParams.get("OrganisationUuid")));
-		String odsCode = svc.getLocalIdentifier();
+		String odsCode = svc.getLocalId();
 
 		LOG.trace("GettingLibraryItem for UUID {}", reportUuid);
-		LibraryRepository repository = new LibraryRepository();
+		LibraryDalI repository = DalProvider.factoryLibraryDal();
 		ActiveItem activeItem = repository.getActiveItemByItemId(reportUuid);
 		Item item = repository.getItemByKey(activeItem.getItemId(), activeItem.getAuditId());
 		LibraryItem countReport = QueryDocumentSerializer.readLibraryItemFromXml(item.getXmlContent());
@@ -281,9 +282,9 @@ public class CountReportJdbcProvider implements CountReportProvider {
 
 	@Override
 	public List<JsonPractitioner> searchPractitioner(String searchData, UUID organisationUuid) throws Exception {
-		ServiceRepository svcRepo = new ServiceRepository();
+		ServiceDalI svcRepo = DalProvider.factoryServiceDal();
 		Service svc = svcRepo.getById(organisationUuid);
-		String odsCode = svc.getLocalIdentifier();
+		String odsCode = svc.getLocalId();
 
 		List<JsonPractitioner> result = new ArrayList<>();
 		Connection conn = getConnection();
@@ -324,7 +325,7 @@ public class CountReportJdbcProvider implements CountReportProvider {
 		return result;
 	}
 
-	private void saveCountReport(LibraryRepository repository, Item item, LibraryItem libraryItem){
+	private void saveCountReport(LibraryDalI repository, Item item, LibraryItem libraryItem) throws Exception {
 		LOG.debug("Saving count report " + libraryItem.getUuid());
 		QueryDocument doc = new QueryDocument();
 		doc.getLibraryItem().add(libraryItem);

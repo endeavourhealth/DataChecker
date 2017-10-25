@@ -1,11 +1,15 @@
 package org.endeavourhealth.patientexplorer.endpoints;
 
-import org.endeavourhealth.core.data.admin.LibraryRepository;
-import org.endeavourhealth.core.data.admin.models.*;
-import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.rdbms.audit.models.AuditAction;
-import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.admin.LibraryDalI;
+import org.endeavourhealth.core.database.dal.admin.models.ActiveItem;
+import org.endeavourhealth.core.database.dal.admin.models.DefinitionItemType;
+import org.endeavourhealth.core.database.dal.admin.models.Item;
+import org.endeavourhealth.core.database.dal.admin.models.ItemDependency;
+import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
 import org.endeavourhealth.common.security.SecurityUtils;
+import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
+import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.models.*;
 import org.slf4j.Logger;
@@ -24,7 +28,7 @@ import java.util.*;
 @Path("/folder")
 public final class FolderEndpoint extends AbstractEndpoint {
     private static final Logger LOG = LoggerFactory.getLogger(FolderEndpoint.class);
-    private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsUiModule.Folders);
+    private static final UserAuditDalI userAudit = DalProvider.factoryUserAuditDal(AuditModule.EdsUiModule.Folders);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,7 +57,7 @@ public final class FolderEndpoint extends AbstractEndpoint {
         List<Item> items = new ArrayList();
         Iterable<ItemDependency> itemDependency = null;
 
-        LibraryRepository repository = new LibraryRepository();
+        LibraryDalI repository = DalProvider.factoryLibraryDal();
 
         //if we have no parent, then we're looking for the TOP-LEVEL folder
         if (parentUuidStr == null) {
@@ -64,8 +68,9 @@ public final class FolderEndpoint extends AbstractEndpoint {
 
                 if (!itemDependency.iterator().hasNext()) {
                     Item item = repository.getItemByKey(activeItem.getItemId(), activeItem.getAuditId());
-                    if (item.getIsDeleted()==false)
+                    if (!item.isDeleted()) {
                         items.add(item);
+                    }
                 }
             }
         }

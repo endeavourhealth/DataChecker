@@ -1,9 +1,10 @@
 package org.endeavourhealth.patientexplorer.endpoints;
 
-import org.endeavourhealth.core.data.audit.UserAuditRepository;
-import org.endeavourhealth.core.rdbms.audit.models.AuditAction;
-import org.endeavourhealth.core.rdbms.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.DalProvider;
+import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
 import org.endeavourhealth.common.security.SecurityUtils;
+import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
+import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.database.SqlEditorJdbcProvider;
 import org.endeavourhealth.patientexplorer.database.SqlEditorProvider;
@@ -26,7 +27,7 @@ import java.util.UUID;
 public final class SqlEditorEndpoint extends AbstractEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlEditorEndpoint.class);
-    private static final UserAuditRepository userAudit = new UserAuditRepository(AuditModule.EdsPatientExplorerModule.SqlEditor);
+    private static final UserAuditDalI userAudit = DalProvider.factoryUserAuditDal(AuditModule.EdsPatientExplorerModule.SqlEditor);
     private static final SqlEditorProvider SQL_EDITOR_JDBC_PROVIDER = new SqlEditorJdbcProvider();
 
     /**
