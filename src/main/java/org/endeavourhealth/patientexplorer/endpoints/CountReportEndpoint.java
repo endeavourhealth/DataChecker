@@ -7,12 +7,12 @@ import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
 import org.endeavourhealth.common.security.SecurityUtils;
 import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
 import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
+import org.endeavourhealth.core.database.dal.coding.models.Concept;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.database.CountReportJdbcProvider;
 import org.endeavourhealth.patientexplorer.database.CountReportProvider;
 import org.endeavourhealth.patientexplorer.database.SqlUtils;
-import org.endeavourhealth.patientexplorer.database.models.ConceptEntity;
 import org.endeavourhealth.patientexplorer.models.JsonConcept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,7 +142,7 @@ public final class CountReportEndpoint extends AbstractEndpoint {
         userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Encounter Types");
         LOG.debug("getEncounterTypes");
 
-        List<ConceptEntity> data = countReportProvider.getEncounterTypes();
+        List<Concept> data = countReportProvider.getEncounterTypes();
         List<JsonConcept> ret = data.stream().map(JsonConcept::new).collect(Collectors.toList());
 
         return Response
@@ -168,7 +168,7 @@ public final class CountReportEndpoint extends AbstractEndpoint {
             userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Referral Types");
             LOG.debug("getReferralTypes");
 
-            List<ConceptEntity> data = countReportProvider.getReferralTypes();
+            List<Concept> data = countReportProvider.getReferralTypes();
             List<JsonConcept> ret = data.stream().map(JsonConcept::new).collect(Collectors.toList());
 
             return Response
@@ -194,7 +194,7 @@ public final class CountReportEndpoint extends AbstractEndpoint {
             userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Referral Priorities");
             LOG.debug("getReferralPriorities");
 
-            List<ConceptEntity> data = countReportProvider.getReferralPriorities();
+            List<Concept> data = countReportProvider.getReferralPriorities();
             List<JsonConcept> ret = data.stream().map(JsonConcept::new).collect(Collectors.toList());
 
             return Response

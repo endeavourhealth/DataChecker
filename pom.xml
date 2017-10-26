@@ -14,8 +14,8 @@
         <frontend-maven-plugin.version>1.4</frontend-maven-plugin.version>
 
         <eds-api.version>1.4-SNAPSHOT</eds-api.version>
-        <eds-config.version>1.08-SNAPSHOT</eds-config.version>
-        <eds-transforms.version>1.64-SNAPSHOT</eds-transforms.version>
+        <eds-config.version>1.13-SNAPSHOT</eds-config.version>
+        <eds-transforms.version>1.65-SNAPSHOT</eds-transforms.version>
 
         <amqp-client.version>3.6.2</amqp-client.version>
         <cassandra-driver.version>3.1.1</cassandra-driver.version>

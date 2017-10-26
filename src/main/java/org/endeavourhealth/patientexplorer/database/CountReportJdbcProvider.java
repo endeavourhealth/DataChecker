@@ -8,10 +8,10 @@ import org.endeavourhealth.core.database.dal.admin.ServiceDalI;
 import org.endeavourhealth.core.database.dal.admin.models.ActiveItem;
 import org.endeavourhealth.core.database.dal.admin.models.Item;
 import org.endeavourhealth.core.database.dal.admin.models.Service;
+import org.endeavourhealth.core.database.dal.coding.models.Concept;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.core.xml.QueryDocument.QueryDocument;
 import org.endeavourhealth.core.xml.QueryDocumentSerializer;
-import org.endeavourhealth.patientexplorer.database.models.ConceptEntity;
 import org.endeavourhealth.patientexplorer.models.JsonPractitioner;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
@@ -242,7 +242,7 @@ public class CountReportJdbcProvider implements CountReportProvider {
 	}
 
 	@Override
-	public List<ConceptEntity> getEncounterTypes() throws Exception {
+	public List<Concept> getEncounterTypes() throws Exception {
 		Connection conn = getConnection();
 
 		PreparedStatement statement = conn.prepareStatement("SELECT DISTINCT snomed_concept_id, original_term FROM encounter");
@@ -255,7 +255,7 @@ public class CountReportJdbcProvider implements CountReportProvider {
 	}
 
 	@Override
-	public List<ConceptEntity> getReferralTypes() throws Exception {
+	public List<Concept> getReferralTypes() throws Exception {
 		Connection conn = getConnection();
 
 		PreparedStatement statement = conn.prepareStatement("SELECT id, value FROM referral_request_type");
@@ -268,7 +268,7 @@ public class CountReportJdbcProvider implements CountReportProvider {
 	}
 
 	@Override
-	public List<ConceptEntity> getReferralPriorities() throws Exception {
+	public List<Concept> getReferralPriorities() throws Exception {
 		Connection conn = getConnection();
 
 		PreparedStatement statement = conn.prepareStatement("SELECT id, value FROM referral_request_priority");
@@ -309,11 +309,11 @@ public class CountReportJdbcProvider implements CountReportProvider {
 		return result;
 	}
 
-	private List<ConceptEntity> buildConceptEntityList(ResultSet resultSet) throws SQLException {
-		List<ConceptEntity> result = new ArrayList<>();
+	private List<Concept> buildConceptEntityList(ResultSet resultSet) throws SQLException {
+		List<Concept> result = new ArrayList<>();
 
 		while (resultSet.next()) {
-			ConceptEntity concept = new ConceptEntity();
+			Concept concept = new Concept();
 			concept.setCode(resultSet.getString(1));
 			if (resultSet.getString(2) == null)
 				concept.setDisplay("[NULL]");
