@@ -1,6 +1,6 @@
 package org.endeavourhealth.patientexplorer.database;
 
-import org.endeavourhealth.core.database.dal.coding.models.Concept;
+import org.endeavourhealth.core.database.dal.reference.models.Concept;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.patientexplorer.models.JsonPractitioner;
 

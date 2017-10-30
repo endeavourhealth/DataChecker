@@ -7,7 +7,7 @@ import org.endeavourhealth.core.database.dal.audit.UserAuditDalI;
 import org.endeavourhealth.common.security.SecurityUtils;
 import org.endeavourhealth.core.database.dal.audit.models.AuditAction;
 import org.endeavourhealth.core.database.dal.audit.models.AuditModule;
-import org.endeavourhealth.core.database.dal.coding.models.Concept;
+import org.endeavourhealth.core.database.dal.reference.models.Concept;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.coreui.endpoints.AbstractEndpoint;
 import org.endeavourhealth.patientexplorer.database.CountReportJdbcProvider;

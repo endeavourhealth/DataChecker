@@ -8,7 +8,7 @@ import org.endeavourhealth.core.database.dal.admin.ServiceDalI;
 import org.endeavourhealth.core.database.dal.admin.models.ActiveItem;
 import org.endeavourhealth.core.database.dal.admin.models.Item;
 import org.endeavourhealth.core.database.dal.admin.models.Service;
-import org.endeavourhealth.core.database.dal.coding.models.Concept;
+import org.endeavourhealth.core.database.dal.reference.models.Concept;
 import org.endeavourhealth.core.xml.QueryDocument.LibraryItem;
 import org.endeavourhealth.core.xml.QueryDocument.QueryDocument;
 import org.endeavourhealth.core.xml.QueryDocumentSerializer;
