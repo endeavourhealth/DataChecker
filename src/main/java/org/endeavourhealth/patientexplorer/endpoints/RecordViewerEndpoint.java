@@ -110,9 +110,11 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load,
 				"Find person",
 				"SearchTerm", searchTerms);
-		LOG.debug("findPerson");
+		//LOG.debug("findPerson");
 
 		Set<String> userServiceAccessList = getUserAllowedOrganisations(sc); // SecurityUtils.getOrganisationRoles(sc).keySet();
+		LOG.debug("findPerson in services " + String.join(", ", userServiceAccessList));
+
 		List<UIPatient> result = new ArrayList<>();
 
 		if (!StringUtils.isEmpty(searchTerms)) {
@@ -121,14 +123,17 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 			List<PatientSearch> patientsFound = new ArrayList<>();
 
-			if (parser.hasNhsNumber())
+			if (parser.hasNhsNumber()) {
 				patientsFound.addAll(patientSearchDal.searchByNhsNumber(userServiceAccessList, parser.getNhsNumber()));
+			}
 
-			if (parser.hasEmisNumber())
+			if (parser.hasEmisNumber()) {
 				patientsFound.addAll(patientSearchDal.searchByLocalId(userServiceAccessList, parser.getEmisNumber()));
+			}
 
-			if (parser.hasDateOfBirth())
+			if (parser.hasDateOfBirth()) {
 				patientsFound.addAll(patientSearchDal.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
+			}
 
 			patientsFound.addAll(patientSearchDal.searchByNames(userServiceAccessList, parser.getNames()));
 
