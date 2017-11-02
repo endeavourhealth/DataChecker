@@ -154,9 +154,14 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		Set<String> addedNhsNumbers = new HashSet<>();
 
 		for (PatientSearch searchPatient : patientsFound) {
+
 			// Exclude patients the user is not allowed to view
-			if (allowedOrgs.stream().noneMatch(o -> o.equals(searchPatient.getServiceId())))
+			//changing to handle the service ID being a UUID on the search result
+			if (!allowedOrgs.contains(searchPatient.getServiceId())) {
 				continue;
+			}
+			/*if (allowedOrgs.stream().noneMatch(o -> o.equals(searchPatient.getServiceId())))
+				continue;*/
 
 			UUID serviceId = searchPatient.getServiceId();
 			UUID systemId = searchPatient.getSystemId();
