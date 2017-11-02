@@ -139,7 +139,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 			}
 
 			patientsFound.addAll(patientSearchDal.searchByNames(userServiceAccessList, parser.getNames()));
-			LOG.debug("After name searche, got results " + patientsFound.size());
+			LOG.debug("After name search, got results " + patientsFound.size());
 
 			result = buildPatientResultList(sc, patientsFound);
 			LOG.debug("Filtered down to " + result.size());
@@ -157,7 +157,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 			// Exclude patients the user is not allowed to view
 			//changing to handle the service ID being a UUID on the search result
-			if (!allowedOrgs.contains(searchPatient.getServiceId())) {
+			if (!allowedOrgs.contains(searchPatient.getServiceId().toString())) {
 				continue;
 			}
 			/*if (allowedOrgs.stream().noneMatch(o -> o.equals(searchPatient.getServiceId())))
