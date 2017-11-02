@@ -113,7 +113,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		//LOG.debug("findPerson");
 
 		Set<String> userServiceAccessList = getUserAllowedOrganisations(sc); // SecurityUtils.getOrganisationRoles(sc).keySet();
-		LOG.debug("findPerson in services " + String.join(", ", userServiceAccessList));
+		LOG.debug("findPerson in services " + String.join(", ", userServiceAccessList) + " for [" + searchTerms + "]");
 
 		List<UIPatient> result = new ArrayList<>();
 
@@ -125,19 +125,24 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 			if (parser.hasNhsNumber()) {
 				patientsFound.addAll(patientSearchDal.searchByNhsNumber(userServiceAccessList, parser.getNhsNumber()));
+				LOG.debug("After NHS number search, got results " + patientsFound.size());
 			}
 
 			if (parser.hasEmisNumber()) {
 				patientsFound.addAll(patientSearchDal.searchByLocalId(userServiceAccessList, parser.getEmisNumber()));
+				LOG.debug("After EMIS number search, got results " + patientsFound.size());
 			}
 
 			if (parser.hasDateOfBirth()) {
 				patientsFound.addAll(patientSearchDal.searchByDateOfBirth(userServiceAccessList, parser.getDateOfBirth()));
+				LOG.debug("After DoB search, got results " + patientsFound.size());
 			}
 
 			patientsFound.addAll(patientSearchDal.searchByNames(userServiceAccessList, parser.getNames()));
+			LOG.debug("After name searche, got results " + patientsFound.size());
 
 			result = buildPatientResultList(sc, patientsFound);
+			LOG.debug("Filtered down to " + result.size());
 		}
 
 		return buildResponse(result);
