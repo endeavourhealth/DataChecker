@@ -31,6 +31,9 @@ public class ResourceFetcher {
     }
 
     public static <T> List<T> getResourcesByService(UUID serviceId, List<UUID> resourceIds, Class<T> resourceType) throws Exception {
+        if (resourceIds == null || resourceIds.size() == 0)
+            return new ArrayList<>();
+
         List<ResourceWrapper> resourceByServiceList = resourceRepository.getResourcesByServiceAllSystems(serviceId, resourceType.getSimpleName(), resourceIds);
 
         List<String> resources = resourceByServiceList
