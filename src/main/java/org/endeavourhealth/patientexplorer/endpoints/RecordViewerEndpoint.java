@@ -275,14 +275,19 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		else
 			patientSearches = Collections.singletonList(patientSearchDal.searchByPatientId(UUID.fromString(patientId)));
 
+        LOG.debug("Found " + patientSearches.size() + " patients");
+
 		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
 		Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
+		LOG.debug("Allowed " + allowedOrgs.size() + " orgs");
 
 		// Get episodes of care for each
 		for (PatientSearch patientSearch : patientSearches) {
-			if (!allowedOrgs.stream().anyMatch(o -> o.equals(patientSearch.getServiceId())))
-				continue;
+			if (allowedOrgs.stream().noneMatch(o -> o.toLowerCase().equals(patientSearch.getServiceId().toString().toLowerCase()))) {
+			    LOG.debug(patientSearch.getServiceId() + " not allowed");
+                continue;
+            }
 
 			try {
 				UIPatient patient = getPatient(
@@ -299,6 +304,8 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 						UIEpisodeOfCare.class
 				);
 
+				LOG.debug("Found " + episodesOfCare.size() + " episodes for " + patientSearch.getServiceId() + "/" + patientSearch.getSystemId() + "/" + patientSearch.getPatientId());
+
 				episodesOfCare.forEach(episode -> episode.setPatient(patient));
 
 				episodes.addAll(episodesOfCare);
@@ -306,6 +313,8 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				LOG.error(e.getMessage(), patientSearch.getServiceId(), patientSearch.getSystemId(), patientSearch.getPatientId());
 			}
 		}
+
+		LOG.debug("Found " + episodes.size() + " episodes");
 
 		return buildResponse(
 				episodes.stream()
@@ -611,7 +620,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				"SystemId", systemId);
 		LOG.debug("getPractitioner");
 
-		Practitioner practitioner = ResourceFetcher.getSingleResourceByService(serviceId, practitionerId, Practitioner.class);
+		Practitioner practitioner = ResourceFetcher.getSingleResourceByService(serviceId, systemId, practitionerId, Practitioner.class);
 
 		return buildResponse(UIPractitionerTransform.transform(practitioner));
 	}
@@ -630,7 +639,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				"SystemId", systemId);
 		LOG.debug("getOrganisation");
 
-		Organization organization= ResourceFetcher.getSingleResourceByService(serviceId, organisationId, Organization.class);
+		Organization organization= ResourceFetcher.getSingleResourceByService(serviceId, systemId, organisationId, Organization.class);
 
 		return buildResponse(UIOrganisationTransform.transform(organization));
 	}
@@ -649,7 +658,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				"SystemId", systemId);
 		LOG.debug("getLocation");
 
-		Location location = ResourceFetcher.getSingleResourceByService(serviceId, locationId, Location.class);
+		Location location = ResourceFetcher.getSingleResourceByService(serviceId, systemId, locationId, Location.class);
 
 		return buildResponse(UILocationTransform.transform(location));
 	}	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -664,7 +673,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 	private static UIPatient getPatient(UUID serviceId, UUID systemId, UUID patientId) throws Exception {
 
-		Patient patient = ResourceFetcher.getSingleResourceByPatient(serviceId, patientId, Patient.class);
+		Patient patient = ResourceFetcher.getSingleResourceByPatient(serviceId, systemId, patientId, Patient.class);
 
 		List<Reference> references = new ArrayList<Reference>();
 		references.add(patient.getManagingOrganization());
@@ -700,7 +709,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 																												 Class<T> fhirResourceType,
 																												 Class<U> uiResourceType) throws Exception {
 
-		List<T> resources = ResourceFetcher.getResourceByPatient(serviceId, patientId, fhirResourceType);
+		List<T> resources = ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, fhirResourceType);
 
 		UIClinicalTransform transform = UITransform.getClinicalTransformer(uiResourceType);
 
@@ -715,16 +724,16 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		ReferencedResources referencedResources = new ReferencedResources();
 
 		List<UUID> locationIds = getIdsOfType(references, ResourceType.Location);
-		referencedResources.setLocations(ResourceFetcher.getResourcesByService(serviceId, locationIds, Location.class));
+		referencedResources.setLocations(ResourceFetcher.getResourcesByService(serviceId, systemId, locationIds, Location.class));
 
 		List<UUID> organisationIds = getIdsOfType(references, ResourceType.Organization);
-		referencedResources.setOrganisations(ResourceFetcher.getResourcesByService(serviceId, organisationIds, Organization.class));
+		referencedResources.setOrganisations(ResourceFetcher.getResourcesByService(serviceId, systemId, organisationIds, Organization.class));
 
-		referencedResources.setMedications(ResourceFetcher.getResourceByPatient(serviceId, patientId, Medication.class));
+		referencedResources.setMedications(ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Medication.class));
 
-		referencedResources.setMedicationStatements(serviceId, systemId, ResourceFetcher.getResourceByPatient(serviceId, patientId, MedicationStatement.class), referencedResources);
+		referencedResources.setMedicationStatements(serviceId, systemId, ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, MedicationStatement.class), referencedResources);
 
-		referencedResources.setObservations(serviceId, systemId, ResourceFetcher.getResourceByPatient(serviceId, patientId, Observation.class), referencedResources);
+		referencedResources.setObservations(serviceId, systemId, ResourceFetcher.getResourceByPatient(serviceId, systemId, patientId, Observation.class), referencedResources);
 
 		return referencedResources;
 	}
