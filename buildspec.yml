@@ -21,4 +21,4 @@ artifacts:
   files:
     - appspec.yml
     - aws_scripts/**/*
-    - target/eds-data-checker-1.0-SNAPSHOT.war
+    - target/data-checker.war

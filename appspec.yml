@@ -1,8 +1,8 @@
 version: 0.0
 os: linux
 files:
-  - source: /target/eds-data-checker-1.0-SNAPSHOT.war
-    destination: /opt/tomcat/webapps/data-checker.war
+  - source: /target/data-checker.war
+    destination: /opt/tomcat/webapps
 hooks:
   BeforeInstall:
     - location: aws_scripts/cleanup
