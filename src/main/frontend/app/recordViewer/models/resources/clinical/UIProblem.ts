@@ -10,4 +10,5 @@ export class UIProblem extends UICondition {
     significance: UICode;
     relatedProblem: UIProblem;
     relationshipType: string;
+    isReview: boolean;
 }

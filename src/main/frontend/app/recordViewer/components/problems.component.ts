@@ -15,4 +15,11 @@ export class ProblemsComponent extends AdminCacheBaseComponent {
 	constructor(adminCache : AdminCacheService) {
 		super(adminCache);
 	}
+
+	getEpisodicity(problem: UIProblem) {
+		if (problem.isReview)
+			return " (Review)";
+		else
+			return " (Onset)";
+	}
 }

@@ -15,6 +15,7 @@
 				<span class="problem-term-text">{{problem.code.text}}</span>
 				<span class="problem-term-significance-text">{{problem.significance | codeSignificance | lowercase | parentheses}}</span>
 				<span class="problem-associated-text">{{problem.notes}}</span>
+				<span class="problem-episodicity">{{getEpisodicity(problem)}}</span>
 				<div class="problem-detail" [hidden]="!problem.showDetail">
 					<table>
 						<tbody>
