@@ -29,8 +29,6 @@ export class EpisodeViewComponent extends AdminCacheBaseComponent {
 	@Input()
 	set episodes(episodes : UIEpisodeOfCare[]) {
 		if (episodes) {
-			linq(episodes)
-				.ForEach(e => this.getSystemName(e));
 
 			this.currentEpisodes = linq(episodes)
 				.Where(t => !this.isPast(t))
@@ -57,22 +55,6 @@ export class EpisodeViewComponent extends AdminCacheBaseComponent {
 
 	constructor(adminCache : AdminCacheService, protected logger: LoggerService, protected libraryService : LibraryService) {
 		super(adminCache);
-	}
-
-	private getSystemName(episode : UIEpisodeOfCare) {
-		if (episode.systemName)
-			return;
-
-		if (!episode || !episode.patient || !episode.patient.patientId || !episode.patient.patientId.systemId)
-			episode.systemName = "Unknown";
-
-		var vm = this;
-		episode.systemName = "Loading...";
-		vm.libraryService.getLibraryItem(episode.patient.patientId.systemId)
-			.subscribe(
-				(result) => episode.systemName = result.name,
-				(error) => episode.systemName = "Unknown"
-			);
 	}
 
 	viewAll() {

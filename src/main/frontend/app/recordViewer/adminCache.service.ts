@@ -12,7 +12,7 @@ export class AdminCacheService {
 
 	private _practitioners : Map<string, UIPractitioner> = new Map();
 	public getPractitioner(practitionerId : UIInternalIdentifier) : UIPractitioner {
-		let hash = practitionerId.resourceId + practitionerId.systemId + practitionerId.serviceId;
+		let hash = practitionerId.resourceId + practitionerId.serviceId;
 
 		let practitioner : UIPractitioner = this._practitioners.get(hash);
 		if (!practitioner) {
@@ -38,7 +38,7 @@ export class AdminCacheService {
 
 	private _organisations : Map<string, UIOrganisation> = new Map();
 	public getOrganisation(organisationId : UIInternalIdentifier) : UIOrganisation {
-		let hash = organisationId.resourceId + organisationId.systemId + organisationId.serviceId;
+		let hash = organisationId.resourceId + organisationId.serviceId;
 
 		let organisation : UIOrganisation = this._organisations.get(hash);
 		if (!organisation) {
@@ -64,7 +64,7 @@ export class AdminCacheService {
 
 	private _locations : Map<string, UILocation> = new Map();
 	public getLocation(locationId : UIInternalIdentifier) : UILocation {
-		let hash = locationId.resourceId + locationId.systemId + locationId.serviceId;
+		let hash = locationId.resourceId + locationId.serviceId;
 
 		let location : UILocation = this._locations.get(hash);
 		if (!location) {

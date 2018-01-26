@@ -14,6 +14,7 @@
 				<codeTooltip [code]="condition.code"></codeTooltip>
 				<span class="problem-term-text">{{condition.code.text}}</span>
 				<span class="problem-associated-text">{{condition.notes}}</span>
+				<span class="problem-episodicity">{{getEpisodicity(condition)}}</span>
 				<div class="problem-detail" [hidden]="!condition.showDetail">
 					<table>
 						<tbody>

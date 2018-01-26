@@ -46,7 +46,6 @@ export class RecordViewerService extends BaseHttp2Service {
 	findPatient(service: UIService, searchTerms: string): Observable<UIPatient[]> {
 		var params = new URLSearchParams();
 		params.append('serviceId', service.serviceId);
-		params.append('systemId', service.systemId);
 		params.append('searchTerms', searchTerms);
 
 		return this.httpGet('api/recordViewer/findPatient', {search: params});
@@ -133,7 +132,6 @@ export class RecordViewerService extends BaseHttp2Service {
 	private getParams(patientId: UIInternalIdentifier): any {
 		var params = new URLSearchParams();
 		params.append('serviceId', patientId.serviceId);
-		params.append('systemId', patientId.systemId);
 		params.append('patientId', patientId.resourceId);
 
 		return {search: params};
@@ -143,7 +141,6 @@ export class RecordViewerService extends BaseHttp2Service {
 	getPractitioner(practitionerId : UIInternalIdentifier) : Observable<UIPractitioner> {
 		let params = new URLSearchParams();
 		params.append('serviceId', practitionerId.serviceId);
-		params.append('systemId', practitionerId.systemId);
 		params.append('practitionerId', practitionerId.resourceId);
 
 		return this.httpGet('api/recordViewer/getPractitioner', {search: params});
@@ -152,7 +149,6 @@ export class RecordViewerService extends BaseHttp2Service {
 	getOrganisation(organisationId : UIInternalIdentifier) : Observable<UIOrganisation> {
 		let params = new URLSearchParams();
 		params.append('serviceId', organisationId.serviceId);
-		params.append('systemId', organisationId.systemId);
 		params.append('organisationId', organisationId.resourceId);
 
 		return this.httpGet('api/recordViewer/getOrganisation', {search: params});
@@ -161,7 +157,6 @@ export class RecordViewerService extends BaseHttp2Service {
 	getLocation(locationId : UIInternalIdentifier) : Observable<UILocation> {
 		let params = new URLSearchParams();
 		params.append('serviceId', locationId.serviceId);
-		params.append('systemId', locationId.systemId);
 		params.append('locationId', locationId.resourceId);
 
 		return this.httpGet('api/recordViewer/getLocation', {search: params});

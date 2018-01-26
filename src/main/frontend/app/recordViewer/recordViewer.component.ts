@@ -98,7 +98,7 @@ export class RecordViewerComponent {
 		}
 
 		buildUniqueId(id : UIInternalIdentifier) : string {
-			return id.serviceId + ',' + id.systemId + ',' + id.resourceId;
+			return id.serviceId + ',' + id.resourceId;
 		}
 
 		public setPatientRecord(patients: UIPatient[]): void {
