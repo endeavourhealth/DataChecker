@@ -8,7 +8,7 @@ export class PatientExplorerMenuService implements  MenuService {
 		return 'eds-data-checker';
 	}
 	getApplicationTitle(): string {
-		return 'Discovery Data Checker';
+		return 'Point of Care';
 	}
 	getMenuOptions():MenuOption[] {
 		return [
