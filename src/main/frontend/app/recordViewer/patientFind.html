@@ -8,7 +8,7 @@
 
         <form id="patient-find-search-criteria">
             <div class="form-group">
-                <div *ngIf="services" class="input-group">
+                <div class="input-group">
                     <input type="text" class="form-control" [(ngModel)]="searchTerms" (ngModelChange)="searchTermsChanged()" focus placeholder="Enter search terms..." name="searchTerms" (keyup.enter)="findPatient()">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="button" (click)="findPatient()">Find patient</button>

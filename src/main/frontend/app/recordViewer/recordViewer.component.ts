@@ -11,11 +11,13 @@ import {Observable} from "rxjs";
 import {linq} from "eds-common-js";
 import {UIInternalIdentifier} from "./models/UIInternalIdentifier";
 import {Transition} from "ui-router-ng2";
+import {UIService} from './models/UIService';
 
 @Component({
 		template : require('./recordViewer.html')
 })
 export class RecordViewerComponent {
+		public findEnabled: boolean = false;
 		public person : UIPerson;
 		public episodes : UIEpisodeOfCare[];
 		public personRecord: UIPersonRecord;
@@ -26,23 +28,41 @@ export class RecordViewerComponent {
 								protected recordViewerService: RecordViewerService,
 								protected securityService : SecurityService,
 								private transition: Transition) {
+
+			this.loadServices();
+
 			if (transition.params()['nhsNumber'])
 				this.loadPatient(transition.params()['nhsNumber']);
+		}
+
+		public loadServices() {
+			var vm = this;
+			vm.recordViewerService.getServices()
+				.subscribe(
+					(result) => vm.processServices(result),
+					(error) => vm.logger.error(error)
+				);
+		}
+
+		public processServices(services: UIService[]) {
+			if (services && services.length > 0)
+				this.findEnabled = true;
+			else {
+				this.logger.error("You do not have access to any services. Please contact your system administrator", null, 'Insufficient Access');
+			}
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// patient find
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		public showPersonFind(): void {
-				let ctrl = this;
-				if (ctrl.securityService.currentUser.organisation) {
-					PatientFindDialog
-						.open(ctrl.$modal)
-						.result
-						.then((result: UIPatient) => { if (result) ctrl.setPerson(result) });
-					} else {
-					ctrl.logger.warning('Select a service', null, 'No service selected');
-				}
+			let ctrl = this;
+			PatientFindDialog
+				.open(ctrl.$modal)
+				.result
+				.then((result: UIPatient) => {
+					if (result) ctrl.setPerson(result)
+				});
 		}
 
 		public setPerson(person : UIPerson) {

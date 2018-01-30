@@ -1,6 +1,5 @@
 import {UIPatient} from "./models/resources/admin/UIPatient";
 import {RecordViewerService} from "./recordViewer.service";
-import {UIService} from "./models/UIService";
 import {linq, SecurityService} from "eds-common-js";
 import {Component} from "@angular/core";
 import {NgbModal, NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
@@ -20,9 +19,7 @@ import {UIAddress} from "./models/types/UIAddress";
     template: require('./patientFind.html')
 })
 export class PatientFindDialog {
-
-    services: UIService[] = null;
-    loading : boolean = false;
+   	loading : boolean = false;
     searchTerms: string;
     searchedTerms: string;
     foundPatients: UIPatient[];
@@ -36,8 +33,6 @@ export class PatientFindDialog {
     constructor(protected activeModal: NgbActiveModal,
                 protected recordViewerService: RecordViewerService,
                 protected securityService: SecurityService) {
-
-        this.loadServices();
     }
 
     ok() {
@@ -48,14 +43,6 @@ export class PatientFindDialog {
     cancel() {
         this.activeModal.close(null);
         console.log('Cancel Pressed');
-    }
-
-    private loadServices(): void {
-        var vm = this;
-        vm.recordViewerService.getServices()
-          .subscribe(
-            (result) => vm.services = result
-					);
     }
 
     findPatient() {

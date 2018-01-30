@@ -1,7 +1,7 @@
 <div class="module record-viewer">
     <div class="module-heading">
         <span>Patient explorer</span>
-        <button class="btn btn-success btn-sm pull-right" (click)="showPersonFind()"><i class="fa fa-search"></i> Find patient</button>
+        <button class="btn btn-success btn-sm pull-right" (click)="showPersonFind()" [disabled]="!findEnabled"><i class="fa fa-search"></i> Find patient</button>
         <button class="btn btn-success btn-sm pull-right" (click)="clearPerson()" [disabled]="person == null"><i class="fa fa-times-circle"></i> Clear patient</button>
         <button class="btn btn-success btn-sm pull-right" (click)="clearEpisode()" *ngIf="person && episodes"><i class="fa fa-bars"></i> All episodes</button>
     </div>
