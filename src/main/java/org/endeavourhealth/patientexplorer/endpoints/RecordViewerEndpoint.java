@@ -712,19 +712,23 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 	}
 
 	private Set<String> getUserAllowedOrganisations(SecurityContext sc) {
-		Set<String> orgs = new HashSet<>();
+        Set<String> orgs = new HashSet<>();
 
-		AccessToken accessToken = SecurityUtils.getToken(sc);
-		List<Map<String, Object>> orgGroups = (List)accessToken.getOtherClaims().getOrDefault("orgGroups", (Object)null);
-		Iterator iterator = orgGroups.iterator();
+        AccessToken accessToken = SecurityUtils.getToken(securityContext);
+        List<Map<String, Object>> orgGroups = (List)accessToken.getOtherClaims().getOrDefault("orgGroups", null);
 
-		while(iterator.hasNext()) {
-			Map<String, Object> orgGroup = (Map)iterator.next();
-			String orgGroupOrganisationId = (String)orgGroup.getOrDefault("organisationId", (Object)null);
-			if (orgGroupOrganisationId != null)
-				orgs.add(orgGroupOrganisationId);
-		}
+        if (orgGroups != null) {
+            for (Object orgGroup1 : orgGroups) {
+                Map<String, Object> orgGroup = (Map) orgGroup1;
+                String orgGroupOrganisationId = (String) orgGroup.getOrDefault("organisationId", null);
+                if (orgGroupOrganisationId != null)
+                    orgs.add(orgGroupOrganisationId);
+            }
+            LOG.debug(orgs.size() + " orgGroups found in access token!");
+        } else {
+            LOG.error("No orgGroups found in access token!");
+        }
 
-		return orgs;
+        return orgs;
 	}
 }
