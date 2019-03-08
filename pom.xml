@@ -14,7 +14,7 @@
         <frontend-maven-plugin.version>1.4</frontend-maven-plugin.version>
 
         <eds-api.version>1.30-SNAPSHOT</eds-api.version>
-        <eds-config.version>1.23-SNAPSHOT</eds-config.version>\
+        <eds-config.version>1.23-SNAPSHOT</eds-config.version>
         <eds-transforms.version>1.1314-SNAPSHOT</eds-transforms.version>
 
         <amqp-client.version>4.8.0</amqp-client.version>
