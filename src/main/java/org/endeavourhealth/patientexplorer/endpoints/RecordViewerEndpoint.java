@@ -91,7 +91,8 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
             "nhsNumber", nhsNumber);
         LOG.debug("getPerson");
 
-        List<PatientSearch> patients = patientSearchDal.searchByNhsNumber(nhsNumber);
+        Set<String> userServiceAccessList = getUserAllowedOrganisations(sc);
+        List<PatientSearch> patients = patientSearchDal.searchByNhsNumber(userServiceAccessList, nhsNumber);
 
         if (patients.size() > 0) {
             List<UIPatient> result = buildPatientResultList(sc, patients);
@@ -214,7 +215,7 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 				"SystemId", systemId);
 		LOG.debug("findPatient");
 
-
+        Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
 		List<UIPatient> result = new ArrayList<>();
 
 		if (!StringUtils.isEmpty(searchTerms)) {
@@ -224,16 +225,16 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 			List<PatientSearch> patientsFound = new ArrayList<>();
 
 			if (parser.hasNhsNumber())
-				patientsFound.addAll(patientSearchDal.searchByNhsNumber(serviceId, systemId, parser.getNhsNumber()));
+				patientsFound.addAll(patientSearchDal.searchByNhsNumber(allowedOrgs, parser.getNhsNumber()));
 
 			if (parser.hasEmisNumber())
-				patientsFound.addAll(patientSearchDal.searchByLocalId(serviceId, systemId, parser.getEmisNumber()));
+				patientsFound.addAll(patientSearchDal.searchByLocalId(allowedOrgs, parser.getEmisNumber()));
 
 			if (parser.hasDateOfBirth())
-				patientsFound.addAll(patientSearchDal.searchByDateOfBirth(serviceId, systemId, parser.getDateOfBirth()));
+				patientsFound.addAll(patientSearchDal.searchByDateOfBirth(allowedOrgs, parser.getDateOfBirth()));
 
 
-			patientsFound.addAll(patientSearchDal.searchByNames(serviceId, systemId, parser.getNames()));
+			patientsFound.addAll(patientSearchDal.searchByNames(allowedOrgs, parser.getNames()));
 
 			List<UIInternalIdentifier> uiInternalIdentifiers = patientsFound
 					.stream()
@@ -243,7 +244,6 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 					.distinct()
 					.collect(Collectors.toList());
 
-			Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
 
 			for (UIInternalIdentifier identifier : uiInternalIdentifiers) {
 				if (!allowedOrgs.stream().anyMatch(o -> o.equals(identifier.getServiceId())))
@@ -265,10 +265,11 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 		userAudit.save(SecurityUtils.getCurrentUserId(sc), getOrganisationUuidFromToken(sc), AuditAction.Load, "Episodes");
 		LOG.debug("getEpisodes");
 
-		List<PatientSearch> patientSearches;
+        Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
+        List<PatientSearch> patientSearches;
 		// Get list of patients by NHS number
 		if (nhsNumber != null && !nhsNumber.isEmpty())
-			patientSearches = patientSearchDal.searchByNhsNumber(nhsNumber);
+			patientSearches = patientSearchDal.searchByNhsNumber(allowedOrgs, nhsNumber);
 		else
 			patientSearches = Collections.singletonList(patientSearchDal.searchByPatientId(UUID.fromString(patientId)));
 
@@ -276,7 +277,6 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
 
 		List<UIEpisodeOfCare> episodes = new ArrayList<>();
 
-		Set<String> allowedOrgs = getUserAllowedOrganisations(sc);
 		LOG.debug("Allowed " + allowedOrgs.size() + " orgs");
 
 		// Get episodes of care for each
@@ -724,7 +724,6 @@ public final class RecordViewerEndpoint extends AbstractEndpoint {
                 if (orgGroupOrganisationId != null)
                     orgs.add(orgGroupOrganisationId);
             }
-            LOG.debug(orgs.size() + " orgGroups found in access token!");
         } else {
             LOG.error("No orgGroups found in access token!");
         }

@@ -14,7 +14,7 @@ public class ResourceFetcher {
     private static final ResourceDalI resourceRepository = DalProvider.factoryResourceDal();
 
     public static <T> List<T> getResourceByPatient(UUID serviceId, UUID patientId, Class<T> resourceType) throws Exception {
-        List<ResourceWrapper> resourceByPatientList = resourceRepository.getResourcesByPatient(serviceId, null, patientId, resourceType.getSimpleName());
+        List<ResourceWrapper> resourceByPatientList = resourceRepository.getResourcesByPatient(serviceId, patientId, resourceType.getSimpleName());
 
         List<String> resources = resourceByPatientList
                 .stream()
@@ -34,7 +34,7 @@ public class ResourceFetcher {
         if (resourceIds == null || resourceIds.size() == 0)
             return new ArrayList<>();
 
-        List<ResourceWrapper> resourceByServiceList = resourceRepository.getResourcesByService(serviceId, null, resourceType.getSimpleName(), resourceIds);
+        List<ResourceWrapper> resourceByServiceList = resourceRepository.getResourcesByService(serviceId, resourceType.getSimpleName(), resourceIds);
 
         List<String> resources = resourceByServiceList
                 .stream()
